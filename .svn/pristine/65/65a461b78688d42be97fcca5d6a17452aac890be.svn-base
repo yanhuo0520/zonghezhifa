@@ -1,0 +1,282 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>申报单列表</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="../../css/mui.min.css" />
+		<link rel="stylesheet" href="../../css/mui.picker.css" />
+		<link rel="stylesheet" href="../../css/mui.dtpicker.css" />
+		<link rel="stylesheet" href="../css/generic.css" />
+		<link rel="stylesheet" href="../css/quarantine-common.css" />
+		<style>			
+			.in-list { margin: 10px; background: #FFFFFF; border-radius: 5px; }
+			.in-list .title { font-size: 0.245rem; padding: 10px 15px 5px; border-bottom: 1px solid #EEEEEE; }
+			.in-list ul { color: #6A6882; line-height: 0.46rem; padding: 0 15px 8px; }
+			.in-list li span { padding-left: 15px; }
+			.status-1 { color: #D52B2B; }
+			.status-2 { color: #02CC9C; }
+			.status-3 { color: #6A6882; }
+			.status-5 { color: #00B2EE; }
+		</style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<a class="mui-action-menu mui-icon mui-icon-search mui-pull-right" id="qurarantine_search"></a>
+			<h1 class="mui-title">申报单列表</h1>
+		</header>
+		<div class="mui-content" id="pullrefresh">
+			<div class="in-list-content" id="in-list-content"></div>
+		</div>
+		<div id="qurarantine_popover" class="mui-popover modify-mask">
+			<div class="mui-input-group no-bottom-line">
+				<div class="mui-input-row">
+					<label class="title-label">开始日期：</label>
+					<input type="text" id="qurarantine_search_begin" class="mui-navigate-right" readonly placeholder="请选择开始日期" />
+				</div>
+				<div class="mui-input-row">
+					<label class="title-label">结束日期：</label>
+					<input type="text" id="qurarantine_search_end" class="mui-navigate-right" readonly placeholder="请选择结束日期" />
+				</div>
+				<div class="mui-input-row f-row no-bottom-line">
+					<label class="title-label">申报单状态：</label>
+					<div class="mui-radio mui-left">
+						<input name="search_status" type="radio" value="1" />
+						<label>未受理</label>
+					</div>
+					<div class="mui-radio mui-left">
+						<input name="search_status" type="radio" value="2" />
+						<label>已受理</label>
+					</div>
+				</div>
+				<div class="mui-input-row f-row no-bottom-line">
+					<label class="title-label"></label>
+					<div class="mui-radio mui-left">
+						<input name="search_status" type="radio" value="3" />
+						<label>不受理</label>
+					</div>
+					<div class="mui-radio mui-left">
+						<input name="search_status" type="radio" value="5" />
+						<label>已出证</label>
+					</div>
+				</div>
+				<div class="mui-input-row f-row no-bottom-line">
+					<label class="title-label"></label>
+					<div class="mui-radio mui-left">
+						<input name="search_status" type="radio" checked value="" />
+						<label>全部</label>
+					</div>
+				</div>
+			</div>
+			<div class="mui-btn mui-btn-primary big-commit-btn" id="qurarantine_search_btn"><span class="mui-icon mui-icon-search"></span>&nbsp;&nbsp;搜&nbsp;&nbsp;索</div>
+		</div>
+		
+		<script src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/mui.picker.min.js"></script>
+		<script type="text/javascript" src="../../js/mui.dtpicker.js"></script>
+		<script type="text/javascript" src="../../js/jquery-1.12.4.min.js"></script>
+		<script type="text/javascript" src="../js/content.js"></script>
+		<script type="text/javascript" src="../js/constant.js"></script>
+		<script type="text/javascript">
+			mui.init({
+				pullRefresh : {
+					container: '#pullrefresh', 			// 待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+					up : {
+						height: 50,						// 可选.默认50.触发上拉加载拖动距离
+						auto: false,					// 可选,默认false.自动上拉加载一次
+						contentrefresh: "正在加载...",	// 可选，正在加载状态时，上拉加载控件上显示的标题内容
+						contentnomore: '没有数据了',		// 可选，请求完毕若没有更多数据时显示的提醒内容；
+						callback: pullupRefresh 		// 必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+					},
+					down: {
+						style: "circle",
+						color: "#33323E",				//可选，默认“#2BD009” 下拉刷新控件颜色
+						height: '30px',					//可选,默认50px.下拉刷新控件的高度,
+						range: '100px',					//可选 默认100px,控件可下拉拖拽的范围
+						offset: '0px',					//可选 默认0px,下拉刷新控件的起始位置
+						auto: true,					//可选,默认false.首次加载自动上拉刷新一次
+						callback: pullDownRefreshFun
+					}
+				}
+			});
+			
+			var currpage = 1;
+			var ebsort=null, rkdate=null;
+			
+			mui.plusReady(function() {
+				initSettings(); 		// 初始化设置字体大小
+				var qurarantineDate_begin = document.getElementById('qurarantine_search_begin'); 	// 搜索界面开始时间组件
+				var qurarantineDate_end = document.getElementById('qurarantine_search_end'); 		// 搜索界面结束时间组件
+				
+				/** ---------------------- 打开搜索界面方法 ---------------------- **/
+				document.getElementById("qurarantine_search").addEventListener('tap', function() {
+					// var ebsort=document.getElementById("ear-scale").value;
+					// var rkdate=document.getElementById("select-time").value;
+					mui('#qurarantine_popover').popover('toggle');
+					qurarantineDate_begin.value = "";
+					qurarantineDate_end.value = "";
+				//  $("input[name=SIGN]:eq(0)").attr("checked", 'checked');
+				//	$("input[type=radio][name='search_status'][value='0']").attr("checked",'checked')
+				});
+				
+				/** ---------------------- 搜索方法 ---------------------- **/
+				document.getElementById("qurarantine_search_btn").addEventListener('tap', function() {
+					currpage = 1;
+					$('#in-list-content').html("");
+					mui('#qurarantine_popover').popover('toggle');
+					getList();
+				});
+				
+				/** ---------------------- 搜索开始时间 ---------------------- **/
+				var qurarantineDatePicker_begin = new mui.DtPicker({
+					type: "date", //设置日历初始视图模式 
+					beginDate: new Date(1999, 12, 01), // 设置开始日期 
+					endDate: new Date(2100, 11, 31), // 设置结束日期 
+					labels: ['年', '月', '日'] // 设置默认标签区域提示语
+				});
+				qurarantineDate_begin.addEventListener('tap', function(event) {
+					document.activeElement.blur(); // 关闭手机软键盘
+					qurarantineDatePicker_begin.show(function(items) {
+					//	console.log(JSON.stringify(items));
+						qurarantineDate_begin.value = items.value;
+					});
+				}, false);
+				
+				/** ---------------------- 搜索结束时间 ---------------------- **/
+				var qurarantineDatePicker_end = new mui.DtPicker({
+					type: "date", //设置日历初始视图模式 
+					beginDate: new Date(1999, 12, 01), // 设置开始日期 
+					endDate: new Date(2100, 11, 31), // 设置结束日期 
+					labels: ['年', '月', '日'] // 设置默认标签区域提示语
+				});
+				qurarantineDate_end.addEventListener('tap', function(event) {
+					document.activeElement.blur(); // 关闭手机软键盘
+					qurarantineDatePicker_end.show(function(items) {
+					//	console.log(JSON.stringify(items));
+						qurarantineDate_end.value = items.value;
+					});
+				}, false);
+			});
+			
+			/**
+			 * 上滑加载更多功能
+			 */
+			function pullupRefresh() {
+				setTimeout(function() {
+					currpage++;
+					getList();
+					mui('#pullrefresh').pullRefresh().endPullupToRefresh();
+				}, 1500);
+			}
+			
+			/**
+			 * 下拉刷新功能
+			 */
+			function pullDownRefreshFun() {
+				setTimeout(function() {
+					currpage = 1;
+					$('#in-list-content').html("");
+					getList();
+					mui('#pullrefresh').pullRefresh().endPulldownToRefresh();
+					mui('#pullrefresh').pullRefresh().refresh(true);
+				}, 1500);
+			}
+			
+			function getList() {
+				plus.nativeUI.showWaiting("正在加载……");
+				var SDATE = mui("#qurarantine_search_begin")[0].value;
+				var EDATE = mui("#qurarantine_search_end")[0].value;
+				var STATUS = $("input[name='search_status']:checked").val();
+				var json_syncTransferData = [{
+					"AREA1": "2c90813c0a252d31010a252e4ae70001",
+					"AREA2": "",
+					"AREA3": "",
+					"AREA4": "",
+					"AREAID": "2c90813c0a252d31010a252e4ae70001",
+					"KEYWORD": "",
+					"PAGENO": currpage + "",
+					"SDATE": SDATE,
+					"EDATE": EDATE,
+					"STATUS": STATUS,
+					"PAGESIZE": "10",
+					"SEARCHLEVEL": "1",
+					"SYNC_ACT": "AIS-2001000200000001",
+					"SYNC_USR": "admin",
+					"SYNC_VER": "APP.1.01",
+					"USERNAME": "admin",
+					"USERTYPE": "USER",
+					"_GATEWAY_NAME": "HA_NETWORK"
+				}];
+				mui.ajax(QUARANTINE_MAIN_URL, {
+					data:{
+						syncTransferData: JSON.stringify(json_syncTransferData)
+					},
+					dataType: 'json',	// 服务器返回json格式数据
+					type: 'post',		// HTTP请求类型
+					timeout: 10000,		// 超时时间设置为10秒；
+					success: function(data) {
+						plus.nativeUI.closeWaiting();
+						if (data.AIS_STATUS === "AIS-000000") {
+							var result_array = data.RECORD;
+							if(result_array.length == 0) {
+								mui('#pullrefresh').pullRefresh().disablePullupToRefresh();
+								if(currpage == 1) {
+									$('#in-list-content').append('<p style="text-align: center;color: #888888;margin-top: 20px;">---- 暂无数据 ----</p>');
+								} else {
+									mui.toast("已经到底了");
+								}
+							} else {
+								console.log(JSON.stringify(result_array));
+								mui('#pullrefresh').pullRefresh().refresh(true);
+								for(var i = 0; i < result_array.length; i++) {
+									var status_msg = "";
+									if(result_array[i].STATUS === "1") {
+										status_msg = "未受理";
+									} else if(result_array[i].STATUS === "2") {
+										status_msg = "已受理";
+									} else if(result_array[i].STATUS === "3") {
+										status_msg = "不受理";
+									} else if(result_array[i].STATUS === "5") {
+										status_msg = "已出证";
+									}
+									var quarantine_person_msg = result_array[i].OPERATOR == "" ? "" : '<li>检疫人员:<span>' + result_array[i].OPERATOR + '</span></li>';
+									result = '<div class="in-list" onclick="toQuarantineDetail(\'' + result_array[i].ID + '\')">'
+											+ '<p class="title">申报编号：' + result_array[i].CODE + '</p>'
+											+ '<ul>'
+											+ '<li>货&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;主:<span>' + result_array[i].CONSIGNEE + '</span></li>'
+											+ '<li>申报时间:<span>' + result_array[i].LEAVELTIME.substring(0, result_array[i].LEAVELTIME.length - 2) + '</span></li>'
+											+ quarantine_person_msg
+											+ '<li>状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态:<span class="status-' + result_array[i].STATUS + '">' + status_msg + '</span></li>'
+											+ '</ul></div>'
+									$('#in-list-content').append(result);
+								}
+							}
+						} else {
+							mui.toast("查询失败，请重试");
+						}
+					}, 
+					error: function(xhr, type, errorThrown) {
+						plus.nativeUI.closeWaiting();
+						mui.toast("查询失败");
+					}
+				});
+			}
+			
+			function toQuarantineDetail(targetId) {
+				mui.openWindow({
+					url: "quarantine-detail.html",
+					id: "quarantine-detail.html",
+					extras: {
+						"targetId": targetId
+					},
+					waiting: {
+						autoShow: true, //自动显示等待框，默认为true
+						title: '正在加载...', //等待对话框上显示的提示内容
+					}
+				});
+			}
+		</script> 
+	</body>
+
+</html>

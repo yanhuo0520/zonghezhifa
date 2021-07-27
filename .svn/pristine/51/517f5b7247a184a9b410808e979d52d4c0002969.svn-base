@@ -1,0 +1,747 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>检疫申报登记</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="../../css/mui.min.css" />
+		<link rel="stylesheet" href="../../css/mui.picker.css" />
+		<link rel="stylesheet" href="../../css/mui.dtpicker.css" />
+		<link rel="stylesheet" href="../../css/ajax-picker/ajax-picker.css">
+		<link rel="stylesheet" href="../../css/ajax-picker/ajax-picker-self.css">
+		<link rel="stylesheet" href="../css/generic.css" />
+		<link rel="stylesheet" href="../css/quarantine-common.css" />
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">检疫申报登记</h1>
+		</header>
+		<div class="mui-content">
+			<div class="mui-input-group">
+				<div class="mui-input-row f-row">
+					<label class="title-label-short">申报类型： </label>
+					<div class="mui-radio mui-left">
+						<input name="CTYPE" type="radio" value="DW" checked onclick="pre_initAniKindsSelection(0)" />
+						<label>产地检疫申报</label>
+					</div>
+					<div class="mui-radio mui-left">
+						<input name="CTYPE" type="radio" value="CP" onclick="pre_initAniKindsSelection(1)" />
+						<label>屠宰检疫申报</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="mui-input-group">
+				<div class="mui-input-row">
+					<label class="title-label-long">检疫申报单位/人：</label>
+					<input class="input-long" type="text" placeholder="请填写单位名称/个人姓名" id="qurarantine_CONSIGNEE" />
+				</div>
+				<div class="mui-input-row">
+					<label class="title-label-short">联系电话：</label>
+					<input type="number" placeholder="请填写联系电话" id="qurarantine_TELEPHONE" />
+				</div>
+				<div class="mui-input-row">
+					<label class="title-label-short">身份证号：</label>
+					<input type="text" placeholder="请填写身份证号" id="qurarantine_IDNUM" />
+				</div>
+			</div>
+
+			<div class="mui-input-group">
+				<div class="mui-input-row f-row" id="aniKinds_title_0">
+					<label class="title-label-long">动物/产品种类： </label>
+					<div class="mui-radio mui-left">
+						<input name="SIGN" type="radio" checked value="0" onclick="initAniKindsSelection(0)" />
+						<label>动物</label>
+					</div>
+					<div class="mui-radio mui-left">
+						<input name="SIGN" type="radio" value="1" onclick="initAniKindsSelection(1)" />
+						<label>动物产品</label>
+					</div>
+				</div>
+				<div class="mui-input-row mui-select">
+					<label class="title-label-short" id="aniKinds_title_1"></label>
+					<input type="text" id="qurarantine_aniKinds" class="mui-navigate-right" readonly="readonly" placeholder="请选择种类" />
+					<input type="hidden" id="qurarantine_SORT" />
+					<input type="hidden" id="qurarantine_KINDCODE" />
+					<input type="hidden" id="qurarantine_KINDSUMMARY" />
+				</div>
+				<div class="mui-input-row mui-hide" id="qurarantine_kind_outlook">
+					<label class="title-label-short">其他种类：</label>
+					<input id="qurarantine_kind_extra" type="text" placeholder="请补充种类">
+				</div>
+				<div class="mui-input-row">
+					<label class="title-label-short">数&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;量：</label>
+					<input type="number" placeholder="请填写申报数量" id="qurarantine_NUM" />
+				</div>
+				<div class="mui-input-row mui-select">
+					<label>单&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;位：</label>
+					<input type="text" id="qurarantine_UNIT" class="mui-navigate-right" readonly="readonly" placeholder="请选择" />
+				</div>
+				<div class="mui-input-row mui-select">
+					<label class="title-label-short">用&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;途：</label>
+					<input type="text" id="qurarantine_PURPOSE" class="mui-navigate-right" readonly="readonly" placeholder="请选择" />
+				</div>
+			</div>
+
+			<div class="mui-input-group">
+				<div class="mui-input-row mui-select">
+					<label class="title-label-short">启运地点：</label>
+					<input type="text" id="qurarantine_area_0" class="mui-navigate-right" readonly="readonly" placeholder="请选择" />
+					<!-- 启运地区划码 -->
+					<input type="hidden" id="qurarantine_STARTINGPOINT" />
+					<!-- 启运地区 -->
+					<input type="hidden" id="qurarantine_LEAVELOCAL" />
+					<input type="hidden" id="qurarantine_areaType_leave" />
+					<input type="hidden" id="qurarantine_SOURCE" />
+				</div>
+				<div class="mui-input-row">
+					<label class="title-label-short"></label>
+					<input type="text" readonly id="areaType_leave_discr" />
+				</div>
+				<div class="mui-input-row mui-hide" id="areaType_leave_outlook">
+					<label class="title-label-long" id="areaType_leave_title">地址：</label>
+					<input class="input-long" id="areaType_leave_content" type="text" placeholder="请填写具体地址">
+				</div>
+				<div class="mui-input-row">
+					<label class="title-label-short">启运时间：</label>
+					<input type="text" id="qurarantine_LEAVELTIME" class="mui-navigate-right" readonly placeholder="请选择" />
+				</div>
+				<div class="mui-input-row mui-select">
+					<label class="title-label-short">到达地点：</label>
+					<input type="text" id="qurarantine_area_1" class="mui-navigate-right" readonly placeholder="请选择" />
+					<!-- 到达地区划码 -->
+					<input type="hidden" id="qurarantine_ENDINGPOINT" />
+					<!-- 到达地区 -->
+					<input type="hidden" id="qurarantine_ARRIVALLOCAL" />
+					<input type="hidden" id="qurarantine_areaType_arrive" />
+				</div>
+				<div class="mui-input-row">
+					<label class="title-label-short"></label>
+					<input type="text" readonly id="areaType_arrive_discr" />
+				</div>
+				<div class="mui-input-row mui-hide" id="areaType_arrive_outlook">
+					<label class="title-label-long" id="areaType_arrive_title">地址：</label>
+					<input class="input-long" type="text" id="areaType_arrive_content" placeholder="请填写具体地址">
+				</div>
+				<div class="mui-input-row mui-select">
+					<label class="title-label-short">动物来源：</label>
+					<input type="text" id="qurarantine_ANIMALSOURCE" class="mui-navigate-right" readonly="readonly" placeholder="请选择" />
+				</div>
+				<div class="mui-input-row">
+					<label class="title-label-short">申报人签章：</label>
+					<input type="text" placeholder="" id="qurarantine_INSPUSERSIGN" />
+				</div>
+			</div>
+			<div class="mui-btn mui-btn-primary big-commit-btn" onclick="submit();">保存</div>
+		</div>
+
+		<div id="container_aniKinds"></div>
+		<div id="container_UNIT"></div>
+		<div id="container_PURPOSE"></div>
+		<div id="container_area_0"></div>
+		<div id="container_area_1"></div>
+		<div id="container_ANIMALSOURCE"></div>
+
+		<script type="text/javascript" src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/mui.picker.min.js"></script>
+		<script type="text/javascript" src="../../js/mui.dtpicker.js"></script>
+		<script type="text/javascript" src="../../js/jquery-1.12.4.min.js"></script>
+		<script type="text/javascript" src="../../js/ajax-picker/ajax-picker.min.js"></script>
+		<script type="text/javascript" src="../js/content.js"></script>
+		<script type="text/javascript" src="../js/constant.js"></script>
+		<script type="text/javascript" src="js/quarantine-data.js"></script>
+		<script type="text/javascript">
+			var kind_extra_flag = false;
+			var json_kinds = [];
+			var ani_kind_level_first = [];
+			var ani_product_level_first = [];
+
+			var json_all_area = [];
+			var json_province = [];
+			
+			var leave_type = "";
+			var arrive_type = "";
+
+			mui.plusReady(function() {
+				var deviceWidth = document.documentElement.clientWidth;
+				if (deviceWidth > 415) deviceWidth = 420;
+				document.documentElement.style.fontSize = deviceWidth / 7.2 + 'px';
+
+				/** ---------------------- 单位 ---------------------- **/
+				var unitPicker = new AjaxPicker({
+					title: "单位选择", //选择器标题
+					tipText: ["请选择"], // 选择器提示语（可以一个也可以多个，对应每一栏的选择提示语）
+					input: "qurarantine_UNIT", // 点击触发选择器的input的id
+					container: "container_UNIT", // 选择器的容器的id
+					renderArr: [ // 渲染函数数组，第一个函数对应第一个列表，以此类推，该数组中的函数数量和列表的数量一致
+						function() {
+							unitPicker.render(json_unit);
+						}
+					],
+					success: function(arr) {
+						// 用户选择完毕后调用，返回结果数组
+						mui("#qurarantine_UNIT")[0].value = arr[0].value;
+					}
+				});
+
+				/** ---------------------- 用途 ---------------------- **/
+				var purposePicker = new AjaxPicker({
+					title: "用途选择", //选择器标题
+					tipText: ["请选择"], // 选择器提示语（可以一个也可以多个，对应每一栏的选择提示语）
+					input: "qurarantine_PURPOSE", // 点击触发选择器的input的id
+					container: "container_PURPOSE", // 选择器的容器的id
+					renderArr: [ // 渲染函数数组，第一个函数对应第一个列表，以此类推，该数组中的函数数量和列表的数量一致
+						function() {
+							document.activeElement.blur(); // 关闭手机软键盘
+							purposePicker.render(json_purpose);
+						}
+					],
+					success: function(arr) {
+						// 用户选择完毕后调用，返回结果数组
+						mui("#qurarantine_PURPOSE")[0].value = arr[0].value;
+					}
+				});
+
+				/** ---------------------- 启运时间 ---------------------- **/
+				var qurarantineDatePicker = new mui.DtPicker({
+					type: "datetime", //设置日历初始视图模式 
+					beginDate: new Date(1999, 12, 01), // 设置开始日期 
+					endDate: new Date(2100, 11, 31), // 设置结束日期 
+					labels: ['年', '月', '日', '时', '分', '秒'] // 设置默认标签区域提示语
+				})
+				var qurarantineDate = document.getElementById('qurarantine_LEAVELTIME');
+				qurarantineDate.addEventListener('tap', function(event) {
+					document.activeElement.blur(); // 关闭手机软键盘
+					qurarantineDatePicker.show(function(items) {
+					//	console.log(JSON.stringify(items));
+						qurarantineDate.value = items.value + ":00";
+					});
+				}, false);
+
+				/** ---------------------- 动物来源 ---------------------- **/
+				var animalSourcePicker = new AjaxPicker({
+					title: "动物来源选择", // 选择器标题
+					tipText: ["请选择"], // 选择器提示语（可以一个也可以多个，对应每一栏的选择提示语）
+					input: "qurarantine_ANIMALSOURCE", // 点击触发选择器的input的id
+					container: "container_ANIMALSOURCE", // 选择器的容器的id
+					renderArr: [ // 渲染函数数组，第一个函数对应第一个列表，以此类推，该数组中的函数数量和列表的数量一致
+						function() {
+							document.activeElement.blur(); // 关闭手机软键盘
+							animalSourcePicker.render(json_animal_source);
+						}
+					],
+					success: function(arr) {
+						// 用户选择完毕后调用，返回结果数组
+						mui("#qurarantine_ANIMALSOURCE")[0].value = arr[0].value;
+					}
+				});
+
+				plus.nativeUI.showWaiting("数据加载中……");
+				/** ---------------------- 动物种类 ---------------------- **/
+				mui.ajax(Constant.getConstant("POST_ALL_KINDS"), {
+					dataType: 'json', // 服务器返回json格式数据
+					type: 'post', // HTTP请求类型
+					timeout: 10000, // 超时时间设置为10秒；
+					success: function(data) {
+						if (data.AIS_STATUS && data.AIS_STATUS == "AIS-000000") {
+							json_kinds = JSON.parse(data.RECORD);
+							for (var i = 0; i < json_kinds.length; i++) {
+								if (json_kinds[i].fenlei == "1" && json_kinds[i].psort == "-1") {
+									var item = {};
+									item.id = json_kinds[i].code;
+									item.value = json_kinds[i].sort;
+									ani_kind_level_first.push(item);
+								}
+								if (json_kinds[i].fenlei == "3" && json_kinds[i].psort == "-1") {
+									var item = {};
+									item.id = json_kinds[i].code;
+									item.value = json_kinds[i].sort;
+									ani_product_level_first.push(item);
+								}
+							}
+						} else {
+							plus.nativeUI.closeWaiting();
+							mui.toast("动物/产品种类数据加载失败： " + data.SYNC_CAUSE);
+						}
+
+					},
+					error: function(xhr, type, errorThrown) {
+						plus.nativeUI.closeWaiting();
+						mui.toast("查询失败");
+					}
+				});
+				initAniKindsSelection(0);
+
+				/** ---------------------- 行政区域 ---------------------- **/
+				mui.ajax(Constant.getConstant("POST_ALL_AREA"), {
+					dataType: 'json', // 服务器返回json格式数据
+					type: 'post', // HTTP请求类型
+					timeout: 10000, // 超时时间设置为10秒；
+					success: function(result) {
+						if (result.SYNC_DATA) {
+							var data = JSON.parse(result.SYNC_DATA);
+							json_all_area = data.filter(function(val) {
+								return !!val[2];
+							}).map(function(val) {
+								var item = {
+									id: val[0],
+									value: val[1]
+								};
+								var parent = val[2];
+								if (parent !== "0") {
+									item.parent = val[2];
+								}
+								return item;
+							});
+							json_province = json_all_area.filter(function(val) {
+								return !val.parent;
+							}).map(function(val) {
+								return val;
+							});
+						} else {
+							plus.nativeUI.closeWaiting();
+							mui.toast("区域数据加载失败");
+						}
+
+					},
+					error: function(xhr, type, errorThrown) {
+						plus.nativeUI.closeWaiting();
+						mui.toast("数据加载失败");
+					}
+				});
+				initAreaSelection_0();
+				initAreaSelection_1();
+
+				plus.nativeUI.closeWaiting();
+			});
+
+			function pre_initAniKindsSelection(target_pre) {
+				if (target_pre == 0) {
+					$("#aniKinds_title_0").show();
+					$("#aniKinds_title_1").html("");
+					mui("#qurarantine_SORT")[0].value = "";
+					mui("#qurarantine_KINDCODE")[0].value = "";
+					mui("#qurarantine_aniKinds")[0].value = "";
+					var value_SIGN = $("input[name='SIGN']:checked").val();
+					initAniKindsSelection(value_SIGN);
+				} else {
+					$("#aniKinds_title_0").hide();
+					$("#aniKinds_title_1").html("动物/产品种类");
+					initAniKindsSelection(2);
+				}
+			}
+
+			/**
+			 * 初始化动物选择功能
+			 * @param {Object} target_ani 动物选择功能标识： 0:动物  1:动物产品  2:只显示动物产品一级
+			 */
+			function initAniKindsSelection(target_ani) {
+				document.activeElement.blur(); // 关闭手机软键盘
+				mui("#qurarantine_SORT")[0].value = "";
+				mui("#qurarantine_KINDCODE")[0].value = "";
+				mui("#qurarantine_aniKinds")[0].value = "";
+				$("#qurarantine_kind_outlook").hide();
+				kind_extra_flag = false;
+				if (target_ani == 0) {
+					var aniKindsPicker_0 = new AjaxPicker({
+						title: "动物种类选择", // 选择器标题
+						tipText: ["请选择", "请选择"], // 选择器提示语（可以一个也可以多个，对应每一栏的选择提示语）
+						input: "qurarantine_aniKinds", // 点击触发选择器的input的id
+						container: "container_aniKinds", // 选择器的容器的id
+						renderArr: [ //渲染函数数组，第一个函数对应第一个列表，以此类推，该数组中的函数数量和列表的数量一致
+							function() {
+								aniKindsPicker_0.render(ani_kind_level_first);
+							},
+							function() {
+								aniKinds_name1 = aniKindsPicker_0.result1.value;
+								var ani_kind_level_second = [];
+								for (var i = 0; i < json_kinds.length; i++) {
+									if (json_kinds[i].fenlei == "1" && json_kinds[i].psort == aniKinds_name1) {
+										var item = {};
+										item.id = json_kinds[i].code;
+										item.value = json_kinds[i].sort;
+										ani_kind_level_second.push(item);
+									}
+								}
+								aniKindsPicker_0.render(ani_kind_level_second);
+							}
+						],
+						success: function(arr) {
+							// 用户选择完毕后调用，返回结果数组
+							mui("#qurarantine_SORT")[0].value = arr[1].value;
+							mui("#qurarantine_KINDCODE")[0].value = arr[1].id;
+							mui("#qurarantine_aniKinds")[0].value = arr[0].value + " --\> " + arr[1].value;
+							mui("#qurarantine_KINDSUMMARY")[0].value = "|" + arr[0].value + "|" + arr[1].value + "|";
+							console.log("0:  -- " + mui("#qurarantine_KINDSUMMARY")[0].value);
+						}
+					});
+				} else if (target_ani == 1) {
+					var aniKindsPicker_1 = new AjaxPicker({
+						title: "动物产品种类选择", //选择器标题
+						tipText: ["请选择", "请选择", "请选择"], //选择器提示语（可以一个也可以多个，对应每一栏的选择提示语）
+						input: "qurarantine_aniKinds", //点击触发选择器的input的id
+						container: "container_aniKinds", //选择器的容器的id
+						renderArr: [ //渲染函数数组，第一个函数对应第一个列表，以此类推，该数组中的函数数量和列表的数量一致
+							function() {
+								aniKindsPicker_1.render(ani_product_level_first);
+							},
+							function() {
+								aniKinds_name1 = aniKindsPicker_1.result1.value;
+								var ani_product_level_second = [];
+								for (var i = 0; i < json_kinds.length; i++) {
+									if (json_kinds[i].fenlei == "3" && json_kinds[i].psort == aniKinds_name1) {
+										var item = {};
+										item.id = json_kinds[i].code;
+										item.value = json_kinds[i].sort;
+										ani_product_level_second.push(item);
+									}
+								}
+								aniKindsPicker_1.render(ani_product_level_second);
+							},
+							function() {
+								aniKinds_name2 = aniKindsPicker_1.result2.value;
+								var ani_product_level_three = [];
+								for (var i = 0; i < json_kinds.length; i++) {
+									if (json_kinds[i].fenlei == "3" && json_kinds[i].psort == aniKinds_name2) {
+										var item = {};
+										item.id = json_kinds[i].code;
+										item.value = json_kinds[i].sort;
+										ani_product_level_three.push(item);
+									}
+								}
+								if (ani_product_level_three.length <= 0) {
+									ani_product_level_three = [{
+										"id": "",
+										"value": "暂无数据"
+									}];
+								}
+								aniKindsPicker_1.render(ani_product_level_three);
+							}
+						],
+						success: function(arr) {
+							// 用户选择完毕后调用，返回结果数组
+							mui("#qurarantine_SORT")[0].value = arr[2].value == "暂无数据" ? arr[1].value : arr[2].value;
+							mui("#qurarantine_KINDCODE")[0].value = arr[2].value == "暂无数据" ? arr[1].id : arr[2].id;
+							var arr_3_value = arr[2].value == "暂无数据" ? "" : " --\> " + arr[2].value;
+							var arr_3_kindSummary = arr[2].value == "暂无数据" ? "" : "|" + arr[2].value + "|";
+							mui("#qurarantine_aniKinds")[0].value = arr[0].value + " --\> " + arr[1].value + arr_3_value;
+							mui("#qurarantine_KINDSUMMARY")[0].value = "|" + arr[0].value + "|" + arr[1].value + arr_3_kindSummary;
+							if (arr[2].value == "其他") {
+								kind_extra_flag = true;
+								$("#qurarantine_kind_outlook").show();
+							} else {
+								kind_extra_flag = false;
+								$("#qurarantine_kind_outlook").hide();
+							}
+							console.log("1:  -- " + mui("#qurarantine_KINDSUMMARY")[0].value);
+						}
+					});
+				} else {
+					var aniKindsPicker_2 = new AjaxPicker({
+						title: "动物种类选择", //选择器标题
+						tipText: ["请选择"], //选择器提示语（可以一个也可以多个，对应每一栏的选择提示语）
+						input: "qurarantine_aniKinds", //点击触发选择器的input的id
+						container: "container_aniKinds", //选择器的容器的id
+						renderArr: [ //渲染函数数组，第一个函数对应第一个列表，以此类推，该数组中的函数数量和列表的数量一致
+							function() {
+								aniKindsPicker_2.render(ani_product_level_first);
+							}
+						],
+						success: function(arr) {
+							// 用户选择完毕后调用，返回结果数组
+							mui("#qurarantine_SORT")[0].value = arr[0].value;
+							mui("#qurarantine_KINDCODE")[0].value = arr[0].id;
+							mui("#qurarantine_aniKinds")[0].value = arr[0].value;
+							mui("#qurarantine_KINDSUMMARY")[0].value = "|" + arr[0].value + "|";
+							console.log("2:  -- " + mui("#qurarantine_KINDSUMMARY")[0].value);
+						}
+					});
+				}
+			}
+
+			/**
+			 * 地区选择
+			 */
+			function initAreaSelection_0() {
+				document.activeElement.blur(); // 关闭手机软键盘
+				var json_target_province = [{
+					"id": "2c90813c0a252d31010a252e4ae70001",
+					"value": "河南省"
+				}];
+				var areaPicker_0 = new AjaxPicker({
+					title: "启运地区选择", // 选择器标题
+					tipText: ["请选择", "请选择", "请选择", "请选择"], // 选择器提示语（可以一个也可以多个，对应每一栏的选择提示语）
+					input: "qurarantine_area_0", // 点击触发选择器的input的id
+					container: "container_area_0", // 选择器的容器的id
+					renderArr: [ // 渲染函数数组，第一个函数对应第一个列表，以此类推，该数组中的函数数量和列表的数量一致
+						function() {
+							areaPicker_0.render(json_target_province);
+						},
+						function() {
+							var province_id = areaPicker_0.result1.id;
+							var json_city = json_all_area.filter(function(val) {
+								return val.parent == province_id;
+							}).map(function(val) {
+								return val;
+							});
+							areaPicker_0.render(json_city);
+						},
+						function() {
+							var city_id = areaPicker_0.result2.id;
+							var json_county = json_all_area.filter(function(val) {
+								return val.parent == city_id;
+							}).map(function(val) {
+								return val;
+							});
+							areaPicker_0.render(json_county);
+						},
+						function() {
+							areaPicker_0.render(json_areaType_leave);
+						}
+					],
+					success: function(arr) {
+						// 用户选择完毕后调用，返回结果数组
+						leave_type = arr[3].value;
+						mui("#qurarantine_STARTINGPOINT")[0].value = arr[0].id + "," + arr[1].id + "," + arr[2].id;
+						mui("#qurarantine_areaType_leave")[0].value = arr[3].id;
+						mui("#qurarantine_LEAVELOCAL")[0].value = arr[0].value + "," + arr[1].value + "," + arr[2].value + ",,,";
+						mui("#qurarantine_SOURCE")[0].value = arr[0].value + arr[1].value + arr[2].value;
+						mui("#qurarantine_area_0")[0].value = arr[0].value + "," + arr[1].value + "," + arr[2].value;
+						mui("#areaType_leave_discr")[0].value = arr[3].value;
+						mui("#areaType_leave_title")[0].innerHTML = arr[3].value + "地址："
+						$("#areaType_leave_outlook").show();
+					}
+				});
+			}
+
+			function initAreaSelection_1() {
+				document.activeElement.blur(); // 关闭手机软键盘
+				var areaPicker_1 = new AjaxPicker({
+					title: "到达地区选择", //选择器标题
+					tipText: ["请选择", "请选择", "请选择", "请选择"], // 选择器提示语（可以一个也可以多个，对应每一栏的选择提示语）
+					input: "qurarantine_area_1", // 点击触发选择器的input的id
+					container: "container_area_1", // 选择器的容器的id
+					renderArr: [ // 渲染函数数组，第一个函数对应第一个列表，以此类推，该数组中的函数数量和列表的数量一致
+						function() {
+							areaPicker_1.render(json_province);
+						},
+						function() {
+							var province_id = areaPicker_1.result1.id;
+							var json_city = json_all_area.filter(function(val) {
+								return val.parent == province_id;
+							}).map(function(val) {
+								return val;
+							});
+							areaPicker_1.render(json_city);
+						},
+						function() {
+							var city_id = areaPicker_1.result2.id;
+							var json_county = json_all_area.filter(function(val) {
+								return val.parent == city_id;
+							}).map(function(val) {
+								return val;
+							});
+							if (json_county.length <= 0) {
+								json_county = [{
+									"id": "",
+									"value": "无数据"
+								}];
+							}
+							areaPicker_1.render(json_county);
+						},
+						function() {
+							areaPicker_1.render(json_areaType_arrive);
+						}
+					],
+					success: function(arr) {
+						// 用户选择完毕后调用，返回结果数组1
+						arrive_type = arr[3].value;
+						var point_str = arr[2].value == "无数据" ? "" : "," + arr[2].id;
+						mui("#qurarantine_ENDINGPOINT")[0].value = arr[0].id + "," + arr[1].id + point_str;
+						mui("#qurarantine_areaType_arrive")[0].value = arr[3].id;
+						var local_str = arr[2].value == "无数据" ? "" : "," + arr[2].value;
+						mui("#qurarantine_ARRIVALLOCAL")[0].value = arr[0].value + "," + arr[1].value + local_str + ",,,";
+						mui("#qurarantine_area_1")[0].value = arr[0].value + "," + arr[1].value + local_str;
+						mui("#areaType_arrive_discr")[0].value = arr[3].value;
+						mui("#areaType_arrive_title")[0].innerHTML = arr[3].value + "地址："
+						$("#areaType_arrive_outlook").show();
+					}
+				});
+			}
+
+			function submit() {
+				var ANIMALSOURCE = mui("#qurarantine_ANIMALSOURCE")[0].value;
+				var AREATYPE = mui("#qurarantine_areaType_leave")[0].value + mui("#qurarantine_areaType_arrive")[0].value;
+				var ARRIVALLOCAL = mui("#qurarantine_ARRIVALLOCAL")[0].value;
+				var CONSIGNEE = mui("#qurarantine_CONSIGNEE")[0].value;
+				var CTYPE = $("input[name='CTYPE']:checked").val();
+				var ENDINGPOINT = mui("#qurarantine_ENDINGPOINT")[0].value;
+				var IDNUM = mui("#qurarantine_IDNUM")[0].value;
+				var INSPECTOR = "";
+				var INSPUSERSIGN = mui("#qurarantine_INSPUSERSIGN")[0].value;
+				var KINDCODE = mui("#qurarantine_KINDCODE")[0].value;
+				var KINDSUMMARY = mui("#qurarantine_KINDSUMMARY")[0].value;
+				var SORT = mui("#qurarantine_SORT")[0].value;
+				var qurarantineKindExtra = mui("#qurarantine_kind_extra")[0].value;
+				if (kind_extra_flag) {
+					KINDSUMMARY = KINDSUMMARY + "|" + qurarantineKindExtra + "|"
+					SORT = qurarantineKindExtra;
+				}
+				var LEAVELOCAL = mui("#qurarantine_LEAVELOCAL")[0].value;
+				var LEAVELTIME = mui("#qurarantine_LEAVELTIME")[0].value;
+				var NUM = mui("#qurarantine_NUM")[0].value;
+				var PURPOSE = mui("#qurarantine_PURPOSE")[0].value;
+				var SIGN = $("input[name='SIGN']:checked").val();
+				var SOURCE = mui("#qurarantine_SOURCE")[0].value;
+				var areaTypeLeaveContent = mui("#areaType_leave_content")[0].value;
+				var areaTypeArriveContent = mui("#areaType_arrive_content")[0].value;
+				var STARTINGPOINT = mui("#qurarantine_STARTINGPOINT")[0].value;
+				var TELEPHONE = mui("#qurarantine_TELEPHONE")[0].value;
+				var UNIT = mui("#qurarantine_UNIT")[0].value;
+
+				var valid_msg = "";
+				if (!CONSIGNEE || CONSIGNEE == null || CONSIGNEE == undefined) {
+					if (valid_msg == "") {
+						valid_msg = "检疫申报单位/人 不能为空"
+					}
+				}
+				if (!TELEPHONE || TELEPHONE == null || TELEPHONE == undefined) {
+					if (valid_msg == "") {
+						valid_msg = "联系电话 不能为空"
+					}
+				}
+				if (!IDNUM || IDNUM == null || IDNUM == undefined) {
+					if (valid_msg == "") {
+						valid_msg = "身份证号 不能为空"
+					}
+				} else {
+					var reg = /^[1-9]\d{5}(18|19|20)\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/;
+					if (reg.test(IDNUM) === false) {
+						if (valid_msg == "") {
+							valid_msg = "身份证输入不合法"
+						}
+					}
+				}
+				if (kind_extra_flag && (!qurarantineKindExtra || qurarantineKindExtra == null || qurarantineKindExtra == undefined)) {
+					if (valid_msg == "") {
+						valid_msg = "请填写其他种类"
+					}
+				}
+				if (!NUM || NUM == null || NUM == undefined) {
+					if (valid_msg == "") {
+						valid_msg = "申报数量 不能为空"
+					}
+				}
+				if (!UNIT || UNIT == null || UNIT == undefined) {
+					if (valid_msg == "") {
+						valid_msg = "数量单位 不能为空"
+					}
+				}
+				if (!PURPOSE || PURPOSE == null || PURPOSE == undefined) {
+					if (valid_msg == "") {
+						valid_msg = "动物用途 不能为空"
+					}
+				}
+				if (!STARTINGPOINT || STARTINGPOINT == null || STARTINGPOINT == undefined) {
+					if (valid_msg == "") {
+						valid_msg = "启运地点 不能为空"
+					}
+				}
+				if (!areaTypeLeaveContent || areaTypeLeaveContent == null || areaTypeLeaveContent == undefined) {
+					if (valid_msg == "") {
+						valid_msg = "请填写启运详细地址"
+					}
+				}
+				if (!LEAVELTIME || LEAVELTIME == null || LEAVELTIME == undefined) {
+					if (valid_msg == "") {
+						valid_msg = "启运时间 不能为空"
+					}
+				}
+				if (!ENDINGPOINT || ENDINGPOINT == null || ENDINGPOINT == undefined) {
+					if (valid_msg == "") {
+						valid_msg = "到达地点 不能为空"
+					}
+				}
+				if (!ANIMALSOURCE || ANIMALSOURCE == null || ANIMALSOURCE == undefined) {
+					if (valid_msg == "") {
+						valid_msg = "动物来源 不能为空"
+					}
+				}
+				if (!INSPUSERSIGN || INSPUSERSIGN == null || INSPUSERSIGN == undefined) {
+					if (valid_msg == "") {
+						valid_msg = "申报人签章 不能为空"
+					}
+				}
+
+				if (valid_msg != "") {
+					mui.toast(valid_msg);
+				} else {
+					var json_syncTransferData = [{
+						"ANIMALSOURCE": ANIMALSOURCE,
+						"AREATYPE": AREATYPE,
+						"ARRIVALLOCAL": ARRIVALLOCAL + areaTypeLeaveContent + arrive_type,
+						"CONSIGNEE": CONSIGNEE,
+						"CTYPE": CTYPE,
+						"ENDINGPOINT": ENDINGPOINT,
+						"IDNUM": IDNUM,
+						"INSPECTOR": INSPECTOR,
+						"INSPUSERSIGN": INSPUSERSIGN,
+						"KINDCODE": KINDCODE,
+						"KINDSUMMARY": KINDSUMMARY,
+						"LEAVELOCAL": LEAVELOCAL + areaTypeLeaveContent,
+						"LEAVELTIME": LEAVELTIME,
+						"NUM": NUM,
+						"PURPOSE": PURPOSE,
+						"QUARPHONE": "",
+						"SIGN": SIGN,
+						"SORT": SORT,
+						"SOURCE": SOURCE + areaTypeLeaveContent + leave_type,
+						"STARTINGPOINT": STARTINGPOINT,
+						"STATUS": "1",
+						"SYNC_ACT": "AIS-2001000100000001",
+						"SYNC_DATA_TYPE": "002001",
+						"SYNC_USR": "admin",
+						"SYNC_VER": "APP.1.01",
+						"TELEPHONE": TELEPHONE,
+						"TERMINALTYPE": "133000001",
+						"TQUARLOCAL": "",
+						"UNIT": UNIT,
+						"USERNAME": "admin",
+						"WILDANIMALNO": "",
+						"WILDCATCHNO": "",
+						"_GATEWAY_NAME": "HA_NETWORK"
+					}];
+				//	console.log(JSON.stringify(json_syncTransferData));
+					mui.ajax(QUARANTINE_MAIN_URL, {
+						data: {
+							syncTransferData: JSON.stringify(json_syncTransferData)
+						},
+						dataType: 'json', // 服务器返回json格式数据
+						type: 'post', // HTTP请求类型
+						timeout: 10000, // 超时时间设置为10秒；
+						success: function(result) {
+				//			console.log(JSON.stringify(result));
+							if (result.AIS_STATUS === "AIS-000000") {
+								mui.alert('申报编号： ' + result.QUARDECL_CODE, '检疫申报登记成功', function() {
+									var ws = plus.webview.currentWebview();
+									plus.webview.close(ws, "fade-out", 300); // 关闭窗口
+								});
+							} else {
+								// {"SYNC_CAUSE":"数据包为空","SYNC_EXCEPTION":"AIS-920015","SYNC_NO":"","SYNC_STATUS":"100000"}  -----  表示前台的请求数据并没有发往后台
+								// {"AIS_RST":"AIS-00000001","AIS_STATUS":"AIS-000001"}  -----  已经报错(此异常只能在后台查看)
+								var error_msg = !result.SYNC_CAUSE ? "" : result.SYNC_CAUSE;
+								mui.toast("检疫申报登记失败！ " + error_msg);
+							}
+						},
+						error: function(xhr, type, errorThrown) {
+							plus.nativeUI.closeWaiting();
+							mui.toast("检疫申报登记失败！");
+						}
+					});
+				}
+			}
+		</script>
+	</body>
+
+</html>

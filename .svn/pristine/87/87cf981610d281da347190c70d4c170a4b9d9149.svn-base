@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>无害化处理</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="../../css/mui.css"/>
+		<link rel="stylesheet" href="../css/generic.css"/>
+		<style>
+			.mui-table-view { margin-top: 12px; }
+			.mui-media-object { width: 0.3975rem; height: 0.3975rem !important; }
+			.mui-media-body { font-size: 0.2462rem; margin-top: 2px; padding-left: 5px !important; }
+			.offline-color { color: #BDBDC6 !important; }
+		</style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title" id="com-title">视频监管</h1>
+		</header>
+		<div class="mui-content">
+			<ul class="mui-table-view mui-table-view-chevron">
+				<li class="mui-table-view-cell mui-media">
+					<a class="mui-navigate-right" onclick="toCameraVideoDetail(1)">
+						<img class="mui-media-object mui-pull-left" src="images/device-online.png">
+						<div class="mui-media-body">豫UV4979 — 002</div>
+					</a>
+				</li>
+			</ul>
+			<ul class="mui-table-view mui-table-view-chevron">
+				<li class="mui-table-view-cell mui-media">
+					<a class="mui-navigate-right" onclick="toCameraVideoDetail(0)">
+						<img class="mui-media-object mui-pull-left" src="images/device-offline.png">
+						<div class="mui-media-body offline-color">豫UC4566 — 004</div>
+					</a>
+				</li>
+			</ul>
+		</div>
+		<script type="text/javascript" src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/jquery-1.12.4.min.js"></script>
+		<script type="text/javascript" src="../js/content.js"></script>
+		<script type="text/javascript" src="js/harmless-data.js"></script>
+		<script type="text/javascript">
+			mui.init({});
+			mui.plusReady(function() {
+				initSettings(); 		// 初始化设置字体大小
+				
+				var self = plus.webview.currentWebview();
+				var comTitle = self.comTitle;
+			//	document.getElementById("com-title").innerHTML = comTitle;
+			});
+			
+			function toCameraVideoDetail(videoFlag) {
+				if(videoFlag == 1) {
+					mui.openWindow({
+						url: "camera-video-stair-detail.html",
+						id: "camera-video-stair-detail.html",
+						waiting: {
+							autoShow: true, //自动显示等待框，默认为true
+							title: '正在加载...', //等待对话框上显示的提示内容
+						}
+					});
+				} else {
+					mui.toast("车辆监控设备不在线！")
+				}
+			}
+		</script>
+	</body>
+
+</html>

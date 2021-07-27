@@ -1,0 +1,182 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>editAlarmLogList</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="../../../../css/mui.min.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/header.css">
+		<style>
+			.mui-content { background-color: #FFFFFF; font-size: 14px ; }
+			
+			.mui-input-row .label-2 {
+				width: 40% !important;
+				padding-right: 5px !important;
+			}
+			
+			.mui-input-row .label-2~input {
+				width: 60%;
+			}
+			
+			.mui-input-row .label-3 {
+				width: 46% !important;
+				padding-right: 5px !important;
+			}
+			
+			.mui-input-row .label-3~input {
+				width: 25%;
+				padding-right: 0px !important;
+				text-align: center;
+			}
+			
+			.mui-input-row .label-3~span {
+				width: 4%;
+				text-align: center;
+				display: inline-block;
+				height: 40px;
+				line-height: 40px;
+			}
+			
+			.mui-input-group:before { background-color: #FFFFFF !important;}
+			.mui-input-group:after { background-color: #FFFFFF !important;}
+			.mui-input-group .address-line { height: 120px; }
+			.mui-input-group .address-line:after { background-color: #FFFFFF !important; }
+			.mui-input-row input, .mui-input-row textarea { font-size: 14px; }
+			.mui-button-row button { width: 65%; height: 45px; background-color: #2492FC; border: 1px solid #2492FC; margin-top: 100px; }
+		</style>
+	</head>
+		
+	<body>
+		<div id="wrap">
+			<header id="header" class="mui-bar mui-bar-nav">
+				<h1 class="mui-title">编辑告警记录</h1>
+				<a class="mui-action-back mui-icon mui-icon-arrowleft mui-pull-left" onclick=""></a>
+			</header>
+			<div class="mui-content">
+				<div class="mui-content-padded" style="margin: 5px;">
+					<form class="mui-input-group">
+						<div class="mui-input-row">
+							<label>车牌号：</label>
+							<input type="text" placeholder="请输入" id="alamlogInfo_platenumber">
+						</div>
+						<div class="mui-input-row">
+							<label>驾驶人：</label>
+							<input type="text" placeholder="请输入" id="alamlogInfo_driver">
+						</div>
+						<div class="mui-input-row">
+							<label>运输货物：</label>
+							<input type="text" placeholder="请输入" id="alamlogInfo_goods">
+						</div>
+						<div class="mui-input-row">
+							<label class="label-2">时速（Km/h）：</label>
+							<input type="number" placeholder="请输入" id="alamlogInfo_mph">
+						</div>
+						<div class="mui-input-row">
+							<label>报警类型：</label>
+							<input type="text" placeholder="请输入" id="alamlogInfo_type">
+						</div>
+						<div class="mui-input-row address-line">
+							<label>所在位置：</label>
+							<textarea type="text" placeholder="请输入" id="alamlogInfo_location"></textarea>
+						</div>
+						<div class="mui-button-row">
+							<button type="button" class="mui-btn mui-btn-primary" onclick="alamlogInfo()">确&nbsp;&nbsp;定</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript" src="../../../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/common.js"></script>
+		<script type="text/javascript">
+			mui.init({});
+			var alarmLogId = "";
+			mui.plusReady(function () {
+				var currentWebView = plus.webview.currentWebview();
+			//	console.log(JSON.stringify(currentWebView.alarmLogId));
+				mui.get(BASEURL + "alarmLog/edit/" + currentWebView.alarmLogId, {}, function(ret) {
+					if(ret.code == 0) {
+						var alarmLog = ret.rows[0];
+						alarmLogId = alarmLog.id;
+						mui("#alamlogInfo_platenumber")[0].value = alarmLog.platenumber;
+						mui("#alamlogInfo_driver")[0].value = alarmLog.driver;
+						mui("#alamlogInfo_goods")[0].value = alarmLog.goods;
+						mui("#alamlogInfo_mph")[0].value = alarmLog.mph;
+						mui("#alamlogInfo_type")[0].value = alarmLog.type;
+						mui("#alamlogInfo_location")[0].value = alarmLog.location;
+						
+					} else {
+						mui.toast(ret.msg);
+					}
+				});
+			});
+			
+			function alamlogInfo() {
+				var platenumber = mui("#alamlogInfo_platenumber")[0].value;
+				var driver = mui("#alamlogInfo_driver")[0].value;
+				var goods = mui("#alamlogInfo_goods")[0].value;
+				var mph = mui("#alamlogInfo_mph")[0].value;
+				var type = mui("#alamlogInfo_type")[0].value;
+				var location = mui("#alamlogInfo_location")[0].value;
+				
+				var valid_msg = "";
+				if(!platenumber || platenumber == null || platenumber == undefined) {
+					if(valid_msg == "") {
+						valid_msg = "车牌号不能为空"
+					}
+				}
+				if(!driver || driver == null || driver == undefined) {
+					if(valid_msg == "") {
+						valid_msg = "驾驶人不能为空"
+					}
+				}
+				if(!goods || goods == null || goods == undefined) {
+					if(valid_msg == "") {
+						valid_msg = "运输货物不能为空"
+					}
+				}
+				if(!mph || mph == null || mph == undefined) {
+					if(valid_msg == "") {
+						valid_msg = "时速不能为空"
+					}
+				}
+				if(!type || type == null || type == undefined) {
+					if(valid_msg == "") {
+						valid_msg = "报警类型不能为空"
+					}
+				}
+				if(!location || location == null || location == undefined) {
+					if(valid_msg == "") {
+						valid_msg = "所在位置不能为空"
+					}
+				}
+				if (valid_msg != "") {
+					mui.toast(valid_msg);
+				} else {
+					var editAlarmLogParam = {
+						id: alarmLogId,
+						platenumber: platenumber,
+						driver: driver,
+						goods: goods,
+						mph: mph,
+						type: type,
+						location: location
+					};
+					mui.post(BASEURL + "alarmLog/edit", editAlarmLogParam, function(ret) {
+						if(ret.code == 0) {
+							mui.toast("告警记录修改成功");
+							var targetWebView = plus.webview.getWebviewById("alarmLogList.html");
+							mui.fire(targetWebView, "reloadWebView", {});
+							closeWebView("editAlarmLogList.html");
+						} else {
+							mui.toast(ret.msg);
+						}
+					});
+				}
+			}
+		</script>
+	</body>
+
+</html>

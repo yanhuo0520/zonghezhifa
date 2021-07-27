@@ -1,0 +1,94 @@
+#search_area {
+	width: 0px;
+	height: 0px;
+	background: red;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+}
+
+.mui-popover {
+	z-index: 999;
+	border-radius: 3px !important;
+	background-color: #FFFFFF;
+	margin: auto;
+	overflow: hidden;
+	display: none;
+}
+
+.mui-popover .mui-popover-title {
+	width: 96%;
+	height: 45px;
+	line-height: 45px;
+	margin: 0px auto;
+	text-align: center;
+	font-size: 15px;
+	color: #555555;
+	font-weight: 650;
+}
+
+.mui-popover .mui-popover-content {
+	width: 96%;
+	height: auto;
+	margin: 0px auto;
+	font-size: 14px;
+	overflow: hidden;
+	overflow: auto;
+}
+
+.mui-input-group:before {
+	background-color: #FFFFFF !important;
+}
+
+.mui-input-group:after {
+	background-color: #FFFFFF !important;
+}
+
+.mui-input-group .address-line {
+	height: 120px;
+}
+
+.mui-input-group .address-line:after {
+	background-color: #FFFFFF !important;
+}
+
+.mui-input-row label {
+	width: 35% !important;
+	padding-right: 5px !important;
+	color: #787B7E;
+}
+
+.mui-input-row label~input {
+	width: 65%;
+	font-size: 14px;
+}
+
+.mui-input-row .label-2 {
+	width: 40% !important;
+	padding-right: 5px !important;
+	color: #787B7E;
+}
+
+.mui-input-row .label-2~input {
+	width: 60%;
+	font-size: 14px;
+}
+
+.mui-popover .mui-popover-footer {
+	width: 96%;
+	height: auto;
+	height: 55px;
+	line-height: 55px;
+	margin: 0px auto;
+}
+
+.mui-popover .mui-popover-footer button {
+	position: absolute;
+	right: 15px;
+	bottom: 15px;
+}
+
+/*移除底部或顶部三角,需要在删除此代码*/
+/* .mui-popover .mui-popover-arrow:after {
+				width: 0px;
+			} */

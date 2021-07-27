@@ -1,0 +1,144 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>无害化处理</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="../../css/mui.css"/>
+		<link rel="stylesheet" href="../css/generic.css"/>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title" id="com-title">进场登记<span id="toalNum">（共6条）</span></h1>
+		</header>
+		<div class="mui-content" id="pullrefresh">
+			<div class="record-list-content" id="record-list-content">
+				<div class="record-list">
+						<ul class="record-info">
+						<li>车&nbsp;&nbsp;牌&nbsp;&nbsp;号： <span>豫U08515</span></li>
+						<li>抽查结果： <span class="status-2">已抽查</span></li>
+						<li>病死猪数量： <span>3（头）</span></li> 
+						<li>病死猪重量： <span>600（KG）</span></li>
+						<li>运输人员： <span>李高峰</span></li>
+						<li>日期： <span>2019-08-24 17:22:31</span></li>
+						</ul>
+						<ul><li class="oper"><a href="javascript:;" class="status-3 issued-btn mui-col-sm-2 mui-col-xs-2" recordid='+result_array[i].id+' >查看详情&nbsp;&nbsp;&nbsp;&nbsp;抽查记录</a></li></ul>
+				</div>
+				<div class="record-list">
+						<ul class="record-info">
+						<li>车&nbsp;&nbsp;牌&nbsp;&nbsp;号： <span>豫U08516</span></li>
+						<li>抽查结果： <span class="status-1">未抽查</span></li>
+						<li>病死猪数量： <span>6（头）</span></li> 
+						<li>病死猪重量： <span>700（KG）</span></li>
+						<li>运输人员： <span>李顺明</span></li>
+						<li>日期： <span>2019-08-22 17:22:31</span></li>
+						</ul>
+						<ul><li class="oper"><a href="javascript:;" class="status-3 issued-btn mui-col-sm-2 mui-col-xs-2" recordid='+result_array[i].id+' >查看详情&nbsp;&nbsp;&nbsp;&nbsp;抽查记录</a></li></ul>
+				</div>
+				<div class="record-list">
+						<ul class="record-info">
+						<li>车&nbsp;&nbsp;牌&nbsp;&nbsp;号： <span>豫U08515</span></li>
+						<li>抽查结果： <span class="status-2">已抽查</span></li>
+						<li>病死猪数量： <span>3（头）</span></li> 
+						<li>病死猪重量： <span>600（KG）</span></li>
+						<li>运输人员： <span>李高峰</span></li>
+						<li>日期： <span>2019-08-24 17:22:31</span></li>
+						</ul>
+						<ul><li class="oper"><a href="javascript:;" class="status-3 issued-btn mui-col-sm-2 mui-col-xs-2" recordid='+result_array[i].id+' >查看详情&nbsp;&nbsp;&nbsp;&nbsp;抽查记录</a></li></ul>
+				</div>
+				<div class="record-list">
+						<ul class="record-info">
+						<li>车&nbsp;&nbsp;牌&nbsp;&nbsp;号： <span>豫U08516</span></li>
+						<li>抽查结果： <span class="status-1">未抽查</span></li>
+						<li>病死猪数量： <span>6（头）</span></li> 
+						<li>病死猪重量： <span>700（KG）</span></li>
+						<li>运输人员： <span>李顺明</span></li>
+						<li>日期： <span>2019-08-22 17:22:31</span></li>
+						</ul>
+						<ul><li class="oper"><a href="javascript:;" class="status-3 issued-btn mui-col-sm-2 mui-col-xs-2" recordid='+result_array[i].id+' >查看详情&nbsp;&nbsp;&nbsp;&nbsp;抽查记录</a></li></ul>
+				</div>
+				<div class="record-list">
+						<ul class="record-info">
+						<li>车&nbsp;&nbsp;牌&nbsp;&nbsp;号： <span>豫U08515</span></li>
+						<li>抽查结果： <span class="status-2">已抽查</span></li>
+						<li>病死猪数量： <span>3（头）</span></li> 
+						<li>病死猪重量： <span>600（KG）</span></li>
+						<li>运输人员： <span>李高峰</span></li>
+						<li>日期： <span>2019-08-24 17:22:31</span></li>
+						</ul>
+						<ul><li class="oper"><a href="javascript:;" class="status-3 issued-btn mui-col-sm-2 mui-col-xs-2" recordid='+result_array[i].id+' >查看详情&nbsp;&nbsp;&nbsp;&nbsp;抽查记录</a></li></ul>
+				</div>
+				<div class="record-list">
+						<ul class="record-info">
+						<li>车&nbsp;&nbsp;牌&nbsp;&nbsp;号： <span>豫U08516</span></li>
+						<li>抽查结果： <span class="status-1">未抽查</span></li>
+						<li>病死猪数量： <span>6（头）</span></li> 
+						<li>病死猪重量： <span>700（KG）</span></li>
+						<li>运输人员： <span>李顺明</span></li>
+						<li>日期： <span>2019-08-22 17:22:31</span></li>
+						</ul>
+						<ul><li class="oper"><a href="javascript:;" class="status-3 issued-btn mui-col-sm-2 mui-col-xs-2" recordid='+result_array[i].id+' >查看详情&nbsp;&nbsp;&nbsp;&nbsp;抽查记录</a></li></ul>
+				</div>
+			</div>
+			
+		</div>
+		<script type="text/javascript" src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/jquery-1.12.4.min.js"></script>
+		<script type="text/javascript" src="../js/content.js"></script>
+		<script type="text/javascript" src="js/harmless-data.js"></script>
+		<script type="text/javascript">
+			mui.init({
+				pullRefresh : {
+					container: '#pullrefresh', //待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+					up : {
+						height:50,//可选.默认50.触发上拉加载拖动距离
+						auto:false,//可选,默认false.自动上拉加载一次
+						contentrefresh : "正在加载...",//可选，正在加载状态时，上拉加载控件上显示的标题内容
+						contentnomore:'没有数据了',//可选，请求完毕若没有更多数据时显示的提醒内容；
+						callback :pullupRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+					},
+					down: {
+						style: "circle",
+						color: "#33323E",				//可选，默认“#2BD009” 下拉刷新控件颜色
+						height: '30px',					//可选,默认50px.下拉刷新控件的高度,
+						range: '100px',					//可选 默认100px,控件可下拉拖拽的范围
+						offset: '0px',					//可选 默认0px,下拉刷新控件的起始位置
+						auto: true,					//可选,默认false.首次加载自动上拉刷新一次
+						callback: pullDownRefreshFun
+					}
+				}
+			});
+			mui.plusReady(function() {
+				initSettings(); 		// 初始化设置字体大小	
+				var currpage = 1;	
+					
+			
+				
+					
+					
+			});
+			function pullupRefresh(){
+				setTimeout(function(){
+					currpage++;
+					// getList(currpage);
+					mui('#pullrefresh').pullRefresh().endPullupToRefresh();
+				},1500)
+			}
+			
+			/**
+			 * 下拉刷新功能
+			 */
+			function pullDownRefreshFun() {
+				setTimeout(function() {
+					currpage = 1;
+					// $('#record-list-content').html("");
+					// getList(currpage);
+					mui('#pullrefresh').pullRefresh().endPulldownToRefresh();
+					mui('#pullrefresh').pullRefresh().refresh(true);
+				}, 1500);
+			}
+		</script>
+	</body>
+
+</html>

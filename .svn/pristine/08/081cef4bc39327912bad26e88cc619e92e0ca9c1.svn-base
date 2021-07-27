@@ -1,0 +1,328 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>editDecontaminatingList</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="../../css/mui.min.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/header.css">
+		<link rel="stylesheet" href="../../css/ajax-picker/ajax-picker.css">
+		<link rel="stylesheet" href="../../css/ajax-picker/ajax-picker-self.css">
+		<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=NmA1D3Y7HP0A9ZG2A831rsve6SuZKhDz"></script>
+		<style>
+			.mui-content { background-color: #FFFFFF; font-size: 14px; }
+			
+			.mui-input-group:before { background-color: #FFFFFF !important;}
+			.mui-input-group:after { background-color: #FFFFFF !important;}
+			.mui-input-group .address-line { height: 80px; }
+			.mui-input-group .address-line:after { background-color: #FFFFFF !important; }
+			.mui-input-row input, .mui-input-row select, .mui-input-row textarea { font-size: 14px; }
+			.mui-button-row button { width: 65%; height: 45px; background-color: #2492FC; border: 1px solid #2492FC; margin-top: 30px;}
+			
+			#map_container { width: 90%; display: block; height: 245px; overflow: hidden; margin: 0 auto; border-radius: 4px; box-shadow: 2px 4px 10px rgba(85, 108, 120, 0.2); }
+			.map-title { width: 100%; height: 25px; line-height: 25px; font-size: 14px; color: #434343; font-weight: 400; }
+			.map-title div { width: 50%; padding: 0px 5px; overflow: hidden; }
+			#allmap { width: 100%; height: 220px; }
+		</style>
+	</head>
+
+	<body>
+		<div id="wrap">
+			<header id="header" class="mui-bar mui-bar-nav">
+				<h1 class="mui-title">洗消站详细信息</h1>
+				<a class="mui-action-back mui-icon mui-icon-arrowleft mui-pull-left"></a>
+			</header>
+			<div class="mui-content">
+				<div class="mui-content-padded" style="margin: 5px;">
+					<form class="mui-input-group">
+						<div class="mui-input-row">
+							<label>名称：</label>
+							<input type="text" placeholder="请输入" readonly="readonly" id="decontaminating_decontamination">
+						</div>
+						<div class="mui-input-row">
+							<label>联系人：</label>
+							<input type="text" placeholder="请输入" readonly="readonly" id="decontaminating_linkman">
+						</div>
+						<div class="mui-input-row">
+							<label>联系电话：</label>
+							<input type="number" placeholder="请输入" readonly="readonly" id="decontaminating_linktel">
+						</div>
+						<div class="mui-input-row">
+							<label>质量监督员：</label>
+							<input type="text" placeholder="请输入" readonly="readonly" id="decontaminating_regulators">
+						</div>
+						<div class="mui-input-row">
+							<label>技术员：</label>
+							<input type="text" placeholder="请输入" readonly="readonly" id="decontaminating_technician">
+						</div>
+						<div class="mui-input-row">
+							<label>洗消站类型：</label>
+							<a class="mui-navigate-right">
+								<span class="mui-badge1">
+									<input type="text" placeholder="请选择" readonly="readonly" id="decontaminating_type">
+								</span>
+							</a>
+						</div>
+						<div class="mui-input-row">
+							<label>洗消方式：</label>
+							<a class="mui-navigate-right">
+								<span class="mui-badge1">
+									<input type="text" placeholder="请选择" readonly="readonly" id="decontaminating_decontaminWay">
+								</span>
+							</a>
+						</div>
+						<div class="mui-input-row">
+							<label>所在地区：</label>
+							<a class="mui-navigate-right">
+								<span class="mui-badge1">
+									<input type="text" placeholder="请选择" readonly="readonly" id="decontaminating_local">
+								</span>
+							</a>
+						</div>
+						<div class="mui-input-row address-line">
+							<label>详细地址：</label>
+							<textarea id="decontaminating_address" placeholder="请输入" readonly="readonly" rows="3"></textarea>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div id="map_container">
+				<div class="map-title f-row">
+					<div>GPSX：&nbsp;&nbsp;<span id="decontaminating_gpsX"></span></div>
+					<div>GPSY：&nbsp;&nbsp;<span id="decontaminating_gpsY"></span></div>
+				</div>
+				<div id="allmap"></div>
+			</div>
+		</div>
+		<div id="container_type"></div>
+		<div id="container_decontaminWay"></div>
+		<div id="container_location"></div>
+		<script type="text/javascript" src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/jquery-1.12.4.min.js"></script>
+		<script type="text/javascript" src="../../js/common.js"></script>
+		<script type="text/javascript" src="../../js/ajax-picker/ajax-picker.min.js"></script>
+		<script type="text/javascript">
+			mui.init({});
+
+			var area1 = "";
+			var area2 = "";
+			var area3 = "";
+			var area4 = "";
+			var area_name1 = "";
+			var area_name2 = "";
+			var area_name3 = "";
+			var area_name4 = "";
+			
+			var map = null;
+			var centerPoint = null;
+			var gpsX = "";
+			var gpsY = "";
+			
+			var currentWebview = null;
+			var decontaminating_id = "";
+			
+			var myGeolocationIcon = new BMap.Icon("../../images/geolocationIcon.png", new BMap.Size(25, 25), {
+				anchor: new BMap.Size(12, 24)
+			});
+
+			mui.plusReady(function() {
+				
+				currentWebview = plus.webview.currentWebview();
+				mui.get(BASEURL + "decontaminating/edit/" + currentWebview.decontaminating_id, {}, function(ret) {
+					decontaminating_id = ret.decontaminating.id;
+					mui("#decontaminating_decontamination")[0].value = ret.decontaminating.decontamination;
+					mui("#decontaminating_linkman")[0].value = ret.decontaminating.linkman;
+					mui("#decontaminating_linktel")[0].value = ret.decontaminating.linktel;
+					mui("#decontaminating_regulators")[0].value = ret.decontaminating.regulators;
+					mui("#decontaminating_technician")[0].value = ret.decontaminating.technician;
+					mui("#decontaminating_type")[0].value = ret.decontaminating.type;
+					mui("#decontaminating_decontaminWay")[0].value = ret.decontaminating.decontaminWay;
+					mui("#decontaminating_local")[0].value = ret.decontaminating.local;
+					mui("#decontaminating_address")[0].value = ret.decontaminating.address;
+					
+					area1 = ret.decontaminating.area1;
+					area2 = ret.decontaminating.area2;
+					area3 = ret.decontaminating.area3;
+					area4 = ret.decontaminating.area4;
+					
+					mui("#decontaminating_gpsX")[0].innerHTML = ret.decontaminating.gpsX;
+					gpsX = ret.decontaminating.gpsX;
+					mui("#decontaminating_gpsY")[0].innerHTML = ret.decontaminating.gpsY;
+					gpsY = ret.decontaminating.gpsY;
+					
+					var point = new BMap.Point(gpsX, gpsY);
+					centerPoint = point;
+					map.centerAndZoom(point, 16);
+					marker = new BMap.Marker(point, {
+						icon: myGeolocationIcon
+					}); // 创建标注 
+					map.addOverlay(marker);
+				});
+				
+// 				var typePicker = new AjaxPicker({
+// 					title: "洗消站类型选择", //选择器标题
+// 					tipText: ["请选择"], //选择器提示语（可以一个也可以多个，对应每一栏的选择提示语）
+// 					input: "decontaminating_type", //点击触发选择器的input的id
+// 					container: "container_type", //选择器的容器的id
+// 					renderArr: [ //渲染函数数组，第一个函数对应第一个列表，以此类推，该数组中的函数数量和列表的数量一致
+// 						function() {
+// 							typePicker.render(json_xixiaozhanType);
+// 						}
+// 					],
+// 					success: function(arr) {
+// 						mui("#decontaminating_type")[0].value = arr[0].value;
+// 					}
+// 				});
+// 
+// 				var decontaminWayPicker = new AjaxPicker({
+// 					title: "洗消方式选择", //选择器标题
+// 					tipText: ["请选择"], //选择器提示语（可以一个也可以多个，对应每一栏的选择提示语）
+// 					input: "decontaminating_decontaminWay", //点击触发选择器的input的id
+// 					container: "container_decontaminWay", //选择器的容器的id
+// 					renderArr: [ //渲染函数数组，第一个函数对应第一个列表，以此类推，该数组中的函数数量和列表的数量一致
+// 						function() {
+// 							decontaminWayPicker.render(json_decontaminWay);
+// 						}
+// 					],
+// 					success: function(arr) {
+// 						mui("#decontaminating_decontaminWay")[0].value = arr[0].value;
+// 					}
+// 				});
+// 
+// 				var locationPicker = new AjaxPicker({
+// 					title: "地区选择", //选择器标题
+// 					tipText: ["请选择", "请选择", "请选择", "请选择"], //选择器提示语（可以一个也可以多个，对应每一栏的选择提示语）
+// 					input: "decontaminating_local", //点击触发选择器的input的id
+// 					container: "container_location", //选择器的容器的id
+// 					renderArr: [ //渲染函数数组，第一个函数对应第一个列表，以此类推，该数组中的函数数量和列表的数量一致
+// 						function() {
+// 							mui.post(BASEURL + "area/getArea", {
+// 								areaID: "0"
+// 							}, function(ret) {
+// 								locationPicker.render(ret);
+// 							}, "json");
+// 						},
+// 						function() {
+// 							area1 = locationPicker.result1.id;
+// 							area_name1 = locationPicker.result1.value;
+// 							mui.post(BASEURL + "area/getArea", {
+// 								areaID: locationPicker.result1.id
+// 							}, function(ret1) {
+// 								locationPicker.render(ret1);
+// 							}, "json");
+// 						},
+// 						function() {
+// 							area2 = locationPicker.result2.id;
+// 							area_name2 = locationPicker.result2.value;
+// 							mui.post(BASEURL + "area/getArea", {
+// 								areaID: locationPicker.result2.id
+// 							}, function(ret2) {
+// 								if (ret2 && ret2 != null && ret2 != "") {
+// 									locationPicker.render(ret2);
+// 								} else {
+// 									locationPicker.render(baseArea);
+// 								}
+// 							}, "json");
+// 						},
+// 						function() {
+// 							area3 = locationPicker.result3.id;
+// 							area_name3 = locationPicker.result3.value;
+// 							mui.post(BASEURL + "area/getArea", {
+// 								areaID: locationPicker.result3.id
+// 							}, function(ret3) {
+// 								if (ret3 && ret3 != null && ret3 != "") {
+// 									locationPicker.render(ret3);
+// 								} else {
+// 									locationPicker.render(baseArea);
+// 								}
+// 							}, "json");
+// 						}
+// 					],
+// 					success: function(arr) {
+// 						// 用户选择完毕后调用，返回结果数组
+// 						// console.log("area1: " + area1 + "  -  area_name1: " + area_name1);
+// 						// console.log("area2: " + area2 + "  -  area_name2: " + area_name2);
+// 						// console.log("area3: " + area3 + "  -  area_name3: " + area_name3);
+// 						area4 = arr[3].id == "0000000000001" ? "" : arr[3].id;
+// 						area_name4 = arr[3].value == "暂无区域信息" ? "" : arr[3].value;
+// 						mui("#decontaminating_local")[0].value = area_name1 + area_name2 + area_name3 + area_name4;
+// 						resetMapArea(area_name1 + area_name2 + area_name3 + area_name4);
+// 						// console.log("area4: " + area4 + "  -  area_name4: " + area_name4);
+// 						// console.log(JSON.stringify(arr[3]));
+// 					}
+// 				});
+
+				//加载第二张地图
+				map = new BMap.Map("allmap"); // 创建Map实例
+				map.enableScrollWheelZoom(); //启用滚轮放大缩小
+
+				// 左上角，添加比例尺 (可以避免比例尺控件的初始化样式)
+				var scaleCtrl = new BMap.ScaleControl({
+					anchor: BMAP_ANCHOR_BOTTOM_RIGHT,
+					offset: new BMap.Size(10, 40)
+				});
+				map.addControl(scaleCtrl);
+					
+				// 添加带有定位的导航控件
+				var navigationControl = new BMap.NavigationControl({
+					// 靠左上角位置
+					anchor: BMAP_ANCHOR_TOP_LEFT,
+					// LARGE类型
+					type: BMAP_NAVIGATION_CONTROL_LARGE,
+					// 启用显示定位
+					enableGeolocation: true
+				});
+				map.addControl(navigationControl);
+
+				var marker = null;
+				//单击获取点击的经纬度
+// 				map.addEventListener("click", function(e) {
+// 					$(":input").each(function() {
+// 						$(this).blur();
+// 					});
+// 					if (marker != null) {
+// 						map.removeOverlay(marker);
+// 					}
+// 
+// 					mui("#decontaminating_gpsX")[0].innerHTML = e.point.lng;
+// 					gpsX = e.point.lng;
+// 					mui("#decontaminating_gpsY")[0].innerHTML = e.point.lat;
+// 					gpsY = e.point.lat;
+// 
+// 					var pt = new BMap.Point(gpsX, gpsY);
+// 					marker = new BMap.Marker(pt, {
+// 						icon: myGeolocationIcon
+// 					}); // 创建标注
+// 					map.addOverlay(marker);
+// 
+// 				});
+
+				map.addEventListener("zoomend", function(e) {
+					var ZoomNum = map.getZoom();
+					map.centerAndZoom(centerPoint, ZoomNum);
+				});
+
+				map.addEventListener("dragend", function showInfo() {
+					centerPoint = map.getCenter();
+				});
+
+			});
+
+			function resetMapArea(search_areaStr) {
+				var myGeo = new BMap.Geocoder();
+				// 将地址解析结果显示在地图上,并调整地图视野
+				myGeo.getPoint(search_areaStr, function(point) {
+					if (point) {
+						centerPoint = point;
+						map.centerAndZoom(point, 16);
+					} else {
+						mui.toast("您选择地址没有解析到结果!");
+					}
+				});
+			}
+		</script>
+	</body>
+
+</html>

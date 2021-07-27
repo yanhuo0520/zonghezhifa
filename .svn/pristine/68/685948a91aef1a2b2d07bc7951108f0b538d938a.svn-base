@@ -1,0 +1,316 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>无害化处理</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="../../css/mui.css"/>
+		<link rel="stylesheet" href="../../css/ajax-picker/ajax-picker.css">
+		<link rel="stylesheet" href="../../css/ajax-picker/ajax-picker-self.css">
+		<link rel="stylesheet" href="../css/generic.css"/>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<a class="mui-icon mui-icon-plusempty mui-pull-right add-icon" style="font-weight: bold;" id="addEar"></a>
+			<h1 class="mui-title">无耳标<span id="toalNum"></span></h1>
+		</header>
+		<div class="mui-content"> 
+			<ul id="no-ear-list" class="collect-ear-list mui-table-view">
+				<!-- <li class="mui-table-view-cell" id="">
+					<div class="mui-slider-right mui-disabled">
+						<a class="mui-btn mui-btn-red">删除</a>
+					</div>
+					<div class="mui-slider-handle">
+						<div>数&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;量： <span class="mui-pull-right">2 头</span></div>
+						<div class="mui-pull-right">重&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;量： <span class="mui-pull-right">2 KG</span></div>
+						<div class="w-100">初步结论： <span class="mui-pull-right">疑似猪肠胃炎</span></div>
+					</div>
+				</li> -->
+				
+			</ul>
+		</div>
+	
+		<!-- 无耳标 -->
+		<div id="popover" class="popover-no-ear popover-cont mui-popover modify-mask">
+			<p class="title">无耳标</p>
+			<div class="mui-input-group">
+				<div class="mui-input-row">
+					<label class="title-label-short">数&nbsp;量(头)：</label>
+					<input type="number" id="earNum" placeholder="请输入数量" />
+				</div>
+				<div class="mui-input-row">
+					<label class="title-label-short">重量(KG)：</label>
+					<input type="number" id="earWeight" placeholder="请输入重量" />
+				</div>
+				<div class="mui-input-row mui-select">
+					<label class="title-label-short">初步结论：</label>
+					<input type="text" id="conclusion" class="mui-navigate-right" readonly="readonly" placeholder="请选择病因" />
+					<input type="text" id="causeOfDead" value="" style="display: none;" />
+				</div>
+			</div>
+			<a href="javascript:;" class="save" id="SaveBtn">保存</a>
+		</div>
+		<div id="conclusionCont" class="myAjaxPicker"></div>
+		<script type="text/javascript" src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/jquery-1.12.4.min.js"></script>
+		<script type="text/javascript" src="../../js/ajax-picker/ajax-picker.min.js"></script>
+		<script type="text/javascript" src="../js/content.js"></script>
+		<script type="text/javascript" src="../js/constant.js"></script>
+		<script type="text/javascript" src="js/harmless-data.js"></script>
+		<script type="text/javascript">
+			mui.plusReady(function() {
+				initSettings(); 		// 初始化设置字体大小
+				
+				dailogBackKeyFunction(false); 	// 返回键逻辑处理
+				
+				var harmless_user_id = plus.storage.getItem("harmless_user_id"); //用户的的id编号
+				var harmlessUseRoleId = plus.storage.getItem('harmless_user_roleId'); // 获取无害化用户角色id
+				var self = plus.webview.currentWebview();
+			    var reportId = self.reportId; 
+				var status = self.status; 
+				var bkName = self.bkName;  // 蓄别
+				var farmer = self.farmer;  // 养殖户名称
+				if(harmlessUseRoleId == TOWN_SUPERVISE && status != CollectStatus_SIX) {
+					$("#addEar").show();
+				} else {
+					$("#addEar").hide();
+				}
+				earList();
+				function earList(){
+					var result;
+					plus.nativeUI.showWaiting("正在加载……");
+					mui.ajax(Constant.getConstant("HARMLESS_REPORT_DETAILS"),{
+						data:{
+							"api_method": "c.findReportDetails",
+							"a_id": harmless_user_id,
+							"type": "0",
+							"reportId": reportId
+						},
+						dataType:'json',//服务器返回json格式数据
+						type:'post',//HTTP请求类型
+						timeout:10000,//超时时间设置为10秒；
+						success:function(data){
+							plus.nativeUI.closeWaiting();
+							if(data.resultStatus == true){
+								var result_array = data.data.detailVos;
+								if(result_array.length == 0){
+									document.getElementById("toalNum").innerHTML = "（共0条）";
+									$("#no-ear-list").html('<p style="text-align: center;color: #888888;margin-top: 20px;">---- 暂无数据 ----</p>');
+								} else {
+									document.getElementById("toalNum").innerHTML = "（共 " + result_array.length + " 条）";
+									
+									var delete_str = "";
+									if(harmlessUseRoleId == TOWN_SUPERVISE && status != CollectStatus_SIX) {
+										delete_str = '<div class="mui-slider-right mui-disabled"><a class="mui-btn mui-btn-red">删除</a></div>'
+									}
+									for(var i=0;i<result_array.length;i++){
+										result = '<li class="mui-table-view-cell" id_id="'+result_array[i].id+'">' +
+												delete_str +
+												' <div class="mui-slider-handle">' +
+												'		<div class="w-40">重&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;量： ' + result_array[i].weight + ' KG</div>' +
+												'		<div class="w-40">数&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;量： ' + result_array[i].num + ' 头</div>' +
+												'		<div class="w-100">初步结论： ' + result_array[i].causeOfDeadName + '</div>' + 
+												'</div></li>';
+										$("#no-ear-list").append(result);
+									}
+								}
+							}else{
+								mui.toast("查询失败，请重试")
+							}
+						},
+						error: function(xhr, type, errorThrown) {
+							plus.nativeUI.closeWaiting();
+							mui.toast("查询失败");	
+						}
+					});
+				}
+				
+				// 侧滑删除
+				var btnArray = ['确认', '取消'];
+				mui('.collect-ear-list').on('tap', '.mui-btn', function(event) {
+					var elem = this;
+					var li = elem.parentNode.parentNode;
+					var reportDetailVoId = $(this).parents('.mui-table-view-cell').attr("id_id");
+					mui.confirm('是否删除该条信息？', '删除操作', btnArray, function(e) {
+						if (e.index == 0) {
+							li.parentNode.removeChild(li);
+							plus.nativeUI.showWaiting("保存中……");
+							mui.ajax(Constant.getConstant("HARMLESS_REPORT_DETAILS_DELETE"),{
+								data:{
+									"api_method":"c.deleteReportDetail",
+									"a_id":harmless_user_id,
+									"reportDetailVoId": reportDetailVoId
+								},
+								dataType:'json',//服务器返回json格式数据
+								type:'post',//HTTP请求类型
+								timeout:10000,//超时时间设置为10秒；
+								success:function(data){
+									plus.nativeUI.closeWaiting();
+									if(data.resultStatus == true) {
+								
+										var targetSearchWebView = plus.webview.getWebviewById("scene-collect-detail.html");
+										mui.fire(targetSearchWebView, "initCollectDetails", {});
+										
+										mui.toast("删除成功！");
+									} else {
+										mui.toast("删除失败，请重试！");
+									}
+								},
+								error: function(xhr, type, errorThrown) {
+									plus.nativeUI.closeWaiting();
+									mui.toast("查询失败");
+								}
+							});
+						} else {
+							setTimeout(function() {
+								mui.swipeoutClose(li);
+							}, 0);
+						}
+				
+					});
+				
+				});
+				
+				// 添加耳标
+				document.getElementById("addEar").addEventListener('tap', function(){
+					mui('#popover').popover('toggle');
+					var deadList = [{"id": 42, "value": "疑似猪胃肠炎"}]; // 设置默认值
+					mui("#conclusion")[0].value = deadList[0].value;
+					mui("#causeOfDead")[0].value = deadList[0].id;
+					var unitPicker = new AjaxPicker({
+						title: "病因", //选择器标题
+						tipText: ['初步结论'], // 选择器提示语（可以一个也可以多个，对应每一栏的选择提示语）
+						input: "conclusion", // 点击触发选择器的input的id
+						container: "conclusionCont", // 选择器的容器的id
+						renderArr: [
+							function() {// 保险公司数据列表
+								deadList = [];
+								mui.ajax(Constant.getConstant("HARMLESS_CONSTRANT_DATA"),{
+									data:{
+										"api_method":"c.findConstantData",
+										"a_id":harmless_user_id,
+										"type":2
+									},
+									dataType:'json',//服务器返回json格式数据
+									type:'post',//HTTP请求类型
+									timeout:10000,//超时时间设置为10秒；
+									success:function(data){
+										if(data.resultStatus == true){
+											var causeOfDeadMap = data.data.causeOfDeadMap;
+											var result_array = causeOfDeadMap["11001"];
+											var deadList = [];
+											if (result_array.length <= 0) {
+												deadList = [{
+													"id": "",
+													"value": "暂无数据"
+												}];
+											} else {
+												for(var i = 0; i < result_array.length; i++){
+													var item = {};
+													item.id = result_array[i].id;
+													item.value = result_array[i].causeOfDead;
+													deadList.push(item);
+												}
+											}
+											unitPicker.render(deadList);
+										}else{
+											mui.toast("加载失败")
+										}
+									},
+									error:function(xhr,type,errorThrown){
+										mui.toast("查询失败");
+									}
+								});
+							},
+						],
+						success: function(arr) {
+							mui("#conclusion")[0].value = arr[0].value;
+							mui("#causeOfDead")[0].value = arr[0].id;
+						}
+						
+					})
+				});
+				
+				// 添加
+				document.getElementById("SaveBtn").addEventListener('tap', function(){
+					var earNum = document.getElementById("earNum").value;
+					var earWeight = document.getElementById("earWeight").value;
+					var conclusion = document.getElementById("conclusion").value;
+					var causeOfDead = document.getElementById("causeOfDead").value;
+					if(earNum == '' || earNum.length == 0){
+						mui.toast("请输入数量！");
+						return;
+					}
+					if(earWeight == '' || earWeight.length == 0){
+						mui.toast("请输入重量！");
+						return;
+					}
+					if(conclusion == '' || conclusion.length == 0){
+						mui.toast("请选择结论！");
+						return;
+					}
+					var reportDetailsStr = {};
+					var reportDetailVos = {};
+					var reportDetailVosArr = [];
+					reportDetailVos["bkid"] = "";
+					reportDetailVos["causeOfDead"] = causeOfDead; //  死因ID
+					reportDetailVos["causeOfDeadName"] = conclusion; // 疑似猪胃炎
+					reportDetailVos["collectStatus"] = "";
+					reportDetailVos["dayOfAge"] = "";
+					reportDetailVos["deadTime"] = "";
+					reportDetailVos["earTagNum"] = "";
+					reportDetailVos["id"] = "";
+					reportDetailVos["imgs"] = "";
+					reportDetailVos["insuranceFacId"] = "";
+					reportDetailVos["insuranceFacName"] = "";
+					reportDetailVos["insuranceType"] = "";
+					reportDetailVos["insuranceTypeName"] = "";
+					reportDetailVos["isInsurance"] = "0";
+					reportDetailVos["num"] = earNum; // 数量
+					reportDetailVos["remark"] = "";
+					reportDetailVos["reportId"] = "";
+					reportDetailVos["status"] = "";
+					reportDetailVos["symptomOfDead"] = "";
+					reportDetailVos["weight"] = earWeight; // 重量
+					reportDetailVosArr[0] = reportDetailVos;
+					reportDetailsStr["id"] = reportId;
+					reportDetailsStr["reportDetailVos"] = reportDetailVosArr;
+					plus.nativeUI.showWaiting("正在加载……");
+					mui.ajax(Constant.getConstant("HARMLESS_ADD_REPORT"),{
+						data:{
+							"api_method": "c.saveReportDetails",
+							"a_id": harmless_user_id,
+							"reportDetailsStr": JSON.stringify(reportDetailsStr)
+						},
+						dataType:'json',//服务器返回json格式数据
+						type:'post',//HTTP请求类型
+						timeout:10000,//超时时间设置为10秒；
+						success:function(data){
+							plus.nativeUI.closeWaiting();
+							if(data.resultStatus == true){
+								mui.toast("添加成功！");
+								
+								var targetSearchWebView = plus.webview.getWebviewById("scene-collect-detail.html");
+								mui.fire(targetSearchWebView, "initCollectDetails", {});
+								
+								setTimeout('location.reload()', 300);
+							} else {
+								mui.toast("添加失败，请重试！")
+							}
+						},
+						error:function(xhr,type,errorThrown){
+							plus.nativeUI.closeWaiting();
+							mui.toast("添加失败");	
+						}
+					});
+				})
+				
+				
+			
+			});
+			
+		</script>
+	</body>
+
+</html>

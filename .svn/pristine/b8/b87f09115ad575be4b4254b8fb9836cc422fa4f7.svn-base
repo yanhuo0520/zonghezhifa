@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+    <title>地图</title>
+    <link href="../../css/mui.css" rel="stylesheet"/>
+	<link href="ani-css/home.css" rel="stylesheet" />
+</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">导航</h1>
+		</header>
+		<div class="mui-content">
+			<div id="map" class="map"></div>
+			<img src="ani-image/dingwei.png" class="reMap" /> <!-- 刷新定位 -->
+			<div class="daohang" id="daohang">
+				<img src="ani-image/daohang.png" /><span>导航</span>
+			</div>
+		</div>
+		<script src="../../js/mui.js"></script>
+		<script src="../../js/jquery.min.js"></script>
+		<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=USojXHrGnD2gItzUXU9KLcupzeqcbCS2"></script>
+		<script src="../js/content.js"></script>
+		<script src="ani-js/constant.js"></script>
+		
+		<script type="text/javascript">
+			$(function(){
+				var mobileHeight=(window.innerHeight-45)+"px";
+				$(".map").css("height", mobileHeight);
+			});
+			mui.plusReady(function () {
+				var uuid = plus.storage.getItem("uuid");
+				var x = plus.storage.getItem("x");
+				var y = plus.storage.getItem("y");
+				if(uuid == "" || uuid == null || uuid == "undefined") {
+					mui.openWindow({
+						id: 'login.html',
+						url: '../login.html'
+					})
+				}
+				var self = plus.webview.currentWebview();
+				var qylx = self.qylx; // 企业类型
+				var compId = self.compId; // 企业id
+				var compX = self.x;
+				var compY = self.y;
+				var comName = self.comName;
+				var fName = self.fName;
+				var fPhone = self.fPhone;
+				var comAddress = self.comAddress;
+				showMap(compX, compY, comName, fName, fPhone, comAddress);
+				$('.reMap').on('tap', function(){
+					showMap(compX, compY, comName, fName, fPhone, comAddress);
+				});
+				
+				// 点击导航
+				document.getElementById("daohang").addEventListener('tap', function(){
+					var dst = new plus.maps.Point(compX, compY); // 目的地 
+					var desc = comName;
+					var src = new plus.maps.Point(x, y); // 起始地
+					plus.maps.openSysMap( dst, desc, src ); // 调用系统地图显示 
+				});
+				
+			});
+			// 初始化地图
+			var mapdx = 15;//地图缩放级别
+			var yyds = 500;//阴影覆盖大小
+			var map = new BMap.Map("map", {
+				minZoom: 5,
+				maxZoom: 19
+			});	
+			
+			// 默认坐标展示
+			function showMap(x, y, comName, fName, fPhone, comAddress){
+				var point = new BMap.Point(x, y);
+				map.centerAndZoom(point, mapdx);
+				map.panTo(point); //将地图的中心点更改为给定的点
+				map.enableScrollWheelZoom(true); // 开启鼠标滚轮缩放功能，仅对PC上有效
+				var icon = new BMap.Icon('ani-image/marker.png', //中心点坐标，单独设定图标的样式
+						new BMap.Size(30, 30), {　// 视窗大小
+							imageSize: new BMap.Size(30,30), // 引用图片实际大小
+							anchor: new BMap.Size(10, 30) // 图标定位的锚点
+				});
+				
+				var mkr = new BMap.Marker(point, {icon: icon}); //创建一个图像标注实例。point参数指定了图像标注所在的地理位置
+				map.addOverlay(mkr); //将标注,覆盖物添加到地图中
+				var html = '<div class="map-tip">' +
+						'<p class="com-name">'+comName+'</p>' +
+						'<p class="com-address">法人：'+fName+'<br>电话：'+fPhone+'<br>地址：'+comAddress+'</p>' +
+						'<img src="ani-image/map-tip-bg.png" class="tip"/></div>';
+				var label = new BMap.Label(html,{offset:new BMap.Size(10, -140)});
+				label.setStyle({
+					border: "none",
+					background: "transparent"
+				 });
+				mkr.setLabel(label);			
+								
+			}
+			
+	
+		</script>
+	</body>
+
+</html>

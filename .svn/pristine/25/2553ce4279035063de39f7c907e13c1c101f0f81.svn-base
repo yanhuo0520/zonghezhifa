@@ -1,0 +1,443 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>乡-耳标发放</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.css" rel="stylesheet" />
+		<link href="../../css/mui.picker.css" rel="stylesheet" />
+		<link href="../../css/mui.dtpicker.css" rel="stylesheet" />
+		<link href="er-css/home.css" rel="stylesheet" />
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">耳标发放</h1>
+		</header>
+		<div class="mui-content check-in-add">
+			<div class="mui-input-group">
+				<div class="mui-input-row">
+					<label>操&nbsp;&nbsp;作&nbsp;人：</label>
+					<input id="er-ffr" type="text" class="mui-input-clear" placeholder="操作人" disabled="disabled">
+				</div>
+				<div class="mui-input-row row-date">
+					<label>发放时间：</label>
+					<input id="select-time" type="text" class="mui-input-clear" placeholder="2019-06-28" readonly="readonly">
+					<img src="er-img/rili.png" class="max-width date-icon" />
+				</div>
+				
+				<div class="mui-input-row">
+					<label>下发类型：</label>
+					<div class="mui-navigate-right">
+					<select id="select-flag">
+						<option value="">请选择下发类型</option>
+						<option value="2">防疫员</option>
+						<option value="3">检疫员</option>
+						<option value="4">养殖场</option>
+						<option value="5">散养户</option>
+					</select>
+					</div>
+				</div>
+				<div class="mui-input-row "  style="height: auto;">
+					<label>领取人：</label>
+					<div class="mui-navigate-right">
+						<select id="select-lqr">
+							<option value="">选择领取人</option>
+							
+						</select>
+					</div>
+				</div>
+				<div class="mui-input-row" style="height: auto;">
+					<label>耳标种类：</label>
+					<div class="mui-navigate-right">
+						<select id="ear-scale">
+							<option value="">选择种类</option>
+							<option value="猪标">猪标</option>  
+							<option value="牛标">牛标</option>
+							<option value="羊标">羊标</option>
+						</select>
+
+					</div>
+				</div>
+				<div class="mui-input-row">
+					<label>选择号段：</label>
+					<div class="mui-navigate-right">
+						<select id="select-ffinspectid">
+							<option value="">选择号段</option>
+						</select>
+					</div>
+				</div>
+				
+				<div class="mui-input-row">
+					<label>开始号段：</label><!--济源的前七位是1411801-->
+					<input id="before-num" type="number" class="mui-input-clear" maxlength="8" placeholder="后8位有效数字" oninput="if(value.length>8)value=value.slice(0,8)" onafterpaste="this.value=this.value.replace(/\D/g,'')">
+				</div>
+				<div class="mui-input-row">
+					<label>数&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;量：</label>
+					<input id="number" type="number" class="mui-input-clear" placeholder="请填写数量">
+				</div>
+				<div class="mui-input-row">
+					<label>结束号段：</label>
+					<input id="finish-num" type="text" class="mui-input-clear" placeholder="后8位有效数字" disabled="disabled">
+				</div>
+			</div>
+			
+			<div class="check-btn">
+				<a href="javascript:;" class="mui-btn check-reset-btn mui-pull-left" id="resetBtn">重置</a>
+				<a href="javascript:;" class="mui-btn check-add-btn mui-pull-right" id="saveBtn">添加</a>
+			</div>
+			
+		</div>
+		
+		<script src="../../js/mui.js"></script>
+		<script src="../../js/mui.picker.js"></script>
+		<script src="../../js/mui.dtpicker.js"></script>
+		<script src="../../js/jquery.min.js"></script>
+		<script src="er-js/constant.js"></script>
+		<script src="../js/content.js"></script>
+		<script type="text/javascript">
+			mui.init({
+				beforeback: function(){
+					var list = plus.webview.getWebviewById('er-stock-list.html');   //目标页面
+					mui.fire(list, 'refresh');  
+					return true;
+				}
+			});
+			mui.plusReady(function () {
+				var uuid = plus.storage.getItem("uuid"); //用户的的id编号
+				var realname = plus.storage.getItem("realname"); //真实姓名
+				var dwmc = plus.storage.getItem("dwmc"); //单位名称
+				var ebst=plus.storage.getItem("ebstart"); //耳标开始七位
+				var xiangStorage = plus.storage.getItem("xiang"); //角色标识
+				// if(uuid == "" || uuid == null || uuid == "undefined"){
+				// 	mui.openWindow({
+				// 		id: 'login.html',
+				// 		url: '../login.html'
+				// 	})
+				// }
+				var self = plus.webview.currentWebview();
+				var ebid = self.ebid; // // 耳标id
+				var ebqh = self.ebqh; // 开始号段
+				var ebzh = self.ebzh; // 结束号段
+				var ebfs = self.ebfs; // 数量
+				var ebsort = self.ebsort; // 耳标种类
+				// 获取已选择号段
+				if(ebid!=null && ebid.length > 0 && ebqh!=null && ebzh!=null && ebfs!=null){
+					$('#select-ffinspectid').html('');
+					result = '<option num_id='+ebfs+' value='+ebid+'>'+ebqh.toString().substring(7)+'  ---  '+ebzh.toString().substring(7)+'</option>';
+					$('#select-ffinspectid').append(result);
+					$('#ear-scale').html('');
+					$('#ear-scale').append('<option selected value='+ebsort+'>'+ebsort+'</option>');
+				}
+				
+				document.getElementById("er-ffr").value = realname;
+				document.getElementById("saveBtn").addEventListener('tap', function(){
+					var jsonobj = {};
+					var selectTime = document.getElementById("select-time").value;
+					var flag = document.getElementById("select-flag").value; // 下发类型
+					var lqr=$("#select-lqr option:selected").text();
+					var lquser=document.getElementById("select-lqr").value;
+					var earScale = document.getElementById("ear-scale").value;
+					var ffinspectid=document.getElementById("select-ffinspectid").value;
+					var beforeNum = document.getElementById("before-num").value;
+					var number = document.getElementById("number").value;
+					var finishNnum = document.getElementById("finish-num").value
+					if(selectTime == '' || selectTime.length == 0){
+						mui.toast("入库时间不能为空！");
+						return;
+					}
+					if(flag == '' || flag.length == 0){
+						mui.toast("下发类型不能为空！");
+						return;
+					}
+					if(lquser == '' || lquser.length == 0){
+						mui.toast("领取人不能为空！");
+						return;
+					}
+					if(earScale == '' || earScale.length == 0){
+						mui.toast("耳标种类不能为空！");
+						return;
+					}
+					if(ffinspectid == '' || ffinspectid.length == 0){
+						mui.toast("号段不能为空！");
+						return;
+					}
+					if(beforeNum == '' || beforeNum.length == 0){
+						mui.toast("开始号段不能为空！");
+						return;
+					}else if(beforeNum.length != 8){
+						mui.toast("开始号段为8位有效数字！");
+						document.getElementById("before-num").focus();
+						return;
+					}
+					if(number == '' || number.length == 0){
+						mui.toast("数量不能为空！");
+						return;
+					}
+					
+					jsonobj["ffr"] = realname;
+					jsonobj["ffsj"] = selectTime;
+					jsonobj["xiang"] = xiangStorage;
+					jsonobj["lqr"] = lqr;
+					jsonobj["lquser"] = lquser;
+					jsonobj["ffInspectId"] = ffinspectid;					
+					jsonobj["sort"] = earScale;
+					jsonobj["qh"] = ebst+beforeNum;
+					jsonobj["fs"] = number;
+					jsonobj["zh"] = ebst+finishNnum;
+					jsonobj = JSON.stringify(jsonobj); 
+					plus.nativeUI.showWaiting("加载中……");
+					mui.ajax(Constant.getConstant("CITY_GRANT_XIANG_SAVE"),{
+						data:{
+							"a_id": uuid,
+							"flag": flag,		  
+							"jsonobj":jsonobj  
+						},
+						dataType:'json',//服务器返回json格式数据
+						type:'post',//HTTP请求类型
+						timeout:10000,//超时时间设置为10秒；
+						success:function(data){
+							plus.nativeUI.closeWaiting();
+							if(data.result == "success"){
+								mui.toast("下发成功");
+								if(ebid == '' || ebid == null || ebid == undefined || ebid.length == 0){
+									setTimeout('location.reload()', 200);
+								}else{
+									setTimeout("mui.back()",200);
+								}
+							}else{
+								if(data.result == "repeatgrant"){
+									mui.toast("耳标号重复发放");
+									document.getElementById("before-num").value = '';
+									document.getElementById("number").value = '';
+									document.getElementById("finish-num").value = '';
+									document.getElementById("before-num").focus();
+								}else{
+									mui.toast("保存失败");
+								}
+							}
+						},
+						error:function(xhr,type,errorThrown){
+							plus.nativeUI.closeWaiting();
+							mui.toast("查询失败");
+						}
+					});
+				})
+			
+				
+				//根据地区编号获取人员信息
+				var select = document.getElementById("select-flag");
+			    select.onchange=function(){
+					var flag = $("#select-flag").val(); //  乡镇的id编号
+					document.getElementById("select-lqr").value = '';
+					plus.nativeUI.showWaiting("查询中……");
+				  mui.ajax(Constant.getConstant("CITY_GRANT_XIANG_GET_REN"),{
+					data:{
+						"a_id": uuid,  
+						"xiang": xiangStorage,
+						"flag": flag//市级发送flag值为1,乡镇发放flag需要选择
+					},
+					dataType:'json',//服务器返回json格式数据
+					type:'post',//HTTP请求类型
+					timeout:10000,//超时时间设置为10秒；
+					success:function(data){
+						plus.nativeUI.closeWaiting();
+						if(data.result == "success"){
+							var result="";
+							var result_array = data.result_array;
+							if(result_array.length > 0){
+								$('#select-lqr').html('');
+								$('#select-lqr').append('<option value="">选择领取人</option>');
+								for(var i=0;i<result_array.length;i++){
+									result = '<option value='+result_array[i].id+'>'+result_array[i].name+'</option>';
+									$('#select-lqr').append(result);
+								}
+							}
+						}else{
+							mui.toast("查询领取人失败！");
+							$('#select-lqr').html('<option value="">选择领取人</option>');
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						plus.nativeUI.closeWaiting();
+						mui.toast("数据获取失败，请稍后再试！");
+					}
+				  });
+			   };
+			   
+			   // 选择领取人
+			   document.getElementById("select-lqr").addEventListener('tap', function(){
+				   var flag = $("#select-flag").val(); //  乡镇的id编号
+				   if(flag == '' || flag.length == 0){
+				   	mui.toast("请先选择下发类型！");
+				   	return;
+				   }
+			   })
+			   // 选择号段
+			   document.getElementById("select-ffinspectid").addEventListener('tap', function(){
+			   		var cid = $("#ear-scale").val(); //  乡镇的id编号
+			   		if(cid == '' || cid.length == 0){
+			   			mui.toast("请先选择耳标种类！");
+			   			return;
+			   		}
+			   })
+			   
+			   //获取号段信息内容
+			   var select = document.getElementById("ear-scale");
+			   select.onchange=function(){
+			   var ersort = select.value;
+			   // console.log(ersort);
+			   mui.ajax(Constant.getConstant("CITY_GRANT_STOCK_LIST"),{
+			   	data:{
+			   		"a_id": uuid,
+					"sort":ersort,
+			   		"pageno":1,
+					"pagesize":100
+			   	},
+			   	dataType:'json',//服务器返回json格式数据
+			   	type:'post',//HTTP请求类型
+			   	timeout:10000,//超时时间设置为10秒；
+			   	success:function(data){
+			   		if(data.result == "success"){
+			   			var result="";
+			   			var result_array = data.result_array;
+			   			// console.log(result_array.length);
+			   			if(result_array.length > 0){
+			   				$('#select-ffinspectid').html('');
+			   				$('#select-ffinspectid').append('<option value="">选择号段</option>');
+			   				for(var i=0;i<result_array.length;i++){
+			   					result = '<option num_id='+result_array[i].fs+' value='+result_array[i].id+'>'+result_array[i].qh.toString().substring(7)+'  ---  '+result_array[i].zh.toString().substring(7)+'</option>';
+			   					$('#select-ffinspectid').append(result);
+			   				}
+			   			}
+			   		}
+				   }
+				  });	   
+				}
+				
+				// 重置
+				document.getElementById("resetBtn").addEventListener('tap', function(){
+					cleanIn();
+				})
+			    
+			    //开始号段
+				document.getElementById("before-num").onkeyup = function(){
+					var ffinspectidV=document.getElementById("select-ffinspectid").value;
+					var ffinspectid=$("#select-ffinspectid option:selected").text();
+					var stNum = document.getElementById("before-num").value; // 开始号段
+					var num = document.getElementById("number").value; // 输入数量
+					
+					if(ffinspectidV == '' || ffinspectidV == null || ffinspectidV == undefined){
+						mui.toast("请先选择号段！");
+						document.getElementById("before-num").value = '';
+						return;
+					}else if(stNum.length == 8){
+						var ffqh=ffinspectid.substring(0,8);
+						var ffzh=ffinspectid.substring(ffinspectid.length-8);
+						if(parseInt(ffqh) > parseInt(stNum) || parseInt(stNum) > parseInt(ffzh)){
+							mui.toast("你输入的开始号段未在当前号段内");
+							document.getElementById("before-num").value = '';
+							document.getElementById("before-num").focus();
+						}else if(num.length > 0){
+							var qh=ebst+stNum;
+							var zh=parseInt(qh)+parseInt(num)-1;
+							zh=zh.toString().substring(7);
+							if(parseInt(zh)<=parseInt(ffzh)){
+								document.getElementById("finish-num").value=zh;
+							}else{
+								mui.toast("结束号段未在当前号段内，请重新填写");
+								document.getElementById("before-num").value = '';
+								document.getElementById("number").value = '';
+								document.getElementById("finish-num").value = '';
+								document.getElementById("before-num").focus();
+							}
+						}
+					}else if(stNum.length != 8){
+						document.getElementById("finish-num").value = '';
+					}
+				}
+				//数量监听
+				document.getElementById("number").onkeyup = function(){
+					var stNum = document.getElementById("before-num").value; // 开始号段
+					var num = document.getElementById("number").value; // 输入数量
+					var fs=$("#select-ffinspectid option:selected").attr("num_id"); // 入库总数
+					if(stNum == '' || stNum == null || stNum == undefined){
+						mui.toast("请先输入开始号段！");
+						document.getElementById("number").value = '';
+						return;
+					}else if(stNum.length != 8){
+						mui.toast("请先输入8位有效开始号段！");
+						document.getElementById("number").value = '';
+						return;
+					}
+					var ffinspectid=$("#select-ffinspectid option:selected").text();
+					var ffzh=ffinspectid.substring(ffinspectid.length-8);
+					if(parseInt(num)>parseInt(fs)){
+						mui.toast("耳标数量大于库存量，重新填写");
+						document.getElementById("number").value = '';
+						document.getElementById("finish-num").value = '';
+						document.getElementById("number").focus();
+					}else{
+						var qh=ebst+stNum;
+						var zh=parseInt(qh)+parseInt(num)-1;
+						zh=zh.toString().substring(7);
+						if(parseInt(zh)<=parseInt(ffzh)){
+							document.getElementById("finish-num").value=zh;
+						}else{
+							mui.toast("结束号段未在当前号段内，请重新填写");
+							document.getElementById("number").value = '';
+							document.getElementById("finish-num").value = '';
+							document.getElementById("number").focus();
+						}
+					}
+				}
+			})
+			
+			// 设置默认当前日期
+			var myDate = new Date();
+			var nowDate;
+			if(myDate.getMonth() < 9){
+				if(myDate.getDate()<=9){
+					nowDate = myDate.getFullYear()+'-0'+(myDate.getMonth()+1)+'-0'+myDate.getDate();
+				}else{
+					nowDate = myDate.getFullYear()+'-0'+(myDate.getMonth()+1)+'-'+myDate.getDate();
+				}
+				document.getElementById("select-time").value = nowDate
+			}else{
+				if(myDate.getDate()<=9){
+					nowDate = myDate.getFullYear()+'-'+(myDate.getMonth()+1)+'-0'+myDate.getDate();	
+				}else{
+					nowDate = myDate.getFullYear()+'-'+(myDate.getMonth()+1)+'-'+myDate.getDate();
+				}
+				document.getElementById("select-time").value = nowDate
+			}
+			
+			// 选择日期	
+			document.getElementById("select-time").addEventListener('tap', function(){
+                var dtpicker = new mui.DtPicker({
+                    type: "date", //设置日历初始视图模式    //真正的月份比写的多一个月。  type的类型你还是可以选择date datetime month time hour 
+                    labels: ['年', '月', '日'] ,//设置默认标签区域提示语 
+					endDate: new Date()
+                });
+                dtpicker.show(function(items) {
+					document.getElementById("select-time").value = items.value;
+                    console.log(items.value);
+                });
+			})
+			
+			// 清空输入框
+			function cleanIn(){
+				document.getElementById("select-xiang").value = '';
+				document.getElementById("select-lqr").value = '';
+				document.getElementById("select-time").value = nowDate;
+				document.getElementById("select-ffinspectid").value = '';
+				document.getElementById("ear-scale").value = '';
+				document.getElementById("before-num").value = '';
+				document.getElementById("number").value = '';
+				document.getElementById("finish-num").value = '';
+			}
+			
+		</script>
+	</body>
+
+</html>

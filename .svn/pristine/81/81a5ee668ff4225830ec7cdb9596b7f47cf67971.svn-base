@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>通讯录详情</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.css" rel="stylesheet" />
+		<link href="css/main.css" rel="stylesheet" />
+	</head>
+	<body>
+		<div class="mui-content mail-detail">
+			<div class="mail-base-top">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+				<img src="images/head-por.jpg" class="head-img max-width" />
+				<p class="name">张淑茹</p>
+			</div>
+			<ul class="mui-table-view detail-list">
+				<li class="mui-table-view-cell">所属机构：<span class="detail" id="detail">河南省动物卫生监督所（河南省畜牧兽医执法总队）</span></li>
+				<li class="mui-table-view-cell">职务名称：<span class="detail">综合处信息统计科</span></li>
+				<li class="mui-table-view-cell">移动电话：<a href="tel:18337107971" class="detail">18337107971</a></li>
+				<li class="mui-table-view-cell">职务名称：<span class="detail">综合处信息统计科</span></li>
+				<li class="mui-table-view-cell">移动电话：<a href="tel:18337107971" class="detail">18337107971</a></li>
+				<li class="mui-table-view-cell">办公电话：<a href="tel:0371— 65778580" class="detail">0371— 65778580</a></li>
+				<li class="mui-table-view-cell">房间号：<span class="detail">1105</span></li>
+			</ul>
+			
+		</div>
+		<script src="../js/mui.js"></script>
+		<script src="../js/jquery.min.js"></script>
+		<script src="js/content.js"></script>
+		<script type="text/javascript">
+			
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,547 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>TransportRoute</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="../../../../css/mui.min.css" />
+		<link rel="stylesheet" href="../../../../css/mui.picker.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/header.css">
+		<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=NmA1D3Y7HP0A9ZG2A831rsve6SuZKhDz"></script>
+		<script type="text/javascript" src="http://api.map.baidu.com/library/LuShu/1.2/src/LuShu_min.js"></script>
+		<style>
+			#TransportRoute-vehicleNum { margin-right: 8px; }
+			
+			.mui-content { height: 18%; margin-right: 3% !important; background-color: #FFFFFF; font-size: 14px; }
+			
+			.mui-input-group:before { background-color: #FFFFFF !important;}
+			.mui-input-group:after { background-color: #FFFFFF !important;}
+			.mui-input-group input { font-size: 15px; }
+			.mui-input-group .address-line:after { background-color: #FFFFFF !important; }
+			
+			#map_container { width: 94%; display: block; height: 62%; overflow: hidden; margin: 0 auto; border-radius: 4px; box-shadow: 2px 4px 10px rgba(85, 108, 120, 0.2); }
+			#allmap { width: 100%; height: 100%; }
+			
+			#map_buttons { margin-top: 20px; text-align: center; }
+			#map_buttons button { margin: auto 8px; }
+			
+			/* 去掉文字那行，添加CSS即可 */
+			.BMap_cpyCtrl { display: none; }
+			
+			/* 去掉地图那行，添加CSS即可 */
+			.anchorBL { display: none; }
+		</style>
+	</head>
+
+	<body>
+		<div id="wrap">
+			<header id="header" class="mui-bar mui-bar-nav">
+				<h1 class="mui-title"><span id="TransportRoute-vehicleNum" class="mui-theme-color"></span>轨迹回放</h1>
+				<a class="mui-action-back mui-icon mui-icon-arrowleft mui-pull-left"></a>
+			</header>
+			<div class="mui-content">
+				<div class="mui-content-padded" style="margin: 5px;">
+					<form class="mui-input-group">
+						<div class="mui-input-row">
+							<label>开始时间：</label>
+							<input type="text" placeholder="请选择" readonly="readonly" class="dateSelect" id="TransportRoute_dateBegin" value="2019-04-01 09:30:33">
+						</div>
+						<div class="mui-input-row address-line">
+							<label>结束时间：</label>
+							<input type="text" placeholder="请选择" readonly="readonly" class="dateSelect" id="TransportRoute_dateEnd" value="2019-05-01 09:30:33">
+						</div>
+					</form>
+				</div>
+			</div>
+			<div id="map_container">
+				<div id="allmap"></div>
+			</div>
+			<div id="map_buttons">
+				<button type="button" class="mui-btn mui-btn-primary" onclick="getTransportRoute()">轨迹回放</button>
+				<button type="button" class="mui-btn mui-btn-primary" onclick="start()">开始</button>
+				<button type="button" class="mui-btn mui-btn-primary" onclick="pause()">暂停</button>
+			</div>
+		</div>
+		<script type="text/javascript" src="../../../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../../../js/mui.picker.min.js"></script>
+		<script type="text/javascript" src="../../../../js/jquery-1.12.4.min.js"></script>
+		<script type="text/javascript" src="../../js/common.js"></script>mapoints
+		<script type="text/javascript" src="../../js/mapoints.js"></script>
+		<script type="text/javascript">
+			mui.init({
+				swipeBack: true //启用右滑关闭功能
+			});
+
+			var donePoints = []; //已经显示的点。
+			var bPoints = []; //保存百度化的坐标组。用于重设地图的中心点和显示级别。
+			var timerArr = []; //定时器
+			var interval;
+
+			//地图操作开始
+			var map = new BMap.Map("allmap");
+			var current_center = new BMap.Point("113.666994", "34.752064");
+			myIcon = new BMap.Icon("../../images/ipos_on.png", new BMap.Size(18, 43), {
+				anchor: new BMap.Size(10, 21)
+			});
+
+			map.centerAndZoom(current_center, 11); //初始显示郑州市。
+			map.enableScrollWheelZoom(); //滚轮放大缩小添加比例尺 (可以避免比例尺控件的初始化样式)
+			var scaleCtrl = new BMap.ScaleControl({
+				anchor: BMAP_ANCHOR_BOTTOM_RIGHT,
+				offset: new BMap.Size(10, 10)
+			});
+			map.addControl(scaleCtrl);
+
+			// 添加带有定位的导航控件
+			var navigationControl = new BMap.NavigationControl({
+				// 靠左上角位置
+				anchor: BMAP_ANCHOR_TOP_LEFT,
+				// LARGE类型
+				type: BMAP_NAVIGATION_CONTROL_LARGE,
+				// 启用显示定位
+				enableGeolocation: true
+			});
+			map.addControl(navigationControl);
+
+			map.addEventListener("zoomend", function(e) {
+				var ZoomNum = map.getZoom();
+				map.centerAndZoom(current_center, ZoomNum);
+			});
+
+			map.addEventListener("dragend", function showInfo() {
+				current_center = map.getCenter();
+			});
+
+			mui.plusReady(function() {
+				//	mui("#TransportRoute-vehicleNum")[0].innerHTML = plus.webview.currentWebview().phone;
+				var btns = mui('.dateSelect');
+				btns.each(function(i, btn) {
+					btn.addEventListener('tap', function() {
+						var _self = this;
+						if (_self.picker) {
+							_self.picker.show(function(rs) {
+								_self.value = rs.text;
+								_self.picker.dispose();
+								_self.picker = null;
+							});
+						} else {
+							var options = {
+								type: "alltime", //设置日历初始视图模式 
+								beginDate: new Date(1950, 00, 01), //设置开始日期 
+								endDate: new Date(2050, 11, 31), //设置结束日期;
+								value: _self.value
+							}
+							var id = this.getAttribute('id');
+							/*
+							 * 首次显示时实例化组件
+							 * 示例为了简洁，将 options 放在了按钮的 dom 上
+							 * 也可以直接通过代码声明 optinos 用于实例化 DtPicker
+							 */
+							_self.picker = new mui.DtPicker(options);
+							_self.picker.show(function(rs) {
+								console.log(JSON.stringify(rs));
+								/*
+								 * rs.value 拼合后的 value
+								 * rs.text 拼合后的 text
+								 * rs.y 年，可以通过 rs.y.vaue 和 rs.y.text 获取值和文本
+								 * rs.m 月，用法同年
+								 * rs.d 日，用法同年
+								 * rs.h 时，用法同年
+								 * rs.i 分（minutes 的第二个字母），用法同年
+								 */
+								//	result.innerText = '选择结果: ' + rs.text;
+
+								_self.value = rs.text;
+								/* 
+								 * 返回 false 可以阻止选择框的关闭
+								 * return false;
+								 */
+								/*
+								 * 释放组件资源，释放后将将不能再操作组件
+								 * 通常情况下，不需要示放组件，new DtPicker(options) 后，可以一直使用。
+								 * 当前示例，因为内容较多，如不进行资原释放，在某些设备上会较慢。
+								 * 所以每次用完便立即调用 dispose 进行释放，下次用时再创建新实例。
+								 */
+								_self.picker.dispose();
+								_self.picker = null;
+							});
+						}
+
+					}, false);
+				});
+			});
+
+			function getTransportRoute() {
+				//清除当前所有的定时器和地图上的覆盖物。
+				map.clearOverlays();
+				for (var t = 0; t < timerArr.length; t++) {
+					clearTimeout(timerArr[t]);
+				};
+				timerArr = [];
+				clearInterval(interval);
+				bPoints.length = 0;
+				donePoints.length = 0;
+
+				//	var car = document.getElementById('carName').value;
+				var dateBegin = document.getElementById('TransportRoute_dateBegin').value;
+				var dateEnd = document.getElementById('TransportRoute_dateEnd').value;
+
+				// if (dateBegin == "" || dateEnd == "") {
+				// 	mui.toast("请输入条件信息");
+				// } else {
+				// 	mui.post(BASEURL + "transport/search", {
+				// 		dateBegin: dateBegin,
+				// 		dateEnd: dateEnd
+				// 	}, function(ret) {
+				if (ret.code == 0 && ret.rows.length > 0) {
+					var points = [];
+					var pointArr = [];
+					$.each(ret.rows, function(n, value) {
+						points.push({
+							"lng": value.lng,
+							"lat": value.lat,
+							"id": value.id,
+							"time": value.time
+						});
+						pointArr.push(new BMap.Point(value.lng, value.lat));
+					})
+					var convertor = new BMap.Convertor();
+					convertor.translate(pointArr, 1, 5, translateCallback = function(data) {
+						var targPoints = [];
+						if (data.status === 0) {
+							for (var i = 0; i < data.points.length; i++) {
+								targPoints.push(data.points[i]);
+							}
+							pointArr = targPoints;
+						}
+					});
+					//从原始数组中查询符合条件的坐标点。
+					var pointsLen = pointArr.length;
+					var searchRes = []; //用来装符合条件的坐标信息。
+					var pointRes = [];
+					//满足条件的放上去。
+					for (var i = 0; i < pointsLen; i++) {
+						if (dateDiff(points[i].time, dateBegin) > 0 && dateDiff(points[i].time, dateEnd) < 0) {
+							searchRes.push(points[i]);
+							pointRes.push(pointArr[i]);
+						}
+					};
+					map.centerAndZoom(pointRes[0], 14);
+					//map.addOverlay(new BMap.Polyline(pointRes, {strokeColor: "black", strokeWeight: 5, strokeOpacity: 1}));
+					//huoChe();
+					moveBus(pointRes);
+					// trackTime(dateBegin);
+				} else {
+					mui.toast("该时间段内暂无数据");
+				}
+				// 	}, "json");
+				// }
+			}
+
+			//求时间差的方法
+			function dateDiff(date1, date2) {
+				var type1 = typeof date1,
+					type2 = typeof date2;
+				if (type1 == 'string')
+					date1 = stringToTime(date1);
+				else if (date1.getTime)
+					date1 = date1.getTime();
+				if (type2 == 'string')
+					date2 = stringToTime(date2);
+				else if (date2.getTime)
+					date2 = date2.getTime();
+				return (date1 - date2) / 1000; //结果是秒
+			}
+
+			//字符串转成Time(dateDiff)所需方法
+			function stringToTime(string) {
+				var f = string.split(' ', 2);
+				var d = (f[0] ? f[0] : '').split('-', 3);
+				var t = (f[1] ? f[1] : '').split(':', 3);
+				return (new Date(
+					parseInt(d[0], 10) || null,
+					(parseInt(d[1], 10) || 1) - 1,
+					parseInt(d[2], 10) || null,
+					parseInt(t[0], 10) || null,
+					parseInt(t[1], 10) || null,
+					parseInt(t[2], 10) || null
+				)).getTime();
+
+			}
+
+
+			function moveBus(arrayList) {
+				map.setViewport(arrayList);
+				// marker=new BMap.Marker(arrayList[0],{
+				//   icon  : new BMap.Icon('http://developer.baidu.com/map/jsdemo/img/car.png', new BMap.Size(52,26),{anchor : new BMap.Size(27, 13)})
+				// });
+				// var label = new BMap.Label("湘U16888",{offset:new BMap.Size(0,-30)});
+				var label = new BMap.Label("", {
+					offset: new BMap.Size(0, -20)
+				});
+				label.setStyle({
+					color: "#2492FC",
+					fontSize: "12px",
+					fontFamily: "微软雅黑",
+					border: "none",
+					borderRadius: "4px",
+					paddingLeft: "7px",
+					paddingRight: "7px",
+					paddingTop: "5px",
+					paddingBottom: "5px",
+					marginTop: "-40px",
+					marginLeft: "-50px",
+					height: "auto",
+					lineHeight: "20px",
+					backgroundColor: "rgba(255, 255, 255, .9)",
+					maxWidth: 'none'
+				});
+				//         marker.setLabel(label);
+
+				//  map.addOverlay(marker);
+				BMapLib.LuShu.prototype._move = function(initPos, targetPos, effect) {
+					var pointsArr = [initPos, targetPos]; //点数组
+					var me = this,
+						//当前的帧数
+						currentCount = 0,
+						//步长，米/秒
+						timer = 10,
+						step = this._opts.speed / (1000 / timer),
+						//初始坐标
+						init_pos = this._projection.lngLatToPoint(initPos),
+						//获取结束点的(x,y)坐标
+						target_pos = this._projection.lngLatToPoint(targetPos),
+						//总的步长
+						count = Math.round(me._getDistance(init_pos, target_pos) / step);
+					if (count > 100) {
+						count = Math.round(me._getDistance(init_pos, target_pos) / (step * count / 10));
+					}
+					//显示折线 syj201607191107
+					// this._map.addOverlay(new BMap.Polyline(pointsArr, {
+					//     strokeColor : "#111",
+					//     strokeWeight : 5,
+					//     strokeOpacity : 0.5
+					// })); // 画线
+					//如果小于1直接移动到下一点
+					if (count < 1) {
+						me._moveNext(++me.i);
+						return;
+					}
+					me._intervalFlag = setInterval(function() {
+						//两点之间当前帧数大于总帧数的时候，则说明已经完成移动
+						if (currentCount >= count) {
+							clearInterval(me._intervalFlag);
+							//移动的点已经超过总的长度
+							if (me.i > me._path.length) {
+								return;
+							}
+							//运行下一个点
+							me._moveNext(++me.i);
+						} else {
+							currentCount++;
+							var x = effect(init_pos.x, target_pos.x, currentCount, count),
+								y = effect(init_pos.y, target_pos.y, currentCount, count),
+								pos = me._projection.pointToLngLat(new BMap.Pixel(x, y));
+							//设置marker
+							if (currentCount == 1) {
+								var proPos = null;
+								if (me.i - 1 >= 0) {
+									proPos = me._path[me.i - 1];
+								}
+								if (me._opts.enableRotation == true) {
+									me.setRotation(proPos, initPos, targetPos);
+								}
+								if (me._opts.autoView) {
+									if (!me._map.getBounds().containsPoint(pos)) {
+										me._map.setCenter(pos);
+									}
+								}
+							}
+							//正在移动
+							me._marker.setPosition(pos);
+							//me._map.panTo(pos);
+
+							label.setContent("经度: " + initPos.lng + "<br>纬度: " + initPos.lat);
+							me._marker.setLabel(label);
+							me._map.addOverlay(new BMap.Polyline([initPos, targetPos], {
+								strokeColor: "#2492FC",
+								strokeWeight: 2,
+								strokeOpacity: 0.7
+							}));
+							//设置自定义overlay的位置
+							me._setInfoWin(pos);
+
+
+						}
+					}, timer);
+				};
+				lushu = new BMapLib.LuShu(map, arrayList, {
+					//	defaultContent: "豫A823CC",
+					autoView: true, //是否开启自动视野调整，如果开启那么路书在运动过程中会根据视野自动调整
+					//icon  : new BMap.Icon('car.png', new BMap.Size(52,26),{anchor : new BMap.Size(27, 13)}),
+					icon: new BMap.Icon('../../images/ipos_on_heng.png', new BMap.Size(43, 18), {
+						anchor: new BMap.Size(20, 11)
+					}),
+					speed: 2000,
+					enableRotation: true, //是否设置marker随着道路的走向进行旋转
+					landmarkPois: [
+						//{lng:109.74260833236,lat:28.328984703864,html:'女士们先生们，欢迎您乘坐6号公交车，请大家坐好了',pauseTime:2},
+						//{lng:109.684917,lat:28.234319,html:'女士们先生们，到达终点站，请拿好行李下车',pauseTime:2},
+					],
+					// defaultContent: '湘U16888 公交车极速前进中...',
+				});
+				lushu.start();
+			}
+
+			//显示信息窗口，显示标注点的信息。
+			function showVehicleInfo(thisMaker, point) {
+				var sContent =
+					'<ul class="info_ul">'
+					// +'<li class="info_li">'
+					// +'<span class="info_span">id：</span>' + point.id + '</li>'
+					+
+					'<li class="info_li">' +
+					'<span class="info_span">车牌号：</span>' + point.name + '</li>' +
+					'<li class="info_li"><span class="info_span">查看：</span><a href="' + point.url + '" target="_blank">详情</a></li>' +
+					'</ul>';
+				var infoWindow = new BMap.InfoWindow(sContent, {
+					enableMessage: false
+				}); // 创建信息窗口对象
+				thisMaker.openInfoWindow(infoWindow); //图片加载完毕重绘infowindow
+			}
+
+			//在轨迹点上创建图标，并添加点击事件，显示轨迹点信息。points,数组。
+			function addMarker(points) {
+				var pointsLen = points.length;
+				if (pointsLen == 0) {
+					return;
+				}
+				var myIcon = new BMap.Icon("bigtrack.ico", new BMap.Size(10, 10), {
+					offset: new BMap.Size(10, 10)
+				});
+				// var myIcon = new BMap.Icon("vehicle.png", new BMap.Size(32, 32), {
+				//     offset: new BMap.Size(10, 10)
+				// });
+
+				// 创建标注对象并添加到地图
+				for (var i = 0; i < pointsLen; i++) {
+					var point = new BMap.Point(points[i].lng, points[i].lat);
+					var marker = new BMap.Marker(point, {
+						icon: myIcon
+					});
+					map.addOverlay(marker);
+					(function() {
+						var thePoint = points[i];
+						marker.addEventListener("click", function() {
+							showInfo(this, thePoint);
+						});
+					})();
+				}
+			}
+
+
+			//点击轨迹点后显示信息窗口
+			function showInfo(thisMaker, point) {
+				var sContent =
+					"<ul style='margin:0 0 5px 0;padding:0.2em 0'>" +
+					"<li style='line-height: 26px;font-size: 15px;'>" +
+					"<span style='width: 50px;display: inline-block;'>序号：</span>" + point.id + "</li>" +
+					"<li style='line-height: 26px;font-size: 15px;'><span style='width: 100px;display: inline-block;'>定位时间：</span>" +
+					point.time + "</li>" +
+					"<li style='line-height: 26px;font-size: 15px;'>" +
+					"<span style='width: 100px;display: inline-block;'>定位类型：</span>卫星定位</li>" +
+					"</ul>";
+				var infoWindow = new BMap.InfoWindow(sContent, {
+					enableMessage: false
+				}); // 创建信息窗口对象
+				thisMaker.openInfoWindow(infoWindow); //图片加载完毕重绘infowindow
+			}
+
+			//添加线
+			function addLine(points) {
+				var linePoints = [];
+				var pointsLen = points.length;
+				if (pointsLen == 0) {
+					return;
+				}
+				// 创建标注对象并添加到地图
+				for (var i = 0; i < pointsLen; i++) {
+					linePoints.push(new BMap.Point(points[i].lng, points[i].lat));
+				}
+				var polyline = new BMap.Polyline(linePoints, {
+					strokeColor: "#2492FC",
+					strokeWeight: 2,
+					strokeOpacity: 0.7
+				}); //创建折线
+				map.addOverlay(polyline); //增加折线
+			}
+			//显示轨迹运行的时间
+			function trackTime(beginTime) {
+				var beginTimestamp = Date.parse(new Date(beginTime));
+				interval = setInterval(function() {
+
+					var time = getDate(beginTimestamp).time;
+					document.getElementById('realTime').innerHTML = "回放时间" + time;
+					beginTimestamp = beginTimestamp + 1000;
+
+				}, 1000)
+
+			}
+
+			//根据时间戳（毫秒），返回处理过后的时间。
+			function getDate(ms) {
+				var res;
+				if (ms != undefined) {
+					var today = new Date()
+					today.setTime(ms);
+				} else {
+					var today = new Date();
+				}
+
+				var year, month, day, hour, minute, second;
+				year = today.getFullYear();
+				month = today.getMonth() + 1;
+				if (month < 10) {
+					month = '0' + month;
+				}
+				day = today.getDate();
+				if (day < 10) {
+					day = '0' + day;
+				}
+				hour = today.getHours();
+				if (hour < 10) {
+					hour = '0' + hour;
+				}
+				minute = today.getMinutes();
+				if (minute < 10) {
+					minute = '0' + minute;
+				}
+				second = today.getSeconds();
+				if (second < 10) {
+					second = '0' + second;
+				}
+				res = {
+					'y': year,
+					'M': month,
+					'd': day,
+					'h': hour,
+					"m": minute,
+					"s": second,
+					"time": year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second,
+					"date": year + "-" + month + "-" + day
+				}
+				return res;
+			}
+
+			function start() {
+				lushu.start();
+			}
+			function pause() {
+				lushu.pause();
+			}
+		</script>
+	</body>
+
+</html>

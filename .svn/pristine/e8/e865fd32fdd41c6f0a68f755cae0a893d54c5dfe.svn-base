@@ -1,0 +1,5 @@
+var ear_scale_data = [
+	{ "id": "猪标", "value": "猪标" },
+	{ "id": "牛标", "value": "牛标" },
+	{ "id": "羊标", "value": "羊标" }
+];

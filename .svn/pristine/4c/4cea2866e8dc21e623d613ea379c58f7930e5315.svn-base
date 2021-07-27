@@ -1,0 +1,30 @@
+/**全国配置*/
+// 王帅超本地
+// const  MAIN_URL="http://172.168.1.121:7400"; 
+// 服务器
+// const  MAIN_URL="http://1.192.171.68:9059"; 
+const  MAIN_URL="http://172.168.1.130:9056"; 
+
+const  default_areaCode="459000";//
+const  default_areaName="济源市";//
+
+
+var Constant = (function() {
+  // Private static attributes.
+  var constants = {//定义了两个常量
+		MAIL_LIST:MAIN_URL+"/xmdc/api/SsoBasOrgApi_list.action",  // 组织机构信息的列表分页
+		MAIL_PERSON_LIST:MAIN_URL+"/xmdc/api/SsoBasPersonApi_list.action",  // 组织机构信息的列表分页
+		MAIL_BUMEN_PERSON_LIST:MAIN_URL+"/xmdc/api/SsoBasPersonApi_getPersonList.action",  // 部门人员类别
+		MAIL_ID_DETAIL: MAIN_URL+"/xmdc/api/SsoBasPersonApi_getById.action" // 人员详情
+		
+   }
+   
+
+   var Test={};
+   // 定义了一个静态方法
+   Test.getConstant=function(name){//获取常量的方法
+     return constants[name]; 
+   }
+   return Test
+})();
+//使用示例：Constant.getConstant('USER_REGISTER')

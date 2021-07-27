@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>检疫管理</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.css" rel="stylesheet" />
+		<link href="../css/generic.css" rel="stylesheet" />		
+		<style>
+			.mail-content .mui-table-view-cell{ font-size: 0.24rem; margin-bottom: 10px; border-bottom: 1px solid #D2D1DB; }
+			.mail-content .mui-table-view-cell:after { height: 0; }
+			.mail-list:last-child { margin-top: 15px; }
+		</style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">检疫申报单详情</h1>
+		</header>
+		<div class="mui-content">
+			
+		</div>
+
+		<script src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/jquery-1.12.4.min.js"></script>
+		<script type="text/javascript" src="../js/content.js"></script>
+		<script type="text/javascript" src="../js/constant.js"></script>
+		<script type="text/javascript">
+			mui.init({});
+			
+			var quarantineId = "";
+			mui.plusReady(function() {
+				initSettings(); 		// 初始化设置字体大小
+				
+				var self = plus.webview.currentWebview();
+				quarantineId = self.targetId;
+				
+				initQuarantineData()
+			});
+			
+			function initQuarantineData() {
+				plus.nativeUI.showWaiting("正在加载数据……");
+				var json_syncTransferData = [{
+					"QUARID": quarantineId,
+					"SYNC_ACT": "AIS-2001000100000003",
+					"SYNC_USR": "admin",
+					"SYNC_VER": "APP.1.01",
+					"USERNAME": "admin",
+					"_GATEWAY_NAME": "HA_NETWORK",
+				}];
+				mui.ajax(QUARANTINE_MAIN_URL, {
+					data:{
+						syncTransferData: JSON.stringify(json_syncTransferData)
+					},
+					dataType: 'json',//服务器返回json格式数据
+					type: 'post',//HTTP请求类型
+					timeout: 10000,//超时时间设置为10秒；
+					success: function(data) {
+						console.log(JSON.stringify(data));
+						plus.nativeUI.closeWaiting();
+						if(data.AIS_STATUS === "AIS-000000" && data.QUARDECL_DATA) {
+							
+						} else {
+							mui.toast("申报单详情信息查询失败，请重试");
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						plus.nativeUI.closeWaiting();
+						mui.toast("申报单详情信息查询失败");	
+					}
+				});
+			}
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,155 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>无害化处理</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="../../css/mui.css"/>
+		<link rel="stylesheet" href="../css/generic.css"/>
+		<style>			
+			.in-list, .center-content { margin: 10px; background: #FFFFFF; border-radius: 5px !important; overflow: hidden !important; }
+			.in-list .title { font-size: 0.245rem; padding: 10px 15px 5px; border-bottom: 1px solid #EEEEEE; }
+			.in-list ul { color: #6A6882; line-height: 0.46rem; padding: 0 15px 8px; }
+			.in-list li span { display: inline-block; width: 49.5%; }
+			.in-list li span a { color: #6A6882 !important; }
+			.phone-img { height: 0.35rem; vertical-align: middle; margin-left: 8px; }
+			.status-1 { color: #D52B2B; }
+			.status-2 { color: #02CC9C; }
+			.accept-list { height: 100%; padding-bottom: 60px; }
+			.big-commit-btn-outlook { position: fixed; left: 0px; bottom: 0px; width: 100%; height: 55px; background-color: #FFFFFF; }
+			.big-commit-btn { margin: 8px 8%; width: 84%; height: 38px; padding-top: 9px; }
+			
+			.center-content ul { color: #6A6882; line-height: 0.32rem; padding: 5px; }
+			.center-content .mui-table-view:before { height: 0px !important; }
+			.center-content .mui-table-view-cell:after, .center-content .mui-table-view:after { height: 0px !important; }
+			.center-content .mui-navigate-right { padding: 5px 15px !important; }
+			.center-content .mui-navigate-right:after { color: #007AFF !important; }
+			.center-content .w-50 { width: 50%; }
+			.center-content .w-75 { width: 75%; }
+			.center-content .mui-navigate-right span { display: block; margin: 10px 15% 0; }
+		</style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">收集详情</h1>
+		</header>
+		<div class="mui-content accept-list">
+			<div class="in-list">
+				<p class="title"></p>
+				<ul>
+					<li><span id="farmName"></span><span id="farmTelPhone"></span></li>
+					<li><span id="truckPlate"></span><span id="bkName"></span></li>
+					<li id="collectTime"></li>
+				</ul>
+			</div>
+			
+			<div class="center-content">
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell mui-media">
+						<a class="mui-navigate-right f-column">
+							<p class="mui-ellipsis w-50">无耳标</p>
+							<span class="mui-ellipsis w-75">总重量：458 KG&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总头数：120 头</span>
+						</a>
+					</li>
+				</ul>
+			</div>
+			
+			<div class="center-content">
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell mui-media">
+						<a class="mui-navigate-right f-column">
+							<p class="mui-ellipsis w-50">有耳标（无保险）</p>
+							<span class="mui-ellipsis w-75">总重量：8 KG&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总头数：120 头</span>
+						</a>
+					</li>
+				</ul>
+			</div>
+			
+			<div class="center-content">
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell mui-media">
+						<a class="mui-navigate-right f-column">
+							<p class="mui-ellipsis w-50">有耳标（有保险）</p>
+							<span class="mui-ellipsis w-75">总重量：458 KG&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总头数：120 头</span>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="big-commit-btn-outlook">
+			<div class="mui-btn mui-btn-primary big-commit-btn" id="harmless_collect_detail_commit">提交信息</div>
+		</div>
+		<script type="text/javascript" src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/jquery-1.12.4.min.js"></script>
+		<script type="text/javascript" src="../js/content.js"></script>
+		<script type="text/javascript" src="../js/constant.js"></script>
+		<script type="text/javascript" src="js/harmless-data.js"></script>
+		<script type="text/javascript" src="../../js/date-format.js"></script>
+		<script type="text/javascript">
+			mui.init({});
+			
+			var harmless_user_id = "";
+			var reportId = "";
+			var status = "";
+			var collectDateStr = "";
+			
+			mui.plusReady(function() {
+				initSettings(); 		// 初始化设置字体大小
+				
+				var harmlessUseRoleId = plus.storage.getItem('harmless_user_roleId'); // 获取无害化用户角色id
+				harmless_user_id = plus.storage.getItem("harmless_user_id"); //用户的的id编号
+				var self = plus.webview.currentWebview();
+				reportId = self.reportId;
+				status = self.status;
+				collectDateStr = self.collectDate == "" ? (new Date()).Format("yyyy-MM-dd HH:mm:ss") : self.collectDate;
+				
+				mui(".in-list .title")[0].innerHTML = "养殖企业：&nbsp;" + self.companyName;
+				mui(".in-list #farmName")[0].innerHTML = "养殖户名称：" + self.farmer;
+				mui(".in-list #farmTelPhone")[0].innerHTML = '<a href="tel:' + self.telephone + '">电&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;话：' + self.telephone + '<img class="phone-img" src="images/phone.png"></a>';
+				mui(".in-list #bkName")[0].innerHTML = "畜&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别：&nbsp;" + self.bkName;
+				mui(".in-list #truckPlate")[0].innerHTML = "运输车辆：&nbsp;" + self.truckPlate;
+				mui(".in-list #collectTime")[0].innerHTML = "收集时间：&nbsp;" + collectDateStr.substring(0, collectDateStr.length - 3);
+				
+				if(status === CollectStatus_SIX) {
+					$(".big-commit-btn-outlook").hide();
+					if(harmlessUseRoleId == OFFICIAL_VETERINARIAN || harmlessUseRoleId == TOWN_SUPERVISE) {
+						/** ----------------- 待补充 蓝牙打印机功能 ----------------- */
+					}
+				} else {
+					/** ----------------- 待补充 蓝牙打印机功能 ----------------- */
+				}
+				initCollectDetails();
+			});
+
+			function initCollectDetails() {
+				var result;
+				plus.nativeUI.showWaiting("正在加载……");
+				mui.ajax(Constant.getConstant("HARMLESS_REPORT_DETAILS"), {
+					data:{
+						"api_method": "c.findReportDetails",
+						"a_id": harmless_user_id,
+						"reportId": reportId
+					},
+					dataType: 'json',	//服务器返回json格式数据
+					type: 'post',		//HTTP请求类型
+					timeout: 10000,		//超时时间设置为10秒；
+					success: function(data) {
+						plus.nativeUI.closeWaiting();
+						console.log(JSON.stringify(data));
+						if(data.resultStatus) {
+							
+						} else {
+							mui.toast("收集详情信息获取失败，请重试")
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						plus.nativeUI.closeWaiting();
+						mui.toast("收集详情信息获取失败");	
+					}
+				});
+			}
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,122 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>通讯录</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.css" rel="stylesheet" />
+		<link href="css/main.css" rel="stylesheet" />
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<h1 class="mui-title">通讯录</h1>
+		</header>
+		<div id="pullrefresh" class="mui-content mail-content">
+			<ul class="mui-table-view mail-list" id="mail">
+				<!-- <li class="mui-table-view-cell"><a class="mui-navigate-right">办公室</a></li> -->
+			</ul>
+			
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/jquery-1.12.4.min.js"></script>
+		<script src="js/constant.js"></script>
+		<script src="js/content.js"></script>
+		<script type="text/javascript">
+			mui.plusReady(function(){
+				var uuid = plus.storage.getItem("uuid"); //用户的的id编号
+				if(uuid == "" || uuid == null || uuid == "undefined"){
+					mui.openWindow({
+						id: 'login.html',
+						url: 'login.html'
+					})
+				}
+				
+				var currpage = 1;
+				getList(currpage);
+				function getList(currpage){
+					var result="";
+					var pageSize = 15;
+					plus.nativeUI.showWaiting("加载中……");
+					// http://172.168.1.130:9056/xmdc/api/SsoBasOrgApi_list.action
+					mui.ajax(Constant.getConstant("MAIL_LIST"), {
+						data:{
+							"page": currpage,
+							"pageSize": pageSize,
+							"orgname": default_areaName
+						},
+						dataType:'json',//服务器返回json格式数据
+						type:'post',//HTTP请求类型
+						timeout:10000,//超时时间设置为10秒；
+						success: function(data){
+							plus.nativeUI.closeWaiting();
+							// jsonobj = JSON.stringify(data); 
+							// console.log(jsonobj);
+							var result_array = data.rows;
+							if(result_array.length == 0){
+								mui('#pullrefresh').pullRefresh().disablePullupToRefresh();
+								if(currpage == 1){
+									$('#mail').append('<p style="text-align: center;line-height: 1rem;">-- 暂无数据 --</p>')
+								}else{
+									mui.toast("已经到底了");
+								}
+							}else{
+								mui('#pullrefresh').pullRefresh().refresh(true);
+								for(var i=0;i<result_array.length;i++){
+									result = '<li class="mui-table-view-cell" oId_id="'+result_array[i].OID+'"><a class="mui-navigate-right">'+result_array[i].ORGNAME+'</a></li>';
+									$('#mail').append(result);
+								}
+							}
+							
+						},error:function(xhr,type,errorThrown){
+								mui.toast("查询失败");
+							}
+
+					})
+
+
+				}
+				mui.init({
+					pullRefresh : {
+						container: '#pullrefresh', //待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+						up : {
+							height:50,//可选.默认50.触发上拉加载拖动距离
+							auto:false,//可选,默认false.自动上拉加载一次
+							contentrefresh : "正在加载...",//可选，正在加载状态时，上拉加载控件上显示的标题内容
+							contentnomore:'没有数据了',//可选，请求完毕若没有更多数据时显示的提醒内容；
+							callback :pullupRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+						}
+					}
+				});
+				
+				function pullupRefresh(){
+					setTimeout(function(){
+						currpage++;
+						getList(currpage);
+						mui('#pullrefresh').pullRefresh().endPullupToRefresh();
+					},1500)
+				}
+				
+				
+				mui(".mail-list").on('tap', '.mui-table-view-cell', function(){
+					var title = $(this).text();
+					var oId_id = $(this).attr("oId_id");
+					mui.openWindow({
+						url: 'mail-list.html',
+						id: 'mail-list.html',
+						extras: {
+							'title': title,
+							'oId_id': oId_id
+						},
+						waiting: {
+							autoShow: true,
+							title: '正在加载……'
+						}
+					})
+				});
+				
+			});
+
+		</script>
+	</body>
+
+</html>

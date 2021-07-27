@@ -1,0 +1,222 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>无害化处理</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="../../css/mui.css"/>
+		<link rel="stylesheet" href="../css/generic.css"/>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title" id="com-title">运输记录<span id="toalNum"></span></h1>
+		</header>
+		<div class="mui-content" id="pullrefresh">
+			<div class="record-list-content" id="record-list-content">
+				
+			</div>
+		</div>
+		
+		
+		<script type="text/javascript" src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/jquery-1.12.4.min.js"></script>
+		<script type="text/javascript" src="../js/content.js"></script>
+		<script type="text/javascript" src="../js/constant.js"></script>
+		<script type="text/javascript" src="js/harmless-data.js"></script>
+		<script type="text/javascript">
+		
+			mui.plusReady(function () {
+				initSettings(); 		// 初始化设置字体大小
+				
+			    var currpage = 1;
+			//    getList(currpage);
+				
+				
+				function getList(currpage){
+				var huid = plus.storage.getItem('harmless_user_id'); //用户的的id编号
+				var result="";
+				var pageSize = 10;
+				plus.nativeUI.showWaiting("加载中……");
+				mui.ajax(Constant.getConstant("HARMLESS_TRANSPORT_RECORD_LIST"), {
+					data:{
+						"a_id": huid,  //登录用户id
+						"api_method":'c.findTransportLogs', // 方法
+						"page": currpage,
+						"rows": pageSize,
+						"type": 0
+					},
+					dataType:'json',//服务器返回json格式数据
+					type:'post',//HTTP请求类型
+					timeout:10000,//超时时间设置为10秒；
+					success: function(data){
+						// console.log(JSON.stringify(data.data.page.totalRows));
+						plus.nativeUI.closeWaiting();
+						if(data.resultStatus == true){
+							var dataResult = data.data;
+							var page = dataResult.page;
+							var result_array = dataResult.tsl;
+							document.getElementById("toalNum").innerHTML = "（共"+page.totalRows+"条）"
+							console.log(JSON.stringify(dataResult));
+							if(result_array==undefined || result_array.length == 0 || currpage > page.totalPage ){
+								mui('#pullrefresh').pullRefresh().disablePullupToRefresh();
+								if(currpage == 1){
+									$('#record-list-content').append('<p style="text-align: center;line-height: 1rem;">-- 暂无数据 --</p>')
+								}else{
+									mui.toast("已经到底了");
+								}
+							}else{
+								mui('#pullrefresh').pullRefresh().refresh(true);
+								for(var i=0;i<result_array.length;i++){
+									var date = new Date(result_array[i].createTime); // 检查日期
+									Y = date.getFullYear();
+									M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1);
+									D = (date.getDate() < 10 ? '0'+(date.getDate()) : date.getDate());
+									var btnText;
+									var btnHidn='';
+									// console.log(result_array[i].status);
+									if(result_array[i].status == "50001"){
+										btnText = '<span style="color:red;">'+'收集中'+'</span>';
+									}else if(result_array[i].status == "50002"){
+										btnText = '<span style="color:green;">'+'运输中'+'</span>';
+										btnHidn = '<li class="oper"><a href="javascript:;" style="color:green;" class="issued-btn mui-col-sm-2 mui-col-xs-2" recordid='+result_array[i].id+' >入厂操作</a></li>';
+									}else if(result_array[i].status == "50003"){
+										btnText = '<span style="color:green;">'+'入厂'+'</span>';
+									}else if(result_array[i].status == "50004"){
+										btnText = "待消毒";
+									}else if(result_array[i].status == "50005"){
+										btnText = "出厂";
+									}else if(result_array[i].status == "50006"){
+										btnText = "已完成";
+									}
+									// result_array[i].ysfs
+									result = '<div class="record-list">' +
+											'<ul class="record-info" rid='+result_array[i].id+' cdate='+Y+'-'+M+'-'+D+' tName='+result_array[i].transportPersonName+' truckPlate='+ result_array[i].truckPlate+' totalweight='+result_array[i].totalweight+' totalnum='+result_array[i].totalnum+'><li class="title">车牌号：<span>'+result_array[i].truckPlate+'</span></li>' +
+											'<li>运输时间:<span>'+Y+'-'+M+'-'+D+'</span></li><li>运输状态:<span>'+btnText+'</span></li><li>总重量(KG):<span>'+result_array[i].totalweight+'</span></li><li>总数量(头):<span>'+result_array[i].totalnum+'</span></li><li style="width:100%">目的地:<span>'+result_array[i].harmlessFactoryName+'</span></li></ul>'
+											+'<ul>'+btnHidn
+											+'</ul></div>';
+									$('#record-list-content').append(result);
+								}
+							}
+						}else{
+							mui.toast("查询失败，请重试");
+						}
+						
+					},error:function(xhr,type,errorThrown){
+						plus.nativeUI.closeWaiting();
+						mui.toast("查询失败");
+					}
+			
+				})
+				}
+				mui.init({
+					pullRefresh : {
+						container: '#pullrefresh', //待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+						up : {
+							height:50,//可选.默认50.触发上拉加载拖动距离
+							auto:false,//可选,默认false.自动上拉加载一次
+							contentrefresh : "正在加载...",//可选，正在加载状态时，上拉加载控件上显示的标题内容
+							contentnomore:'没有数据了',//可选，请求完毕若没有更多数据时显示的提醒内容；
+							callback :pullupRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+						},
+						down: {
+							style: "circle",
+							color: "#33323E",				//可选，默认“#2BD009” 下拉刷新控件颜色
+							height: '30px',					//可选,默认50px.下拉刷新控件的高度,
+							range: '100px',					//可选 默认100px,控件可下拉拖拽的范围
+							offset: '0px',					//可选 默认0px,下拉刷新控件的起始位置
+							auto: true,					//可选,默认false.首次加载自动上拉刷新一次
+							callback: pullDownRefreshFun
+						}
+					}
+				});
+				
+				function pullupRefresh(){
+					setTimeout(function(){
+						currpage++;
+						getList(currpage);
+						mui('#pullrefresh').pullRefresh().endPullupToRefresh();
+					},1500)
+				}
+				
+				/**
+				 * 下拉刷新功能
+				 */
+				function pullDownRefreshFun() {
+					setTimeout(function() {
+						currpage = 1;
+						$('#record-list-content').html("");
+						getList(currpage);
+						mui('#pullrefresh').pullRefresh().endPulldownToRefresh();
+						mui('#pullrefresh').pullRefresh().refresh(true);
+					}, 1500);
+				}
+				
+				//入厂操作
+				mui(".record-list-content").on('tap','.issued-btn',function(){
+				  var recordid = this.getAttribute("recordid");
+				  var huid = plus.storage.getItem('harmless_user_id'); //用户的的id编号
+				  var btnArray = ['是', '否'];
+				  mui.confirm('是否入厂？', '提示', btnArray, function(e) {
+					if (e.index == 0) {
+					  plus.nativeUI.showWaiting("执行中……");
+					  mui.ajax(Constant.getConstant("HARMLESS_UPDATE_TRANSPORT_RECORD_STATUS"),{
+						  data:{
+							  "transportLogId": recordid,  //为运输记录的id编号
+							  "a_id": huid, //为用户的的id编号
+							  "api_method":'c.deleteReportDetail', // 方法 
+						  },
+						  dataType:'json',//服务器返回json格式数据
+						  type:'post',//HTTP请求类型
+						  timeout:10000,//超时时间设置为10秒；
+						  success:function(data){
+							  plus.nativeUI.closeWaiting();
+							  // console.log(JSON.stringify(data));
+							  if(data.resultStatus == true){
+								  mui.toast("入厂成功！");
+								  // 刷新页面
+								  setTimeout('location.reload()', 200);
+							  }else{
+								  mui.toast("入厂失败，请重试");
+							  }
+						  },
+						  error:function(xhr,type,errorThrown){
+							  plus.nativeUI.closeWaiting();
+							  mui.toast("失败");
+						  }
+					  });
+					 }
+					});
+				})				
+				
+				mui(".record-list-content").on('tap','.record-info',function(){
+					var rid = this.getAttribute('rid');
+					var tName = this.getAttribute('tName');
+					var truckPlate = this.getAttribute('truckPlate');
+					var cdate = this.getAttribute('cdate');
+					var tweight = this.getAttribute('totalweight');
+					var tNum = this.getAttribute('totalnum');
+					console.log(cdate);
+					mui.openWindow({
+						url: "transport-record-detail.html",
+						id: "transport-record-detail.html",
+						extras: {
+							"transportRecordId": rid,
+							"tName":tName,
+							"cdate":cdate,
+							"tPlate":truckPlate,
+							"totalweight":tweight,
+							"totalnum":tNum
+						},
+						waiting: {
+							autoShow: true, //自动显示等待框，默认为true
+							title: '正在加载...', //等待对话框上显示的提示内容
+						}
+					});
+				})
+				
+			})
+
+		</script>
+	</body>
+</html>

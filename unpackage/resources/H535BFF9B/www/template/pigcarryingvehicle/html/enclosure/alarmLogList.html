@@ -1,0 +1,284 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>ALARMLOGLIST</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="../../../../css/mui.min.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/mui-popover-self.css" />
+		<style>
+			html,body { background-color: #efeff4 !important; }
+			.mui-card { height: 158px; }
+			.mui-card:first-child { margin-top: 2px !important; }
+			.mui-card-content { height: 70px; }
+			.mui-card-footer { height: 44px; text-align: right; }
+			
+			.mui-card div { width: 97%; margin: 0 auto; }
+			.mui-card-header div, .mui-card-footer div { font-size: 13px; }
+			.mui-card-header div span, .mui-card-footer div span { color: #202934; }
+			.mui-card-header div .mui-icon { font-size: 20px; }
+			
+			.mui-col-sm-9 { width: 65% !important; margin-right: 10%; }
+			.mui-col-sm-8-2 { width: 80% !important; padding-right: 3px !important; overflow: hidden; }
+			.mui-col-sm-3 { width: 25% !important; }
+			.mui-col-sm-6 { width: 50% !important; }
+			.mui-col-sm-4-2 { width: 40% !important; }
+			.mui-col-sm-2-2 { width: 20% !important; font-weight: 700; }
+			.mui-col-sm-1-2 { width: 10% !important; text-align: right; }
+			.1-2-active:active { background-color: #CCCCCC; border-radius: 5px; }
+			.mui-card-footer .mui-col-sm-3 .mui-theme-color:active { color: #FFFFFF !important; }
+			
+			.mui-card-content div { width: 90% !important; height: 20px; line-height: 20px; font-size: 13px; color: #202934; }
+			.mui-card-content div:first-child { margin-top: 5px; }
+			.mui-card-content div:last-child { margin-bottom: 5px; }
+			.mui-card-content div span { display: inline-block;}
+			.mui-card-content div span label { color: #787B7E; }
+		</style>
+	</head>
+
+	<body>
+		<div id="wrap"></div>
+		<script id="resAlarmLogServiceItem" type="text/x-dot-template">
+			{{~it :item:idx}}
+				<div class="mui-card">
+					<div class="mui-card-header">
+						<div class="mui-theme-color mui-col-sm-4-2 fl"><span>车牌号：</span>{{=item.platenumber || ""}}</div>
+						<div class="mui-theme-color mui-col-sm-4-2 fl"><span>报警时间：</span>{{= cutstr(item.indate , 10)}}</div>
+						<div class="mui-col-sm-2-2"></div>
+						<!-- {{? item.result == 0 && item.result != null }} 
+							<div class="mui-col-sm-1-2">&nbsp;</div>
+							<div class="mui-col-sm-1-2 1-2-active" onclick="removeAlarmLog('{{!item.id}}')"><span class="mui-icon mui-icon-trash"></span></div>
+						{{??}}
+							<div class="mui-col-sm-1-2 1-2-active" onclick="editAlarmLog('{{!item.id}}')"><span class="mui-icon mui-icon-compose"></span></div>
+							<div class="mui-col-sm-1-2 1-2-active" onclick="dealAlarmLog('{{!item.id}}')"><span class="mui-icon mui-icon-download"></span></div>
+						{{?}} -->
+						
+					</div>
+					<div class="mui-card-content f-column">
+						<div><span class="mui-col-sm-6"><label>驾驶人：</label>{{=item.driver || ""}}</span><span class="mui-col-sm-6"><label>报警类型：</label>{{=item.type || ""}}</span></div>
+						<div><span class="mui-col-sm-6"><label>时速：</label>{{=item.mph || ""}}km/h</span><span class="mui-col-sm-6"><label>运输货物：</label>{{=item.goods || ""}}</span></div>
+						<div class="mui-ellipsis"><span><label>所在位置：</label>{{=item.location || ""}}</span></div>
+					</div>
+					<div class="mui-card-footer">
+						<div class="mui-theme-color mui-col-sm-8-2">
+							{{? item.result == 0 && item.result != null }}
+								<span>处理时间：</span>{{= cutstr(item.dealdate, 10)}}
+							{{?}}
+						</div>
+						{{? item.result == 0 && item.result != null }}
+							<div class="mui-badge mui-badge-success mui-badge-inverted mui-col-sm-2-2">已处理</div>	
+						{{??}}
+							<div class="mui-badge mui-badge-danger mui-badge-inverted mui-col-sm-2-2">未处理</div>
+						{{?}}
+					</div>
+				</div>
+			{{~}}
+		</script> 
+		
+		<div id="search_area"></div>
+		<div id="popover" class="mui-popover f-column">
+			<div class="mui-popover-title">搜索 - 告警记录</div>
+			<div class="mui-popover-content" id="monitorForm">
+				<form class="mui-input-group">
+					<div class="mui-input-row">
+						<label>车牌号：</label>
+						<input type="text" placeholder="请输入" id="searchAlarmLog_platenumber">
+					</div>
+					<div class="mui-input-row">
+						<label>报警时间：</label>
+						<input type="text" placeholder="请输入" id="searchAlarmLog_indate">
+					</div>
+					<div class="mui-input-row">
+						<label>所在位置：</label>
+						<input type="text" placeholder="请输入" id="searchAlarmLog_location">
+					</div>
+					<div class="mui-input-row">
+						<label>运输货物：</label>
+						<input type="text" placeholder="请输入" id="searchAlarmLog_goods">
+					</div>
+					<div class="mui-input-row">
+						<label>报警类型：</label>
+						<input type="text" placeholder="请输入" id="searchAlarmLog_type">
+					</div>
+					<div class="mui-input-row">
+						<label>处理情况：</label>
+						<input type="text" placeholder="请输入" id="searchAlarmLog_result">
+					</div>
+				</form>
+			</div>
+			<div class="mui-popover-footer">
+				<button type="button" class="mui-btn mui-btn-primary mui-icon mui-icon-search" onclick="searchFunc();">搜索</button>
+			</div>
+		</div>
+		<script type="text/javascript" src="../../../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../../../js/jquery-1.12.4.min.js"></script>
+		<script type="text/javascript" src="../../js/common.js"></script>
+		<script type="text/javascript" src="../../js/local/doT.min.js"></script>
+		<script type="text/javascript" src="../../js/remote/ui.js"></script>
+		<script type="text/javascript" src="../../js/remote/base.js"></script>
+		<script type="text/javascript" src="../../js/remote/square.js"></script>
+		<script type="text/javascript" src="../../js/local/page.js"></script>
+		<script type="text/javascript">
+			mui.init({
+				pullRefresh: {
+					container: '#wrap',
+					down: {
+						style: "circle",
+						color: "#2492FC",				//可选，默认“#2BD009” 下拉刷新控件颜色
+						height: '30px',					//可选,默认50px.下拉刷新控件的高度,
+						range: '70px',					//可选 默认100px,控件可下拉拖拽的范围
+						offset: '0px',					//可选 默认0px,下拉刷新控件的起始位置
+						auto: true,						//可选,默认false.首次加载自动上拉刷新一次
+						callback: pullDownRefreshFun
+					},
+					up: {
+						height: 50, 					//可选.默认50.触发上拉加载拖动距离
+						auto: false, 					//可选,默认false.自动上拉加载一次
+						contentrefresh: "正在加载...",	//可选，正在加载状态时，上拉加载控件上显示的标题内容
+						contentnomore: '没有更多数据了',	//可选，请求完毕若没有更多数据时显示的提醒内容
+						callback: pullUpRefreshFun
+					}
+				}
+			});
+			
+			var alarmLogListParam = {};
+			var dataLength = 0;
+			
+			mui.plusReady(function () {
+				alarmLogListParam = BaseParams;
+				alarmLogListParam.append = false;
+				
+				// 监听其他页面调用reloadWebView方法
+				window.addEventListener("reloadWebView", function(event) {
+					pullDownRefreshFun();
+				});
+				
+				// 监听其他页面调用searchFunc方法
+				window.addEventListener("searchFunc", function(event) {
+					var bodyHeight = $("body").height();
+					var height_mui_popover = bodyHeight * 0.55;
+					$(".mui-popover").height(height_mui_popover);
+					$(".mui-popover-content").height(height_mui_popover - 100);
+					mui("#popover").popover('show', document.getElementById("search_area"));
+				});
+				
+			//	resizeListener("enclosure");
+			});
+			
+			/**
+			 * 下拉刷新功能
+			 */
+			function pullDownRefreshFun() {
+				mui("#popover").popover('hide', document.getElementById("search_area"));
+				alarmLogListParam.pageNum = 1;
+				alarmLogListParam.append = false;
+				
+				alarmLogListParam.platenumber = "";
+				alarmLogListParam.indate = "";
+				alarmLogListParam.location = "";
+				alarmLogListParam.goods = "";
+				alarmLogListParam.type = "";
+				alarmLogListParam.result = "";
+				
+			//	console.log(JSON.stringify(alarmLogListParam));
+				setTimeout(nextRefresh, 500);
+			}
+			
+			/**
+			 * 下拉刷新结束
+			 */
+			function nextRefresh() {
+				initAlarmLogList(alarmLogListParam);
+				mui('#wrap').pullRefresh().endPulldownToRefresh();
+				if(dataLength > 0) {
+					mui.toast("加载完成");
+				}
+			}
+			
+			/**
+			 * 上拉加载功能
+			 */
+			function pullUpRefreshFun() {
+				mui("#popover").popover('hide', document.getElementById("search_area"));
+				if(dataLength != 0) {
+					alarmLogListParam.pageNum++;
+				}
+				alarmLogListParam.append = true;
+				initAlarmLogList(alarmLogListParam);
+				mui('#wrap').pullRefresh().endPullupToRefresh(false);
+				mui('#wrap').pullRefresh().disablePullupToRefresh(); // 隐藏“上拉加载”所在区域
+			}
+			
+			function initAlarmLogList(loadParam) {
+				$page.render({
+					container: "wrap",
+					template: "resAlarmLogServiceItem",
+					loadFun: $square.getAlarmLogList, // 数据加载的函数
+					loadParam: loadParam,
+					context: function(ret) {
+						dataLength = ret.rows.length;
+						return ret.rows;
+					},
+				});
+			}
+			
+			function removeAlarmLog(alarmLogId) {
+				mui.post(BASEURL + "alarmLog/remove", {ids : alarmLogId}, function(ret) {
+					if(ret.code == 0) {
+						mui.toast("告警记录删除成功");
+						pullDownRefreshFun();
+					} else {
+						mui.toast(ret.msg);
+					}
+				});
+			}
+			
+			function editAlarmLog(alarmLogId) {
+				openNewWebView("editAlarmLogList.html", "editAlarmLogList.html", {}, {
+					alarmLogId: alarmLogId
+				});
+			}
+			
+			function dealAlarmLog(alarmLogId) {
+				var editAlarmLogParam = {
+					id: alarmLogId,
+					result: 0
+				};
+				mui.post(BASEURL + "alarmLog/edit", editAlarmLogParam, function(ret) {
+					if(ret.code == 0) {
+						mui.toast("告警记录处理成功");
+						pullDownRefreshFun(); 
+					} else {
+						mui.toast(ret.msg);
+					}
+				});
+			}
+			
+			function searchFunc() {
+				alarmLogListParam.pageNum = 1;
+				alarmLogListParam.append = false;
+				
+				alarmLogListParam.platenumber = mui("#searchAlarmLog_platenumber")[0].value;
+				alarmLogListParam.indate = mui("#searchAlarmLog_indate")[0].value;
+				alarmLogListParam.location = mui("#searchAlarmLog_location")[0].value;
+				alarmLogListParam.goods = mui("#searchAlarmLog_goods")[0].value;
+				alarmLogListParam.type = mui("#searchAlarmLog_type")[0].value;
+				alarmLogListParam.result = mui("#searchAlarmLog_result")[0].value;
+				
+				setTimeout(nextRefresh, 500);
+				
+				mui("#searchAlarmLog_platenumber")[0].value = "";
+				mui("#searchAlarmLog_indate")[0].value = "";
+				mui("#searchAlarmLog_location")[0].value = "";
+				mui("#searchAlarmLog_goods")[0].value = "";
+				mui("#searchAlarmLog_type")[0].value = "";
+				mui("#searchAlarmLog_result")[0].value = "";
+				
+				mui("#popover").popover('hide', document.getElementById("search_area"));
+			}
+		</script>
+	</body>
+
+</html>

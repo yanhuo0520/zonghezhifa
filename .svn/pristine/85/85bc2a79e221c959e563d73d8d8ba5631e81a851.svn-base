@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>ENCLOSURE</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../../../../css/mui.min.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/header.css" />
+		<style>
+		</style>
+	</head>
+
+	<body>
+		<header id="header" class="mui-bar mui-bar-nav f-row">
+			<div class="header-left" onclick="toLocationSelect();">
+				<label id="enclosure_loactionInfo_name" class="mui-ellipsis"></label><span class="mui-icon mui-icon-arrowdown"></span>
+			</div>
+			<div class="mui-segmented-control">
+				<a class="mui-control-item tab-change mui-active" href="#item1Enclosure" data-wid="fenceList.html" data-index="0">电子围栏</a>
+				<a class="mui-control-item tab-change" href="#item2Enclosure" data-wid="alarmLogList.html" data-index="1">告警记录</a>
+			</div>
+			<div class="header-right">
+				<!-- <span onclick="openAddWebViewFun();" class="mui-icon mui-icon-plusempty right-icon mui-pull-right"></span> -->
+				<span onclick="searchFun()" class="mui-icon mui-icon-search right-icon mui-pull-right"></span>
+			</div>
+		</header>
+		<script type="text/javascript" src="../../../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../../../js/jquery-1.12.4.min.js"></script>
+		<script type="text/javascript" src="../../js/common.js"></script>
+		<script>
+			mui.init({
+				swipeBack: false
+			});
+			
+			// 子窗口地址数组
+			var subpages = ["fenceList.html", "alarmLogList.html"];
+			
+			// 子窗口样式
+			var subStyles = {
+				top: "46px",
+				bottom: "1px"
+			};
+			
+			// 子窗口数量
+			var subLen = subpages.length;
+			
+			// 子窗口对象数组
+			var subWvs = [];
+			
+			// 标题栏
+			var title = document.querySelector(".mui-title");
+			
+			// 顶部选项
+			var tabs = document.querySelectorAll(".tab-change");
+			
+			// 当前页面索引，初始化为0；
+			var activeIndex = 0;
+			
+			// 目标页面索引，初始化为当前页面索引；
+			var targetIndex = activeIndex;
+			
+			mui.plusReady(function () {
+				
+				firstSsetIndexLoactionInfo("enclosure_loactionInfo_name");
+				
+				/**
+				 * 当前窗口对象，即父窗口；
+				 * http://www.html5plus.org/doc/zh_cn/webview.html#plus.webview.currentWebview
+				 */
+				var self = plus.webview.currentWebview();
+				
+				// 监听其他页面调用setIndexLoactionInfo方法
+				window.addEventListener("setIndexLoactionInfo", function(event) {
+					setIndexLoactionInfo("monitor_loactionInfo_name");
+				});
+				
+				// 创建子页面
+				for(var i = 0; i < subLen; i++) {
+					/**
+					 * 创建窗口对象，并将索引做为额外的参数传递；
+					 * http://www.html5plus.org/doc/zh_cn/webview.html#plus.webview.create
+					 */
+					var subWv = plus.webview.create(subpages[i], cutWebviewId(subpages[i]), subStyles, {
+						index: i
+					});
+					// 窗口对象添加至数组
+					subWvs.push(subWv);
+					if(i > 0) {
+						/**
+						 * 隐藏非第一页的窗口对象
+						 * http://www.html5plus.org/doc/zh_cn/webview.html#plus.webview.WebviewObject.hide
+						 */
+						subWv.hide("none");
+					}
+					/**
+					 * 向父窗口添加子窗口
+					 * http://www.html5plus.org/doc/zh_cn/webview.html#plus.webview.WebviewObject.append
+					 */
+					self.append(subWv);
+				}
+				
+				// 底部选项卡点击切换事件
+				for(var j = 0, jlen = tabs.length; j < jlen; j++) {
+					tabs[j].addEventListener("tap", function() {
+						// 获取当前结点的索引
+						targetIndex = this.getAttribute("data-index");
+						// 转换为number类型
+						targetIndex = parseInt(targetIndex, 10);
+						if(targetIndex == activeIndex) {
+							return;
+						}
+						// 切换页面
+						switchPage("tap", activeIndex, targetIndex);
+					});
+				}
+			});
+
+			/**
+			 * 切换页面
+			 * @param {String} _event 事件类型
+			 * @param {Number} _active 当前页面索引
+			 * @param {Number} _target 目标页面索引
+			 */
+			function switchPage(_event, _active, _target) {
+				/**
+				 * 目标页面展示
+				 * http://www.html5plus.org/doc/zh_cn/webview.html#plus.webview.WebviewObject.show
+				 */
+				subWvs[_target].show("fade-in");
+				// 如果是滑动事件，则手动切换高亮选项；
+			//	if(_event == "switch") {
+					tabs[_active].classList.remove("mui-active");
+					tabs[_target].classList.add("mui-active");
+			//	}
+				// 之前展示的页面隐藏
+				subWvs[_active].hide("none");
+				// 更新当前页索引
+				activeIndex = _target;
+			}
+				
+			function searchFun() {
+				// 目标搜索窗口
+				var targetSearchWebView = null;
+				if(activeIndex == 0) {
+					targetSearchWebView = plus.webview.getWebviewById("fenceList");
+				} else {
+					targetSearchWebView = plus.webview.getWebviewById("alarmLogList");
+				}
+				mui.fire(targetSearchWebView, "searchFunc", {});
+			}	
+			
+			function openAddWebViewFun() {
+				if(activeIndex == 0) {
+					openNewWebView('addFenceList.html', 'addFenceList.html');
+				} else {
+					openNewWebView('addAlarmLogList.html', 'addAlarmLogList.html');
+				}
+			}
+		</script>
+	</body>
+
+</html>

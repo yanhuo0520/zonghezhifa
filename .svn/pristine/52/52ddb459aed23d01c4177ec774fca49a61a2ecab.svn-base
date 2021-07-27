@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>无害化处理</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="../../css/mui.css"/>
+		<link rel="stylesheet" href="../css/generic.css"/>		
+		<style>
+			html, body, .mui-row { background-color: #FFFFFF; }
+			.home-icon { text-align: center; margin: 20px 0 35px; position: relative; }
+			.home-icon .img-icon { width: 0.82rem; height: 0.73rem; }
+			.home-icon .home-label { position: absolute; top: 0.86rem; left: 0; display: inline-block; width: 100%; font-size: 0.24rem; }
+		</style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title" id="com-title"></h1>
+		</header>
+		<div class="mui-content">
+			<!-- 模块 -->
+			<div class="mui-row system-list mui-hide guanfangshouyi">
+				<a class="system-detail home-icon mui-col-sm-3 mui-col-xs-3" target_id="farmers-list.html">
+					<img src="../images/aquaculture-enterprises.png" class="img-icon" />
+					<p class="home-label">案件列表</p>
+				</a>
+				<a class="system-detail home-icon mui-col-sm-3 mui-col-xs-3" target_id="supervisory-center.html">
+					<img src="../images/supervisory-center.png" class="img-icon" />
+					<p class="home-label">监管中心</p>
+				</a>
+				<a class="system-detail home-icon mui-col-sm-3 mui-col-xs-3" target_id="transport-record.html">
+					<img src="../images/transport.png" class="img-icon" />
+					<p class="home-label">运输记录</p>
+				</a>
+				<a class="system-detail home-icon mui-col-sm-3 mui-col-xs-3" target_id="">
+					<img src="../images/harmless-enterprises.png" class="img-icon" />
+					<p class="home-label">无害化处理厂</p>
+				</a>
+				<a class="system-detail home-icon mui-col-sm-3 mui-col-xs-3" target_id="">
+					<img src="../images/insurance-company.png" class="img-icon" />
+					<p class="home-label">保险公司</p>
+				</a>
+			</div>
+			
+			<div class="mui-row system-list mui-hide yunshurenyuan">
+				<a class="system-detail home-icon mui-col-sm-3 mui-col-xs-3" target_id="transport-record-driver.html">
+					<img src="../images/transport.png" class="img-icon" />
+					<p class="home-label">运输中心</p>
+				</a>
+			</div>
+			<div class="mui-row system-list mui-hide yangzhihu">
+				<a class="system-detail home-icon mui-col-sm-3 mui-col-xs-3" target_id="farmers-center.html">
+					<img src="../images/aquaculture-enterprises.png" class="img-icon" />
+					<p class="home-label">养殖企业</p>
+				</a>
+			</div>
+			
+		</div>
+		<script type="text/javascript" src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/jquery-1.12.4.min.js"></script>
+		<script type="text/javascript" src="../js/content.js"></script>
+		<script type="text/javascript" src="js/harmless-data.js"></script>
+		<script type="text/javascript">
+			mui.init({});
+			mui.plusReady(function() {
+				initSettings(); 		// 初始化设置字体大小
+				
+				var self = plus.webview.currentWebview();
+				var comTitle = self.comTitle;
+				document.getElementById("com-title").innerHTML = comTitle;
+				
+				var harmlessUseRoleId = plus.storage.getItem('harmless_user_roleId'); // 获取无害化用户角色id
+				if(harmlessUseRoleId == PROVINCE_SUPERVISE) {
+					mui.toast("省级监管");
+				} else if(harmlessUseRoleId == CITY_SUPERVISE) {
+					mui.toast("市级监管");
+				} else if(harmlessUseRoleId == COUNTY_SUPERVISE) {
+					mui.toast("县级监管");
+				} else if(harmlessUseRoleId == OFFICIAL_VETERINARIAN || harmlessUseRoleId == TOWN_SUPERVISE) {
+					mui.toast("官方兽医或者乡级监管");
+					$(".guanfangshouyi").show();
+				} else if(harmlessUseRoleId == TRANSPORT_COMPANY || harmlessUseRoleId == TRANSPORT_PERSON) {
+					mui.toast("运输人员或者运输公司");
+					$(".yunshurenyuan").show();
+				} else if(harmlessUseRoleId == TREATMENT_PLANT || TREATMENT_PLANT_PERSON == TRANSPORT_COMPANY) {
+					mui.toast("无害化公司人员或者无害化公司");
+				} else if(harmlessUseRoleId == FARMER) {
+					mui.toast("养殖户");
+					$(".yangzhihu").show();
+				} else if(harmlessUseRoleId == INSURANCE_COMPANY || harmlessUseRoleId == INSURANCE_COMPANY_PERSON) {
+					mui.toast("保险员或者保险公司");
+				}
+				
+				mui(".system-list").on("tap", ".system-detail", function() {
+					var targetTab = this.getAttribute('target_id');
+					var comTitle = $(this).children('.home-label').html();
+					mui.openWindow({
+						url: targetTab,
+						id: targetTab,
+						extras: {
+							"comTitle": comTitle
+						},
+						waiting: {
+							autoShow: true, //自动显示等待框，默认为true
+							title: '正在加载...', //等待对话框上显示的提示内容
+						}
+					});
+				});
+			});
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,211 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>案件列表</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="../../css/mui.min.css" />
+		<link rel="stylesheet" href="../../css/mui.picker.css" />
+		<link rel="stylesheet" href="../../css/mui.dtpicker.css" />
+		<link rel="stylesheet" href="../css/generic.css" />
+		<link rel="stylesheet" href="../css/quarantine-common.css" />
+		<style>			
+			.in-list { margin: 10px; background: #FFFFFF; border-radius: 5px; }
+			.in-list .title { font-size: 0.245rem; padding: 10px 15px 5px; border-bottom: 1px solid #EEEEEE; }
+			.in-list ul { color: #6A6882; line-height: 0.46rem; padding: 0 15px 8px; }
+			.in-list li span { padding-left: 15px; }
+			.accept-panel ul li span{ float: right;}
+			.status-1 { color: #D52B2B; }
+			.status-2 { color: #02CC9C; }
+		</style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<a class="mui-action-menu mui-icon mui-icon-search mui-pull-right" id="qurarantine_search"></a>
+			<h1 class="mui-title">案件列表<span id="toalNum"></span></h1>
+		</header>
+		<!-- <div class="mui-content accept-list" id="pullrefresh">
+			<div class="accept-panel" id="accept-panel">
+				<ul>
+					<li>养殖户：史占营 <span>案件进度：已完成</span></li>
+					<li>数量（头）：2 <span>重量（KG）： 83.0</span></li>
+					<li>保险公司：中华联合保险（集团）股份有限公司</li>
+					<li>添加时间：2019-07-09</li>
+				</ul>
+			</div>		            
+		</div> -->
+		<div class="mui-content" id="pullrefresh">
+			<div class="in-list-content" id="in-list-content"></div>
+		</div>
+		<div id="qurarantine_popover" class="mui-popover modify-mask">
+			<div class="mui-input-group no-bottom-line">
+				<div class="mui-input-row f-row no-bottom-line">
+					<label class="title-label">案件状态：</label>
+					<div class="mui-radio mui-left">
+						<input name="search_status" type="radio" checked value="" />
+						<label>全部</label>
+					</div>
+					<div class="mui-radio mui-left">
+						<input name="search_status" type="radio" value="10001" />
+						<label>未受理</label>
+					</div>
+				</div>
+				<div class="mui-input-row f-row no-bottom-line">
+					<label class="title-label"></label>
+					<div class="mui-radio mui-left">
+						<input name="search_status" type="radio" value="10002" />
+						<label>已受理</label>
+					</div>
+					<div class="mui-radio mui-left">
+						<input name="search_status" type="radio" value="10006" />
+						<label>已完成</label>
+					</div>
+				</div>
+			</div>
+			<div class="mui-btn mui-btn-primary big-commit-btn" id="qurarantine_search_btn"><span class="mui-icon mui-icon-search"></span>&nbsp;&nbsp;搜&nbsp;&nbsp;索</div>
+		</div>
+		
+		<script src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/mui.picker.min.js"></script>
+		<script type="text/javascript" src="../../js/mui.dtpicker.js"></script>
+		<script type="text/javascript" src="../../js/jquery-1.12.4.min.js"></script>
+		<script type="text/javascript" src="../js/content.js"></script>
+		<script type="text/javascript" src="../js/constant.js"></script>
+		<script type="text/javascript" src="js/harmless-data.js"></script>
+		<script type="text/javascript">
+			mui.init({});
+			
+			var currpage = 1;
+			var ebsort=null, rkdate=null;
+			var harmless_user_id = "";
+			
+			mui.plusReady(function() {
+			
+			initSettings(); 		// 初始化设置字体大小
+				harmless_user_id = plus.storage.getItem("harmless_user_id"); //用户的的id编号
+				var currpage = 1;
+			 	console.log(harmless_user_id);
+			 	comList(currpage);
+				
+			 	/** ---------------------- 打开搜索界面方法 ---------------------- **/
+			 	document.getElementById("qurarantine_search").addEventListener('tap', function() {
+			 		// var ebsort=document.getElementById("ear-scale").value;
+			 		// var rkdate=document.getElementById("select-time").value;
+			 		mui('#qurarantine_popover').popover('toggle');
+			 		// qurarantineDate_begin.value = "";
+			 		// qurarantineDate_end.value = "";
+				//  $("input[name=SIGN]:eq(0)").attr("checked", 'checked');
+			 	//	$("input[type=radio][name='search_status'][value='0']").attr("checked",'checked')
+			 	});
+			 	
+			 	/** ---------------------- 搜索方法 ---------------------- **/
+			 	document.getElementById("qurarantine_search_btn").addEventListener('tap', function() {
+					currpage = 1;
+					$('#in-list-content').html("");
+			 		mui('#qurarantine_popover').popover('toggle');
+			 		comList();
+			 	});	
+			 });
+			
+			 function comList(currpage){
+			 	var result="";
+			 	var pageSize = 10;
+			 	plus.nativeUI.showWaiting("正在加载……");
+				var status = $("input[name='search_status']:checked").val();
+				
+			 	mui.ajax(Constant.getConstant("HARMLESS_CASE_LIST"),{
+			 		data:{
+						"api_method":"c.findReportList",
+			 			"a_id":harmless_user_id,
+			 			"page":currpage,
+			 			"rows":pageSize,
+			 			"status":status
+			 		},
+			 		dataType:'json',//服务器返回json格式数据
+			 		type:'post',//HTTP请求类型
+			 		timeout:10000,//超时时间设置为10秒；
+			 		success: function(data){
+						plus.nativeUI.closeWaiting();
+						console.log(JSON.stringify(data));
+						totalRows = data.data.totalRows;
+						var result_array = data.data.list;
+						mui("#toalNum")[0].innerHTML = " 共( " + totalRows + " ) 条"
+						if(data.resultStatus == true){
+							
+							for(var i = 0; i < result_array.length; i++) {
+								var progressText = "";
+								var status_class = "";
+								if (result_array[i].status === CollectStatus_ONE){
+									progressText = "未受理";
+									status_class = "status-1";
+								}else if(result_array[i].status === CollectStatus_TWO){
+									progressText="已受理";
+									status_class = "status-2";
+								}else if(result_array[i].status === CollectStatus_SIX){
+									progressText="已完成";
+									status_class = "status-2";
+								}
+								
+							// 	for(var i = 0; i < result_array.length; i++) {
+							// 	var progressText = "";
+							// 	if (result_array[i].STATUS === "1"){
+							// 		progressText = "未受理";
+							// 	}else if(result_array[i].STATUS === "2"){
+							// 		progressText="已受理";
+							// 	}else if(result_array[i].STATUS === "6"){
+							// 		progressText="已完成";
+							// 	}
+							// 	result = '<div class="accept-panel">' 
+							// 			+ '<ul>'
+							// 			+ '<li>养殖户：'+ result_array[i].reportPersonName + '<span>案件进度：<label class="status-' + result_array[i].STATUS + '">'+ progressText +'</span></li>'
+							// 			+ '<li>数量（头）：'+ result_array[i].boarNum +'<span>重量（KG）： '+ result_array[i].boarWeight +'</span></li>'
+							// 			+ '<li>保险公司：'+ result_array[i].insuranceFacName +'</li>'
+							// 			+'<li>添加时间：'+ result_array[i].collectDate +'</li>'
+							// 			+ '</ul></div>'
+							// 	$('#in-list-content').append(result);		
+							// }
+								
+								result = '<div class="accept-panel">' 
+										+ '<ul>'
+										+ '<li>养殖户：'+ result_array[i].reportPersonName + '<span>案件进度：<label class="' + status_class + '">'+ progressText +'</span></li>'
+										+ '<li>数量（头）：'+ result_array[i].boarNum +'<span>重量（KG）： '+ result_array[i].boarWeight +'</span></li>'
+										+ '<li>保险公司：'+ result_array[i].insuranceFacName +'</li>'
+										+'<li>添加时间：'+ result_array[i].collectDate +'</li>'
+										+ '</ul></div>'
+								$('#in-list-content').append(result);		
+							}
+						} else {
+							mui.toast("获取失败，请重试")
+						}
+						
+					}
+				
+			 	});
+			 }
+				
+				
+				// mui.init({
+				// 	pullRefresh : {
+				// 		container: '#pullrefresh', //待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+				// 		up : {
+				// 			height:50,//可选.默认50.触发上拉加载拖动距离
+				// 			auto:false,//可选,默认false.自动上拉加载一次
+				// 			contentrefresh : "正在加载...",//可选，正在加载状态时，上拉加载控件上显示的标题内容
+				// 			contentnomore:'没有数据了',//可选，请求完毕若没有更多数据时显示的提醒内容；
+				// 			callback :pullupRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+				// 		}
+				// 	}
+				// });
+				// 
+				// function pullupRefresh(){
+				// 	setTimeout(function(){
+				// 		currpage++;
+				// 		comList(currpage);
+				// 		mui('#pullrefresh').pullRefresh().endPullupToRefresh();
+				// 	},1500)
+				// }
+		</script> 
+	</body>
+
+</html>

@@ -1,0 +1,17 @@
+const PROVINCE_SUPERVISE = "122";		// 省监管
+const CITY_SUPERVISE = "121";			// 市监管
+const COUNTY_SUPERVISE = "64";			// 县监管
+const TOWN_SUPERVISE = "69";			// 乡监管
+
+const OFFICIAL_VETERINARIAN = "70";		// 官方兽医
+
+const TRANSPORT_COMPANY = "67";			// 运输公司（公司）
+const TRANSPORT_PERSON = "62";			// 运输人员
+
+const TREATMENT_PLANT = "68";			// 处理厂（公司)
+const TREATMENT_PLANT_PERSON = "63";	// 处理厂人员
+
+const INSURANCE_COMPANY = "66";			// 保险公司（公司）
+const INSURANCE_COMPANY_PERSON = "61";	// 保险人员
+
+const FARMER = "65";					// 养殖户65

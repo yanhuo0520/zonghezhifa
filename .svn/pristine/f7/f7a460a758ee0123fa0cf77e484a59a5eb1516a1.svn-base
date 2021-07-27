@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<!--App自定义的css-->
+		<!--<link rel="stylesheet" type="text/css" href="../css/app.css"/>-->
+		<style>
+			p {
+				text-indent: 22px;
+			}
+			span.mui-icon {
+				font-size: 14px;
+				color: #007aff;
+				margin-left: -15px;
+				padding-right: 10px;
+			}
+			#info {
+				padding: 20px 10px;
+			}
+			/*.des {
+				margin: .5em 0;
+			}
+			.des>li {
+				font-size: 14px;
+				color: #8f8f94;
+			}*/
+		</style>
+	</head>
+
+	<body>
+
+		<header class="mui-bar mui-bar-nav">
+			<!-- <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a> -->
+			<h1 class="mui-title">H5模式actionsheet</h1>
+		</header>
+		<!-- <nav class="mui-bar mui-bar-tab">
+			<a class="mui-tab-item" href="#delete">
+				<span class="mui-icon mui-icon-trash"></span>
+			</a>
+			<a class="mui-tab-item" href="#">
+			</a>
+			<a class="mui-tab-item" href="#">
+			</a>
+			<a class="mui-tab-item" href="#forward">
+				<span class="mui-icon mui-icon-undo"></span>
+			</a>
+		</nav> -->
+		<div class="mui-content">
+			<div class="mui-content-padded">
+				<p>
+					<a href="#picture" class="mui-btn mui-btn-primary mui-btn-block mui-btn-outlined" style="padding: 5px 20px;">打开actionsheet</a>
+				</p>
+				<p id="info"></p>
+			</div>
+		</div>
+
+		<div id="delete" class="mui-popover mui-popover-action mui-popover-bottom">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<a href="#" style="color: #FF3B30;">删除信息</a>
+				</li>
+			</ul>
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<a href="#delete"><b>取消</b></a>
+				</li>
+			</ul>
+		</div>
+		<div id="forward" class="mui-popover mui-popover-action mui-popover-bottom">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<a href="#">回复</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a href="#">转发</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a href="#">打印</a>
+				</li>
+			</ul>
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<a href="#forward"><b>取消</b></a>
+				</li>
+			</ul>
+		</div>
+		<div id="picture" class="mui-popover mui-popover-action mui-popover-bottom">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<a href="#">拍照</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a href="#">相册</a>
+				</li>
+			</ul>
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<a href="#picture"><b>取消</b></a>
+				</li>
+			</ul>
+		</div>
+
+	</body>
+	<script src="../js/mui.min.js"></script>
+	<script src="../template/harmless/js/harmless-data.js"></script>
+	<script>
+		mui.init({
+			swipeBack:true //启用右滑关闭功能
+		});
+		
+		var accessToken = "";
+		mui.plusReady(function() {
+			
+			plus.nativeUI.showWaiting("正在添加耳标信息……");
+			mui.ajax("https://aip.baidubce.com/oauth/2.0/token", {
+				data: {
+					'grant_type': 'client_credentials',
+					'client_id': '3OG8mDX8UD5kyLlSTFBpISMD',
+					'client_secret': '1DQCmGqDAKUmlXcglffm677t8reauvIr'
+				},
+				dataType: 'json',//服务器返回json格式数据
+				type: 'get',//HTTP请求类型
+				timeout: 10000,//超时时间设置为10秒；
+				success: function(data) {
+					plus.nativeUI.closeWaiting();
+				//	console.log(JSON.stringify(data.access_token));
+					accessToken = data.access_token;
+				},
+				error:function(xhr,type,errorThrown){
+					plus.nativeUI.closeWaiting();
+					mui.toast("查询失败");	
+				}
+			});
+		});
+		mui('body').on('shown', '.mui-popover', function(e) {
+			//console.log('shown', e.detail.id);//detail为当前popover元素
+		});
+		mui('body').on('hidden', '.mui-popover', function(e) {
+			//console.log('hidden', e.detail.id);//detail为当前popover元素
+		});
+		var info = document.getElementById("info");
+		mui('body').on('tap', '.mui-popover-action li>a', function() {
+			var a = this,
+				parent;
+			//根据点击按钮，反推当前是哪个actionsheet
+			for (parent = a.parentNode; parent != document.body; parent = parent.parentNode) {
+				if (parent.classList.contains('mui-popover-action')) {
+					break;
+				}
+			}
+			//关闭actionsheet
+			mui('#' + parent.id).popover('toggle');
+			info.innerHTML = "你刚点击了\"" + a.innerHTML + "\"按钮";
+			
+			plus.gallery.pick(function(e) {
+				//alert(e.files.length);
+				var zm = 0;
+				setTimeout(file, 200);
+				function file() {
+					plus.io.resolveLocalFileSystemURL(e.files[zm], function(entry) {
+						compressImage(entry.toLocalURL(), entry.name); 
+					}, function(e) {
+							plus.nativeUI.toast("读取拍照文件错误：" + e.message);
+					});
+					zm++;
+					if(zm < e.files.length) {
+						setTimeout(file, 200);
+					}
+				}
+			}, function(e) {
+				
+			}, {
+				filename: "_doc/camera/",
+				filter: "image",
+				multiple: true,
+				maximum: 6, // 最多选择6张图片
+				system: false,
+				onmaxed: function() {
+					plus.nativeUI.alert('最多只能选择6张图片');
+				},
+			});
+		})
+		
+		
+		var divid = "HARMLESS_REPORTDETAIL";
+		//压缩图片  
+		function compressImage(url, filename) {  
+			var name = FILE_PATH_EARTAG + divid + "-" + filename; // _doc/upload/F_ZDDZZ-1467602809090.jpg  
+			plus.zip.compressImage({  
+				src: url,			//src: (String 类型 )压缩转换原始图片的路径  
+				dst: name,			//压缩转换目标图片的路径  
+				quality: 85,		//quality: (Number 类型 )压缩图片的质量.取值范围为1-100  
+				overwrite: true,	//overwrite: (Boolean 类型 )覆盖生成新文件 
+				format:"png"		// 将jpg转换成png格式
+			}, function(e) {  
+				 var image = new Image();
+					image.src = e.target ;
+					image.crossOrigin = 'anonymous';
+					image.onload = function() {
+						// var base64Url = getBase64Image(image);
+						var canvas = document.createElement('canvas');
+						width = image.width;
+						height = image.height;
+						const ctx = canvas.getContext('2d');
+						ctx.drawImage(image, 0, 0, width, height); /*绘图*/
+						var base64Url = canvas.toDataURL();
+						base64Url = base64Url.replace("data:image/png;base64,", "")
+						console.log(base64Url);
+						mui.ajax("https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic", {
+							data:{
+								"access_token": accessToken,
+							//	"url": e.target
+								"image": base64Url
+							},
+							dataType: 'json',//服务器返回json格式数据
+							type: 'post',//HTTP请求类型
+							timeout: 10000,//超时时间设置为10秒；
+							headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+							success: function(data) {
+								plus.nativeUI.closeWaiting();
+								console.log(JSON.stringify(data));
+								info.innerHTML = JSON.stringify(data);
+							},
+							error:function(xhr,type,errorThrown){
+								plus.nativeUI.closeWaiting();
+								mui.toast("查询失败");	
+							}
+						});
+					}
+			}, function(err) {
+				plus.nativeUI.alert('未知错误！');  
+			});
+		}
+		
+		
+		//将图片压缩转成base64 
+		function getBase64Image(img) {
+			var canvas = document.createElement("canvas");
+			var width = img.width;
+			var height = img.height;
+			// calculate the width and height, constraining the proportions 
+			if(width > height) {
+				if(width > 100) {
+					height = Math.round(height *= 100 / width);
+					width = 100;
+				}
+			} else {
+				if(height > 100) {
+					width = Math.round(width *= 100 / height);
+					height = 100;
+				}
+			}
+			canvas.width = width; /*设置新的图片的宽度*/
+			canvas.height = height; /*设置新的图片的长度*/
+			var ctx = canvas.getContext("2d");
+			ctx.drawImage(img, 0, 0, width, height); /*绘图*/
+			var dataURL = canvas.toDataURL("image/png", 0.8);
+			return dataURL.replace("data:image/png;base64,", "");
+		}
+	</script>
+
+</html>

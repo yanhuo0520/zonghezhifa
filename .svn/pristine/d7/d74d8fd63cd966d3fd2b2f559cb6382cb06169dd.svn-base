@@ -1,0 +1,121 @@
+/* 共用样式 */
+html,body, div, ul, ol, dl, dt, dd, li, dl, h1, h2, h3, h4{margin:0;padding:0;font-style:normal;font-size: 0.24rem;} 
+ol, ul ,li{list-style: none;font-size: 0.24rem;} 
+a{color:#333;text-decoration: none;-webkit-touch-callout: none;-webkit-user-select: none;}
+a,input,
+select,
+option{-webkit-tap-highlight-color: transparent;-webkit-appearance: none;-moz-appearance: none;-webkit-border-radius: 0;
+font-size: 0.24rem !important;}
+:focus{outline: none}
+table{border-collapse:collapse;border-spacing:0}
+.clearfix{clear:both;} 
+p{
+	color: #333333;
+	font-size: 0.24rem;
+}
+.max-width{
+	max-width: 100%;
+	max-height: 100%;
+	}
+.bg-white{
+	background: #FFFFFF;
+}
+input::-webkit-input-placeholder{
+	color: #BBBBBB;
+}
+/* 顶部 */
+.mui-bar{
+	background: #33323E;
+	box-shadow: none;
+}
+.mui-bar .mui-title,
+.mui-bar .mui-icon{
+	color: #FFFFFF;
+}
+.mui-bar .mui-icon{
+	font-size: 24px !important; 
+}
+/* 主页 */
+.home-icon {
+    text-align: center;
+    height: 1.2rem;
+    margin: 20px 0;
+}
+.home-icon .img-icon {
+    width: 0.68rem;
+}
+.home-icon .home-label {
+    margin-top: 5px;
+}
+/* 入库登记 */
+.check-in-add .mui-input-row label{
+	font-size: 0.24rem;
+	width: 25%;
+}
+.check-in-add .mui-input-row label ~ input,
+.check-in-add .mui-input-row select{
+	margin-bottom: 0;
+	width: 75%;
+}
+.row-date{
+	position: relative;
+}
+.row-date .date-icon{
+	position: absolute;
+    width: 0.32rem;
+    right: 0.2rem;
+    top: 0.2rem;
+}
+.check-btn{
+	margin: 30px 5%;
+}
+.check-btn .mui-btn{
+	width: 48%;
+	padding: 10px 0;
+	border-radius:5px;
+}
+.check-reset-btn{
+	color: #4794F4;
+	border: 1px solid #4794F4;
+}
+.check-add-btn{
+	color: #FFFFFF;
+	background:linear-gradient(90deg,rgba(73,134,242,1),rgba(68,174,247,1));
+	border: none;
+}
+
+/* 入库列表 */
+.row-search{
+	margin-top: 10px;
+	padding: 0 10px;
+}
+.row-search .search-input{
+	padding-right: 10px;
+}
+.row-search input{
+	height: 32px;
+	margin-bottom: 0;
+}
+.row-search .search-btn{
+	color: #FFFFFF;
+    background: linear-gradient(90deg,rgba(73,134,242,1),rgba(68,174,247,1));
+    border: none;
+}
+.in-list{
+	margin: 10px;
+	background: #FFFFFF;
+	border-radius: 5px;
+}
+.in-list .title{
+	font-size: 0.26rem;
+	padding: 15px 10px 10px 10px;
+	border-bottom: 1px solid #EEEEEE;
+}
+.in-list ul{
+	color: #6A6882;
+	line-height: 0.46rem;
+	padding: 0 10px 10px 10px;
+}
+.in-list li span{
+	padding-left: 10px;
+}

@@ -1,0 +1,37 @@
+/*设定html字体大小*/
+var deviceWidth = document.documentElement.clientWidth;
+if (deviceWidth > 415) deviceWidth = 420;
+document.documentElement.style.fontSize = deviceWidth / 7.2 + 'px';
+
+function checkLogin() {
+	var uuid = plus.storage.getItem("uuid"); // 用户的的id编号
+	if (uuid == "" || uuid == null || uuid == "undefined") {
+		mui.openWindow({
+			id: 'login.html',
+			url: 'login.html'
+		});
+		return false;
+	}
+	return true;
+}
+
+
+function backKeyFunction() {
+	//返回键处理
+	//处理逻辑：1.5秒内，连续两次按返回键，则退出应用；
+	var first = null;
+	mui.back = function() {
+		//首次按键，提示‘再按一次退出应用’
+		if (!first) {
+			first = new Date().getTime();
+			mui.toast('再按一次退出应用');
+			setTimeout(function() {
+				first = null;
+			}, 1500);
+		} else {
+			if (new Date().getTime() - first < 1500) {
+				plus.runtime.quit();
+			}
+		}
+	};
+}

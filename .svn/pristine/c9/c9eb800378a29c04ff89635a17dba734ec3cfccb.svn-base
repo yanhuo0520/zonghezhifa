@@ -1,0 +1,90 @@
+主页面 
+	index.html
+	
+公共文件夹
+	css、image、js
+	
+项目集template
+	home.html、 mail.html、 apply.html、 my.html、 login.html
+	template-》css
+	template->images
+	template->js
+	
+template分项目-
+政府角色监管模块
+	ani-husbandry ->ani-css
+	ani-husbandry ->ani-image
+	ani-husbandry ->ani-js
+	ani-husbandry ->ani-husbandry
+耳标管理
+	ear-tag -> ear-css
+	ear-tag -> ear-img
+	ear-tag -> ear-js
+#### 养殖监管(ani-husbandry) ####	
+日志
+养殖企业(5)
+	添加 log-breed-add.html
+	查看 log-breed-view.html
+屠宰企业(8)
+	添加 log-slaughter-add.html
+	查看 log-slaughter-view.html
+动物诊疗(9)
+	添加 log-animal-add.html
+	查看 log-animal-view.html
+饲料生产(1)
+	添加 log-feed-pro-add.html
+	查看 log-feed-pro-view.html
+饲料销售(2)
+	添加 log-feed-sale-add.html
+	查看 log-feed-sale-view.html
+兽药生产(3)
+	添加 log-vet-drug-pro-add.html
+	查看 log-vet-drug-pro-view.html
+兽药销售(4)
+	添加 log-vet-drug-sale-add.html
+	查看 log-vet-drug-sale-view.html
+生鲜乳收购(11)
+	添加 log-raw-milk-buy-add.html
+	查看	 log-raw-milk-buy-view .html
+生鲜乳运输(12)
+	添加 log-raw-milk-trans-add.html
+	查看 log-raw-milk-transt-view.html
+	
+#### 生猪运载(pigcarryingvehicle) ####
+生猪运载(13)
+	首页 pigcarryingvehicle.html
+	车辆监控 monitor.html
+		地图 		monitor-map.html
+		列表 		monitor-list.html
+	电子围栏 enclosure.html
+		电子围栏 	fenceList.html
+		告警记录 	alarmLogList.html
+	洗消管理 disinfection.html
+		消毒记录 	disinfectionRecordList.html
+		洗消站管理 	decontaminatingList.html
+	系统分析 analysis.html
+	
+#### 耳标管理(ear-tag) #####
+耳标管理模块：
+	首页 er-home.html
+	入库登记（市级) city-in.html
+	入库列表（市级）in-list.html
+	耳标发放（市级）city-issued.html
+	发放列表（市级）issued-list.html
+	耳标库存（市级） er-stock-list.html
+private String degree;// 管理等级 1:部级   2:省级  3：市级  4：县级  5：乡级   6：终端
+	                
+private String role;// 管理员角色标识     
+	市级 耳标管理员：等级为3
+	乡镇耳标管理员  ：等级为5                        
+	 防疫员：fyy    等级为6
+	 检疫员：jyy    等级为6   
+	 养殖场：yzqy   等级为6                
+	 散养户：syh    等级为6                 
+	
+#### 检疫申报(quarantine) #####
+
+
+
+
+#### 无害化处理(harmless) ####

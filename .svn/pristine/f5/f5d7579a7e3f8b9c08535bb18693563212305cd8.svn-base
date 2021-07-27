@@ -1,0 +1,204 @@
+/* 共用样式 */
+html,body, div, ul, ol, dl, dt, dd, li, dl, h1, h2, h3, h4{margin:0;padding:0;font-style:normal;font-size: 0.24rem;color: #333333;} 
+ol, ul ,li{list-style: none;} 
+a{color:#333;text-decoration: none;-webkit-touch-callout: none;-webkit-user-select: none;}
+a,input,select{-webkit-tap-highlight-color: transparent;-webkit-appearance: none;-moz-appearance: none;-webkit-border-radius: 0;}
+:focus{outline: none}
+table{border-collapse:collapse;border-spacing:0}
+.clearfix{clear:both;} 
+html,body{height: 100%;}
+p{font-size: 0.24rem; color: #333333;}
+.max-width{max-width: 100%;max-height: 100%;}
+.bg-white{background: #FFFFFF;}
+.mui-bar{
+	background: #33323E;
+	box-shadow: none;
+}
+.mui-bar .add-icon{
+	font-size: 0.52rem;
+    font-weight: bold;
+    padding-top: 8px;
+}
+.mui-bar .mui-title,
+.mui-bar .mui-icon{
+	color: #FFFFFF;
+}
+.message-tip{
+	padding-right: 20px !important;
+}
+.message-tip .tip-img{
+	width: 0.34rem;
+	position: relative;
+}
+.message-tip .tip-text{
+	position: absolute;
+    top: 8px;
+    right: 12px;
+    font-size: 0.2rem;
+    color: #FFFFFF;
+    padding: 5px 5px 1px 5px;
+    background: rgba(0,204,155,1);
+    border-radius: 50%;
+}
+/* home.html页面 */
+.home-icon{
+	text-align: center;
+	margin: 20px 0;
+	position: relative;
+}
+.home-icon .img-icon{
+	width: 1.1rem;
+}
+.home-icon .home-label{
+	position: absolute;
+	top: 1.26rem;
+	left: 0;
+	display: inline-block;
+	width: 100%;
+	font-size: 0.24rem;
+}
+
+/* 个人中心 my.html */
+.myinfo .me-base,
+.login-bg,
+.mail-base-top{
+	background:url(../images/login-bg.png) no-repeat center;
+	background-size:100% auto;
+	height: 4rem;
+	padding: 1.2rem 0;
+}
+.me-base .user-photo{
+	text-align: right;
+}
+.me-base .user-photo img{
+	width: 1.64rem;
+	height: 1.64rem;
+	border-radius: 50%;
+	border: 4px solid #FFFFFF;
+}
+.me-base .user-name{
+	padding: 0.36rem 0.3rem;
+}
+.me-base .name{
+	color: #FFFFFF;
+	font-size: 0.46rem;
+}
+.me-base .phone{
+	color: #FFFFFF;
+	font-size: 0.28rem;
+}
+.me-base .phone img{
+	height: 0.29rem;
+	vertical-align: text-top;
+}
+.myinfo .me-list{
+	clear: both;
+    background: #FFFFFF;
+    height: 0.88rem;
+    margin-top: 0.2rem;
+    line-height: 0.88rem;
+    padding: 0 0.3rem;
+}
+.myinfo .right-icon{
+	width: 0.12rem;
+}
+.loginout-btn{
+	width: 96%;
+    color: #FFFFFF;
+    font-size: 0.28rem;
+    padding: 10px 0;
+    background: linear-gradient(90deg,rgba(242,73,73,1),rgba(231,95,88,1));
+	border: none;
+    border-radius: 5px;
+    position: fixed;
+    left: 2%;
+    bottom: 40px;
+}
+
+/* 登录页面 */
+.login-bg{
+	text-align: center;
+}
+.login-bg .logo-titl{
+	max-width: 70%;
+}
+.user-login .mui-input-group{
+	margin: 1rem 1rem 1rem 0.8rem;
+}
+.user-login .mui-input-group:before,
+.user-login .mui-input-group:after{
+	height: 0;
+}
+.user-login .mui-input-row{
+	position: relative;
+	margin-top: 0.3rem;
+}
+.user-login .logo-title{
+	position: absolute;
+	width: 0.28rem;
+	bottom: 0.18rem;
+	left: 0.36rem;
+}
+.user-login input{
+	font-size: 0.28rem;
+	padding-left: 1rem;
+}
+ input::-webkit-input-placeholder{
+	color: #BBBBBB;
+ }
+.user-login-btn{
+	width:80%;
+	margin: 0 10%;
+	color: #FFFFFF;
+	font-size: 0.28rem;
+	padding: 10px 0;
+	background:linear-gradient(90deg,rgba(73,134,242,1),rgba(68,174,247,1));
+	border-radius:5px;
+	border: none;
+}
+
+/* 通讯录 */
+.mail-content .mui-table-view-cell{
+	font-size: 0.24rem;
+	margin-bottom: 10px;
+	border-bottom: 1px solid #D2D1DB;
+}
+.mail-content .mui-table-view-cell:after{
+	height: 0;
+}
+.mail-content .mui-navigate-right{
+	padding-right: 35px !important;
+	background: #FFFFFF;
+}
+.mail-content .mui-table-view{
+	background: transparent;
+}
+.mail-base-top{
+	padding: 1rem 0;
+	text-align: center;
+}
+.mail-base-top .mui-action-back{
+	position: absolute;
+	left: 0;
+	top: 0;
+	padding: 10px;
+	color: #FFFFFF;
+}
+.mail-base-top .head-img{
+	width: 1.64rem;
+    height: 1.64rem;
+    border-radius: 50%;
+    border: 4px solid #FFFFFF;
+}
+.mail-base-top .name{
+	margin-top: 0.1rem;
+	font-size: 0.32rem;
+	color: #FFFFFF;
+}
+.mail-detail .detail-list{
+	margin-top: 0.2rem;
+}
+.mail-detail .detail-list .detail{
+	color: #6A6882;
+	display: inline-flex;
+}

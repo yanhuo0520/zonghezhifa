@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+		<title>济源市畜牧兽医综合执法</title>
+		<link href="css/mui.css" rel="stylesheet" />
+		<link href="css/index.css" rel="stylesheet" />
+	</head>
+	<body>
+		<nav id="bottom" class="mui-bar mui-bar-tab">
+			<a class="mui-tab-item mui-active" target_id="template/home.html">
+				<span class="mui-icon imgHome"></span>
+				<span class="mui-tab-label">首页</span>
+			</a>
+			<a class="mui-tab-item" target_id="template/mail.html">
+				<span class="mui-icon imgMail"></span>
+				<span class="mui-tab-label">通讯录</span>
+			</a>
+			<!-- <a class="mui-tab-item" target_id="template/new_file.html"> -->
+			<a class="mui-tab-item" target_id="template/apply.html">
+				<span class="mui-icon imgApply"></span>
+				<span class="mui-tab-label">应用</span>
+			</a>
+			<a class="mui-tab-item" target_id="template/my.html">
+				<span class="mui-icon imgMe"></span>
+				<span class="mui-tab-label">个人中心</span>
+			</a>
+		</nav>
+
+		<script src="js/mui.min.js"></script>
+		<script src="js/jquery-1.12.4.min.js"></script>
+		<script src="template/js/content.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			var subpages = ['template/home.html', 'template/mail.html', 'template/apply.html', 'template/my.html'];
+			var subpage_style = {
+				top: '0',
+				bottom: '53px'
+			};
+			var aniShow = {};
+			//创建子页面，首个选项卡页面显示，其它均隐藏；
+			mui.plusReady(function() {
+				doGetAreaname(); //首次导航图加载完启动定位
+				onNetChange(); //首次进入网络判断
+				document.addEventListener("netchange", onNetChange, false);
+
+				// 设置IOS状态栏
+				if (mui.os.ios) {
+					plus.navigator.setStatusBarStyle('UIStatusBarStyleBlackOpaque');
+					plus.navigator.setStatusBarBackground("#33323E"); //背景颜色
+				}
+				plus.navigator.setStatusBarStyle('light');
+				plus.navigator.setStatusBarBackground('#33323E');
+				var self = plus.webview.currentWebview();
+				for (var i = 0; i < 2; i++) {
+					var temp = {};
+					var sub = plus.webview.create(subpages[i], subpages[i], subpage_style);
+					if (i > 0) {
+						sub.hide();
+					} else {
+						temp[subpages[i]] = "true";
+						mui.extend(aniShow, temp);
+					}
+					self.append(sub);
+				}
+
+				// 获取本地应用资源版本号
+				plus.runtime.getProperty(plus.runtime.appid, function(inf) {
+					oldVer = inf.version;
+					updateVersion(oldVer);
+					plus.storage.setItem('version', inf.version);
+				});
+
+			});
+			//当前激活选项
+			var activeTab = subpages[0];
+			/*底部菜单切换效果*/
+			mui("#bottom").on("tap", ".mui-tab-item", function() {
+				var targetTab = this.getAttribute('target_id');
+				mui("#bottom .mui-tab-item").each(function() {
+					this.classList.remove("mui-active");
+				});
+				this.classList.add("mui-active");
+				if (targetTab == activeTab) {
+					return;
+				}
+				var self = plus.webview.currentWebview();
+				var sub = plus.webview.create(targetTab, targetTab, subpage_style);
+				self.append(sub);
+				//隐藏当前;
+				plus.webview.hide(activeTab);
+				//更改当前活跃的选项卡
+				activeTab = targetTab;
+			});
+
+			// 获取本机坐标
+			function doGetAreaname() {
+				plus.geolocation.getCurrentPosition(function(p) {
+					// console.log(JSON.stringify(p));
+					var coords = p.coords;
+					var longitude = coords.longitude; // 经度
+					var latitude = coords.latitude; // 纬度
+					// var location = p.addresses; // 当前位置
+					var location = p.address.province + p.address.city + p.address.district + p.address.street;
+					plus.storage.setItem('x', longitude + "");
+					plus.storage.setItem('y', latitude + "");
+					plus.storage.setItem('location', location + "");
+				}, function(e) {
+					switch (e.code) {
+						case 10:
+							mui.alert('请开启应用的定位权限', '温馨提示', '确定', function() {}, 'div');
+							break;
+						case 9:
+							mui.alert('请开启手机定位服务', '温馨提示', '确定', function() {}, 'div');
+							break;
+						case 2:
+							if (e.message.indexOf("[geolocation:13]") > -1) {
+								mui.alert('请开启应用的定位权限', '温馨提示', '确定', function() {}, 'div'); //如果网络开启，定位失败，提示检查定位权限
+							}
+							if (e.message.indexOf("[geolocation:14]") > -1) {
+								mui.alert('请检查网络是否正常', '温馨提示', '确定', function() {}, 'div'); //如果应用的权限开了，提示网络异常
+							}
+							break;
+						case e.PERMISSION_DENIED:
+							mui.alert('请求定位被拒绝', '温馨提示', '确定', function() {}, 'div');
+							break;
+						case e.POSITION_UNAVAILABLE:
+							mui.alert("位置信息不可用", '温馨提示', '确定', function() {}, 'div');
+							break;
+						case e.TIMEOUT:
+							mui.alert("获取位置信息超时", '温馨提示', '确定', function() {}, 'div');
+							break;
+						case e.UNKNOWN_ERROR:
+							mui.alert("未知错误", '温馨提示', '确定', function() {}, 'div');
+							break;
+					}
+
+				}, {
+					enableHighAccuracy: true,
+					coordsType: 'bd09ll',
+					timeout: 6000,
+					maximumAge: 5000,
+					provider: 'baidu'
+				});
+
+			}
+
+			// 获取当前网络状态
+			function onNetChange() {
+				var nt = plus.networkinfo.getCurrentType();
+				switch (nt) {
+					case plus.networkinfo.CONNECTION_ETHERNET:
+						mui.toast("当前网络为有线网络");
+						break;
+					case plus.networkinfo.CONNECTION_WIFI:
+						mui.toast("当前网络为WiFi");
+						break;
+					case plus.networkinfo.CONNECTION_CELL2G:
+						mui.toast("当前网络为2G网络");
+						break;
+					case plus.networkinfo.CONNECTION_CELL3G:
+						mui.toast("当前网络为3G网络");
+						break;
+					case plus.networkinfo.CONNECTION_CELL4G:
+						mui.toast("当前网络为4G网络");
+						break;
+					default:
+						mui.toast("当前没有网络");
+						break;
+				}
+			}
+			// 监听网络变化
+			document.addEventListener("netchange", function() {
+				var network = plus.networkinfo.getCurrentType();
+				if (network < 2) {
+					if (this.network > 1) {
+						plus.nativeUI.toast('您的网络已断开', undefined, '期待乐');
+					}
+				}
+				if (this.network == 3 && network > 3) {
+					plus.nativeUI.toast('您网络已从wifi切换到蜂窝网络，浏览会产生流量', undefined, '期待乐', '我知道了');
+				}
+				this.network = network;
+			});
+			//休眠方法
+			var ver;
+			function sleep(numberMillis) {
+				var now = new Date();
+				var exitTime = now.getTime() + numberMillis;
+				while (true) {
+					now = new Date();
+					if (now.getTime() > exitTime)
+						return;
+				}
+			}
+			// 版本更新
+			function updateVersion(oldVer) {
+				var ua = navigator.userAgent.toLowerCase();
+				var _url = "http://appupdate.agridoor.com.cn/appUpdate/admin/appupdate/appupdate_hqobj.action";
+				mui.ajax(_url, {
+					data: {
+						"id": 2012
+					},
+					dataType: 'json', //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: function(data) {
+						plus.nativeUI.closeWaiting();
+						// jsonobj = JSON.stringify(data); 
+						// console.log(jsonobj);
+						if (/iphone|ipad|ipod/.test(ua)) { //苹果手机 
+							if (compareVersion(oldVer, data.bbmc) && data.ios == 'y') {
+								var btnArray = ['立即更新', '以后再说'];
+								mui.confirm('最新版本' + data.bbmc + '\n\n更新内容\n' + data.gxnr, '新版本提示', btnArray, function(e) {
+									if (e.index == 0) {
+										plus.runtime.openURL("https://itunes.apple.com/cn/app/qq/id1208005308?l=en&mt=8");
+									}
+								})
+							}
+						} else if (/android/.test(ua)) {
+							if (compareVersion(oldVer, data.bbmc)) {
+							var btnArray = ['立即更新', '稍后再说'];
+							mui.confirm(oldVer + '更新到' + data.bbmc + '\n' + data.gxnr, '版本更新', btnArray, function(e) {
+								if(e.index == 0) {
+									plus.nativeUI.showWaiting("下载中……");
+									var dtask = plus.downloader.createDownload(data.xzdz, {}, function(d, status) {
+										if (status == 200) {
+											clearInterval(i);
+											plus.nativeUI.closeWaiting();
+											plus.nativeUI.toast("正在准备环境，请稍后！");
+											sleep(1000);
+											var path = d.filename;//下载apk
+											plus.runtime.install(path); // 自动安装apk文件
+										}else {
+											alert('版本更新失败:' + status);
+										}
+									});
+									dtask.start();
+									var i = setInterval(function() {
+										var totalSize = dtask.totalSize; //下载任务文件的总大小
+										var downloadedSize = dtask.downloadedSize; //已完成下载文件的大小
+										var daxiaoa = downloadedSize / totalSize;
+										var baifenbi = Math.ceil((Math.round(daxiaoa * 100) / 100) * 100) + "%";
+										return baifenbi
+									}, 100);
+								}
+							})
+							
+						}
+						}
+					},
+					error: function(xhr, type, errorThrown) {
+						//异常处理；
+						plus.nativeUI.closeWaiting();
+						plus.nativeUI.toast("检查更新失败，请稍后再试");
+						console.log(type);
+					}
+				});
+			}
+
+			/**
+			 * 比较版本大小，如果新版本nv大于旧版本ov则返回true，否则返回false
+			 * @param {String} ov
+			 * @param {String} nv
+			 * @return {Boolean}
+			 */
+			function compareVersion(ov, nv) {
+				if (!ov || !nv || ov == "" || nv == "") {
+					return false;
+				}
+				var b = false,
+					ova = ov.split(".", 4),
+					nva = nv.split(".", 4);
+				for (var i = 0; i < ova.length && i < nva.length; i++) {
+					var so = ova[i],
+						no = parseInt(so),
+						sn = nva[i],
+						nn = parseInt(sn);
+					if (nn > no || sn.length > so.length) {
+						return true;
+					} else if (nn < no) {
+						return false;
+					}
+				}
+				if (nva.length > ova.length && 0 == nv.indexOf(ov)) {
+					return true;
+				}
+			}
+		</script>
+	</body>
+</html>

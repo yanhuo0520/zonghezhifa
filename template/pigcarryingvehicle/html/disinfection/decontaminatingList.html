@@ -1,0 +1,272 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>decontaminatingList</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="../../../../css/mui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/mui-popover-self.css" />
+		<style>
+			html,body { background-color: #efeff4 !important; }
+			.mui-card { height: 182px; }
+			.mui-card:first-child { margin-top: 2px !important; }
+			.mui-card-content { margin-top: 6px !important; height: 130px; }
+			
+			.mui-card .mui-card-header, .mui-card .mui-card-content { width: 97%; margin: 0 auto; }
+			.mui-card-header div, .mui-card-footer div { font-size: 13px; color: #202934; font-weight: 650; }
+			.mui-card-header div .mui-icon { font-size: 20px; }
+			
+			.mui-col-sm-8-2 { width: 80% !important; }
+			.mui-col-sm-1-2 { width: 10% !important; font-weight: 700; text-align: center; }
+			.mui-col-sm-1-2:active { background-color: #CCCCCC; border-radius: 5px; }
+			.mui-col-sm-6 { width: 50% !important; }
+			.m-l-4 { margin-left: 4%; } 
+			
+			.mui-card-content .mui-col-sm-6 div { width: 90% !important; height: 25px; line-height: 25px; font-size: 13px; color: #202934; }
+			/* .mui-card-content .mui-col-sm-6 div:first-child { margin-top: 5px; }
+			.mui-card-content .mui-col-sm-6 div:last-child { margin-bottom: 5px; } */
+			.mui-card-content .mui-col-sm-6 div span, .mui-card-content .mui-col-sm-11 span { color: #787B7E; }
+			
+			.mui-card-content .mui-col-sm-11 { width: 91.7% !important;margin-left: 4.6% !important;  height: 50px; line-height: 25px; font-size: 13px; color: #202934; }
+		</style>
+	</head>
+
+	<body>
+		<div id="wrap"class="mui-content">
+			<!-- <div class="mui-card">
+				<div class="mui-card-header">
+					<div class="mui-theme-color mui-col-sm-8-2 mui-ellipsis">河南长城卫生消毒站</div>
+					<div class="mui-col-sm-1-2" onclick="alert({{!item.id}})"><span class="mui-icon mui-icon-compose"></span></div>
+					<div class="mui-col-sm-1-2" onclick="alert(2)"><span class="mui-icon mui-icon-trash"></span></div>
+				</div>
+				<div class="mui-card-content f-column">
+					<div class="f-row m-l-4">
+						<div class="mui-col-sm-6">
+							<div><span class="span-title-area">联系人：</span>ds</div>
+							<div><span class="span-title-area">质量监督员：</span>ds</div>
+							<div><span class="span-title-area">技术员：</span>ds</div>
+						</div>
+						<div class="mui-col-sm-6">
+							<div><span class="span-title-area">联系电话：</span>ds</div>
+							<div><span class="span-title-area">洗消站类型：</span>ds</div>
+							<div><span class="span-title-area">洗消方式：</span>ds</div>
+						</div>
+					</div>
+					<div class="mui-col-sm-11 m-l-4 mui-ellipsis-2"><span class="span-title-area">地址：</span>郑州市中原区电厂路17号1号楼8层806号</div>
+				</div>
+			</div> -->
+		</div>
+		<script id="resDecontaminating" type="text/x-dot-template">
+			{{~it :item:idx}}
+				<div class="mui-card" onclick="toDetailInfo('{{!item.id}}')">
+					<div class="mui-card-header">
+						<div class="mui-theme-color mui-col-sm-12 mui-ellipsis">{{=item.decontamination}}</div>
+						<!-- <div class="mui-col-sm-1-2" onclick="editDecontaminating('{{!item.id}}')"><span class="mui-icon mui-icon-compose"></span></div>
+						<div class="mui-col-sm-1-2" onclick="removeDecontaminating('{{!item.id}}')"><span class="mui-icon mui-icon-trash"></span></div> -->
+					</div>
+					<div class="mui-card-content f-column">
+						<div class="f-row m-l-4">
+							<div class="mui-col-sm-6">
+								<div><span class="span-title-area">联系人：</span>{{=item.linkman}}</div>
+								<div><span class="span-title-area">质量监督员：</span>{{=item.regulators}}</div>
+								<div><span class="span-title-area">技术员：</span>{{=item.technician}}</div>
+							</div>
+							<div class="mui-col-sm-6">
+								<div><span class="span-title-area">联系电话：</span>{{=item.linktel}}</div>
+								<div><span class="span-title-area">洗消站类型：</span>{{=item.type}}</div>
+								<div><span class="span-title-area">洗消方式：</span>{{=item.decontaminWay}}</div>
+							</div>
+						</div>
+						<div class="mui-col-sm-11 m-l-4 mui-ellipsis-2"><span class="span-title-area">地址：</span>{{=item.local + item.address}}</div>
+					</div>
+				</div>
+			{{~}}
+		</script>
+		<div id="search_area"></div>
+		<div id="popover" class="mui-popover f-column">
+			<div class="mui-popover-title">搜索 - 洗消站</div>
+			<div class="mui-popover-content" id="monitorForm">
+				<form class="mui-input-group">
+					<div class="mui-input-row">
+						<label class="label-2">洗消站名称：</label>
+						<input type="text" placeholder="请输入" id="searchDecontaminating_decontamination">
+					</div>
+					<div class="mui-input-row">
+						<label>联系人：</label>
+						<input type="text" placeholder="请输入" id="searchDecontaminating_linkman">
+					</div>
+					<div class="mui-input-row">
+						<label>联系电话：</label>
+						<input type="text" placeholder="请输入" id="searchDecontaminating_linktel">
+					</div>
+					<div class="mui-input-row">
+						<label>技术员：</label>
+						<input type="text" placeholder="请输入" id="searchDecontaminating_technician">
+					</div>
+				</form>
+			</div>
+			<div class="mui-popover-footer">
+				<button type="button" class="mui-btn mui-btn-primary mui-icon mui-icon-search" onclick="searchFunc();">搜索</button>
+			</div>
+		</div>
+		<script type="text/javascript" src="../../../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../../../js/jquery-1.12.4.min.js"></script>
+		<script type="text/javascript" src="../../js/common.js"></script>
+		<script type="text/javascript" src="../../js/local/doT.min.js"></script>
+		<script type="text/javascript" src="../../js/remote/ui.js"></script>
+		<script type="text/javascript" src="../../js/remote/base.js"></script>
+		<script type="text/javascript" src="../../js/remote/square.js"></script>
+		<script type="text/javascript" src="../../js/local/page.js"></script>
+		<script type="text/javascript">
+			mui.init({
+				swipeBack: true, //启用右滑关闭功能
+				pullRefresh: {
+					container: '#wrap',
+					down: {
+						style: "circle",
+						color: "#2492FC",				//可选，默认“#2BD009” 下拉刷新控件颜色
+						height: '30px',					//可选,默认50px.下拉刷新控件的高度,
+						range: '70px',					//可选 默认100px,控件可下拉拖拽的范围
+						offset: '0px',					//可选 默认0px,下拉刷新控件的起始位置
+						auto: true,					//可选,默认false.首次加载自动上拉刷新一次
+						callback: pullDownRefreshFun
+					},
+					up: {
+						height: 50, 					//可选.默认50.触发上拉加载拖动距离
+						auto: false, 					//可选,默认false.自动上拉加载一次
+						contentrefresh: "正在加载...",	//可选，正在加载状态时，上拉加载控件上显示的标题内容
+						contentnomore: '没有更多数据了',	//可选，请求完毕若没有更多数据时显示的提醒内容
+						callback: pullUpRefreshFun
+					}
+				}
+			});
+			
+			var userInfo = null;
+			var decontaminatingParam = {};
+			var dataLength = 0;
+			mui.plusReady(function() {
+				decontaminatingParam = {
+					pageNum : 1,
+					pageSize : 10,
+					append : false
+				}
+				
+				// 监听其他页面调用reloadWebView方法
+				window.addEventListener("reloadWebView", function(event) {
+					pullDownRefreshFun();
+				});
+				
+				// 监听其他页面调用searchFunc方法
+				window.addEventListener("searchFunc", function(event) {
+					var bodyHeight = $("body").height();
+					var height_mui_popover = bodyHeight * 0.55;
+					$(".mui-popover").height(height_mui_popover);
+					$(".mui-popover-content").height(height_mui_popover - 100);
+					mui("#popover").popover('show', document.getElementById("search_area"));
+				});
+				
+			//	resizeListener("disinfection");
+			});
+			
+			/**
+			 * 下拉刷新功能
+			 */
+			function pullDownRefreshFun() {
+				mui("#popover").popover('hide', document.getElementById("search_area"));
+				decontaminatingParam.pageNum = 1;
+				decontaminatingParam.append = false;
+				
+				decontaminatingParam.decontamination = "";
+				decontaminatingParam.linkman = "";
+				decontaminatingParam.linktel = "";
+				decontaminatingParam.technician  = "";
+				
+				setTimeout(nextRefresh, 500);
+			}
+			
+			/**
+			 * 下拉刷新结束
+			 */
+			function nextRefresh() {
+				decontaminatingList(decontaminatingParam);
+				mui('#wrap').pullRefresh().endPulldownToRefresh();
+				if(dataLength > 0) {
+					mui.toast("加载完成");
+				}
+			}
+			
+			/**
+			 * 上拉加载功能
+			 */
+			function pullUpRefreshFun() {
+				mui("#popover").popover('hide', document.getElementById("search_area"));
+				if(dataLength != 0) {
+					decontaminatingParam.pageNum++;
+				}
+				decontaminatingParam.append = true;
+				decontaminatingList(decontaminatingParam);
+				mui('#wrap').pullRefresh().endPullupToRefresh(false);
+				mui('#wrap').pullRefresh().disablePullupToRefresh(); // 隐藏“上拉加载”所在区域
+			}
+			
+			function decontaminatingList(loadParam) {
+				$page.render({
+					container: "wrap",
+					template: "resDecontaminating",
+					loadFun: $square.getDecontaminatingList, // 数据加载的函数
+					loadParam: loadParam,
+					context: function(ret) {
+						dataLength = ret.rows.length;
+					//	console.log(dataLength);
+						return ret.rows;
+					}
+				});
+			}
+			
+			function editDecontaminating(decontaminating_id) {
+				openNewWebView("editDecontaminatingList.html", "editDecontaminatingList.html", {}, {
+					decontaminating_id : decontaminating_id
+				});
+			}
+			
+			function toDetailInfo(decontaminating_id) {
+				openNewWebView("detailDecontaminatingList.html", "detailDecontaminatingList.html", {}, {
+					decontaminating_id : decontaminating_id
+				});
+			}
+			
+			function removeDecontaminating(decontaminating_id) {
+				mui.post(BASEURL + "decontaminating/remove", {ids : decontaminating_id}, function(ret) {
+					if(ret.code == 0) {
+						mui.toast("删除成功");
+						pullDownRefreshFun();
+					} else {
+						mui.toast(ret.msg);
+					}
+				});
+			}
+			
+			function searchFunc() {
+				decontaminatingParam.pageNum = 1;
+				decontaminatingParam.append = false;
+				
+				decontaminatingParam.decontamination = mui("#searchDecontaminating_decontamination")[0].value;
+				decontaminatingParam.linkman = mui("#searchDecontaminating_linkman")[0].value;
+				decontaminatingParam.linktel = mui("#searchDecontaminating_linktel")[0].value;
+				decontaminatingParam.technician = mui("#searchDecontaminating_technician")[0].value;
+				
+				setTimeout(nextRefresh, 500);
+				
+				mui("#searchDecontaminating_decontamination")[0].value = "";
+				mui("#searchDecontaminating_linkman")[0].value = "";
+				mui("#searchDecontaminating_linktel")[0].value = "";
+				mui("#searchDecontaminating_technician")[0].value = "";
+				
+				mui("#popover").popover('hide', document.getElementById("search_area"));
+			}
+		</script>
+	</body>
+
+</html>

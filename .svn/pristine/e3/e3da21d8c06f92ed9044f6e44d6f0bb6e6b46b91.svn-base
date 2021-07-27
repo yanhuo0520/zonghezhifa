@@ -1,0 +1,189 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>检疫申报</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="../../css/mui.min.css" />
+		<link rel="stylesheet" href="../../css/mui.picker.css" />
+		<link rel="stylesheet" href="../../css/mui.dtpicker.css" />
+		<link rel="stylesheet" href="../../css/ajax-picker/ajax-picker.css">
+		<link rel="stylesheet" href="../../css/ajax-picker/ajax-picker-self.css">
+		<link rel="stylesheet" href="../css/generic.css" />
+		<link rel="stylesheet" href="../css/quarantine-common.css" />
+		<style type="text/css">
+			.input-reason{height: 84px !important; font-size: 0.24rem;}
+			.input-reason textarea{ font-size: 0.24rem ;}
+			::-webkit-input-placeholder { /* WebKit, Blink, Edge */    color:    #BBBBBB; }
+			
+			:-moz-placeholder { /* Mozilla Firefox 4 to 18 */   color:    #BBBBBB; }
+			
+			::-moz-placeholder { /* Mozilla Firefox 19+ */   color:    #BBBBBB; }
+			
+			:-ms-input-placeholder { /* Internet Explorer 10-11 */   color:    #BBBBBB; }  
+		</style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">申报单受理</h1>
+		</header>
+		<div class="mui-content">
+			<div class="mui-input-group">
+				<div class="mui-input-row f-row">
+					<label class="title-label-short">处理意见： </label>
+					<div class="mui-radio mui-left">
+						<input name="CTYPE" type="radio" value="DW" checked onclick="pre_initAniKindsSelection(0)" />
+						<label>受理</label>
+					</div>
+					<div class="mui-radio mui-left">
+						<input name="CTYPE" type="radio" value="CP" onclick="pre_initAniKindsSelection(1)" />
+						<label>不受理</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="mui-input-group">
+				<div class="mui-input-row" id="location1">
+					<label class="title-label-short" >派员检疫时间：</label>
+					<input type="text" id="qurarantine_QUARDATE" class="mui-navigate-right" readonly placeholder="请选择" />
+				</div>
+				<div class="mui-input-row"  id="location2">
+					<label class="title-label-short">派员检疫地点：</label>
+					<input type="text" placeholder="请填写派员检疫地址" id="qurarantine_TQUARLOCAL" />
+				</div>
+				<div class="mui-input-row mui-hide input-reason" id="reason">
+					<label class="title-label-short">退回原因：</label>
+					<textarea type="text" placeholder="请填写退回原因" id="qurarantine_REASON"></textarea>
+				</div>
+				<div class="mui-input-row">
+					<label class="title-label-short">联系电话：</label>
+					<input type="number" placeholder="请填写联系电话" id="qurarantine_QUARPHONE" />
+				</div>
+				<div class="mui-input-row">
+					<label class="title-label-short">经办人：</label>
+					<input type="text" id="qurarantine_OPERATOR" readonly="readonly" value="admin"/>
+				</div>	
+			</div>
+			<div class="mui-btn mui-btn-primary big-commit-btn" onclick="submit();">保存</div>
+		</div>
+
+		<script type="text/javascript" src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/mui.picker.min.js"></script>
+		<script type="text/javascript" src="../../js/mui.dtpicker.js"></script>
+		<script type="text/javascript" src="../../js/jquery-1.12.4.min.js"></script>
+		<script type="text/javascript" src="../../js/ajax-picker/ajax-picker.min.js"></script>
+		<script type="text/javascript" src="../js/content.js"></script>
+		<script type="text/javascript" src="../js/constant.js"></script>
+		<script type="text/javascript" src="js/quarantine-data.js"></script>
+		<script type="text/javascript">
+			mui.init({});
+			
+			
+			var quarantineId = "";
+			var source = "";
+			var initAniKindsSelection = true;
+			mui.plusReady(function() {
+				initSettings(); 		// 初始化设置字体大小
+				
+				var self = plus.webview.currentWebview();
+				quarantineId = self.quarantineId;
+				
+				source = self.source;
+				mui("#qurarantine_TQUARLOCAL")[0].value = source;
+
+				/** ---------------------- 派员检疫时间 ---------------------- **/
+				var qurarantineDatePicker = new mui.DtPicker({
+					type: "datetime", //设置日历初始视图模式 
+					beginDate: new Date(1999, 12, 01), // 设置开始日期 
+					endDate: new Date(2100, 11, 31), // 设置结束日期 
+					labels: ['年', '月', '日', '时', '分', '秒'] // 设置默认标签区域提示语
+				})
+				var qurarantineDate = document.getElementById('qurarantine_QUARDATE');
+				qurarantineDate.addEventListener('tap', function(event) {
+					document.activeElement.blur(); // 关闭手机软键盘
+					qurarantineDatePicker.show(function(items) {
+					//	console.log(JSON.stringify(items));
+						qurarantineDate.value = items.value + ":00";
+					});
+				}, false);
+
+			// plus.nativeUI.closeWaiting();
+			});
+			
+			function pre_initAniKindsSelection(target_pre) {
+				if (target_pre == 0) {
+					initAniKindsSelection = true;
+					$("#reason").hide();
+					$("#location1").show();
+					$("#location2").show();
+				} else {
+					initAniKindsSelection = false;
+					$("#reason").show();
+					$("#location1").hide();
+					$("#location2").hide();
+				}
+			}
+			
+			function submit(){
+				var QUARDATE = mui("#qurarantine_QUARDATE")[0].value;
+				var TQUARLOCAL = mui("#qurarantine_TQUARLOCAL")[0].value;
+				var REASON = mui("#qurarantine_REASON")[0].value;
+				var QUARPHONE = mui("#qurarantine_QUARPHONE")[0].value;
+				var OPERATOR = mui("#qurarantine_OPERATOR")[0].value;
+				
+				var valid_msg = "";
+				
+				if (!initAniKindsSelection){
+					if (!REASON || REASON == null || REASON == undefined) {
+						if (valid_msg == "") {
+							valid_msg = "退回原因 不能为空"
+						}
+					}
+				}
+				if (!QUARDATE || QUARDATE == null || QUARDATE == undefined) {
+					if (valid_msg == "") {
+						valid_msg = "派员检疫时间 不能为空"
+					}
+				}
+				if (!TQUARLOCAL || TQUARLOCAL == null || TQUARLOCAL == undefined) {
+					if (valid_msg == "") {
+						valid_msg = "派员检疫地点 不能为空"
+					}
+				}
+				
+				
+				
+				if (!QUARPHONE || QUARPHONE == null || QUARPHONE == undefined) {
+					if (valid_msg == "") {
+						valid_msg = "联系电话 不能为空"
+					}
+				}
+				if (valid_msg != "") {
+					mui.toast(valid_msg);
+				} else {
+					var json_syncTransferData = [{
+						
+						"INSPECTOR":"admin(admin)",
+						"OPERATOR":"admin",
+						"QUARDATE":QUARDATE,
+						// "QUARDATE":(new Date()).Format("yyyy-MM-dd  HH:mm:ss"),
+						"QUARID":quarantineId,
+						"QUARPHONE":QUARPHONE,
+						"REASON":REASON,
+						"STATUS":"2",
+						"SYNC_ACT":"AIS-2001000100000002",
+						"SYNC_USR":"admin",
+						"SYNC_VER":"APP.1.01",
+						"TQUARLOCAL":TQUARLOCAL,
+						"USERNAME":"admin",
+						"_GATEWAY_NAME": "HA_NETWORK"
+					}];
+				}
+			}
+
+			
+		</script>
+	</body>
+
+</html>

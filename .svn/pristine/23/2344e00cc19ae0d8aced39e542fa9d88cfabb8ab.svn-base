@@ -1,0 +1,151 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+		<title>死亡记录</title>
+		<link href="../../css/mui.css" rel="stylesheet" />
+		<link href="ani-css/home.css" rel="stylesheet" />
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<a class="mui-icon mui-icon mui-icon-search mui-pull-right" id="searchBtn"></a>
+			<h1 class="mui-title">死亡记录</h1>
+		</header>
+		<div class="mui-content die-list" id="pullrefresh">
+			<div id="die-list">
+				<!-- <ul class="die-panel company-panel">
+					<li>耳标号：1276896912379123</li>
+					<li>死亡日期：2019-07-15</li>
+					<li>重量：76.3 kg</li>
+				</ul> -->
+			</div>
+			
+			
+		</div>
+		
+		<script src="../../js/mui.js"></script>
+		<script src="../../js/jquery.min.js"></script>
+		<script src="../js/content.js"></script>
+		<script src="ani-js/constant.js"></script>
+		<script type="text/javascript">
+			mui.plusReady(function () {
+			    var self = plus.webview.currentWebview();
+				var frName = self.fName;
+				
+				var currpage = 1;
+				var earTagNum = '';
+				var fromDate = '';
+				var toDate = '';
+				dieList(currpage, earTagNum, fromDate, toDate);
+				
+				// 搜索条件选择
+				window.addEventListener('selFinish',function(event){
+					currpage = 1;
+					earTagNum = event.detail.erNum;
+					fromDate = event.detail.beginTime;
+					toDate = event.detail.endTime;
+					 $("#die-list").html('');
+					 dieList(currpage, earTagNum, fromDate, toDate);
+					 event.preventDefault(); // 阻止默认事件---阻止页面刷新
+				});
+				
+				function dieList(currpage, earTagNum, fromDate, toDate){
+					var result;
+					var pageSize = 100;
+					plus.nativeUI.showWaiting("正在加载……");
+					mui.ajax(Constant.getConstant("COMPANY_DIE_LIST"),{
+						data:{
+							"a_id": 6963762,
+							"api_method": 'c.findDeadLogs',
+							"pageno": currpage,
+							"pagesize": pageSize,
+							// "frName": frName,  //企业法人姓名
+							"frName": "张海棠",  //企业法人姓名
+							"earTagNum": earTagNum,
+							"fromDate": fromDate,
+							"toDate": toDate
+						},
+						dataType:'json',//服务器返回json格式数据
+						type:'post',//HTTP请求类型
+						timeout:10000,//超时时间设置为10秒；
+						success:function(data){
+							// console.log(JSON.stringify(data));
+							plus.nativeUI.closeWaiting();
+							if(data.result == "success"){
+								var result_array = data.data;
+								// console.log(result_array.length);
+								if (result_array.length == 0) {
+									mui('#pullrefresh').pullRefresh().disablePullupToRefresh();
+									if(currpage == 1){
+										$("#die-list").html('<p style="text-align: center;color: #888888;margin-top: 20px;">暂无数据</p>');
+									}else{
+										mui.toast("已经到底了");
+									}
+								}else{
+									mui('#pullrefresh').pullRefresh().refresh(true);
+									for(var i=0;i<result_array.length;i++){
+										var deadTime = result_array[i].DEADTIME;
+										result = '<ul class="die-panel company-panel">' +
+												'	<li>耳标号：'+result_array[i].EARTAGNUM+'</li>' +
+												'	<li>死亡日期：'+deadTime.substr(0, 19)+'</li>' +
+												'	<li>重量：'+result_array[i].WEIGHT+' kg</li>' +
+												'</ul>';
+										$("#die-list").append(result);
+									}
+								}
+								
+							}else{
+								mui.toast("查询失败，请重试");
+							}
+						},
+						error:function(xhr,type,errorThrown){
+							plus.nativeUI.closeWaiting();
+							mui.toast("查询失败");
+						}
+					});
+				}
+				mui.init({
+					pullRefresh : {
+						container: '#pullrefresh', //待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+						up : {
+							height:50,//可选.默认50.触发上拉加载拖动距离
+							auto:false,//可选,默认false.自动上拉加载一次
+							contentrefresh : "正在加载...",//可选，正在加载状态时，上拉加载控件上显示的标题内容
+							contentnomore:'没有数据了',//可选，请求完毕若没有更多数据时显示的提醒内容；
+							callback :pullupRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+						}
+					}
+				});
+				
+				function pullupRefresh(){
+					setTimeout(function(){
+						currpage++;
+						dieList(currpage, earTagNum, fromDate, toDate);
+						mui('#pullrefresh').pullRefresh().endPullupToRefresh();
+					},1500)
+				}
+				
+				// 搜索页面
+				document.getElementById("searchBtn").addEventListener('tap', function(){
+					mui.openWindow({
+						url: 'die-search.html',
+						id: 'die-search.html',
+						waiting:{
+						  autoShow:true,//自动显示等待框，默认为true
+						  title:'正在加载...',//等待对话框上显示的提示内容
+						}
+					})
+					
+				});
+				
+				
+				
+			})
+			
+		</script>
+	</body>
+
+</html>

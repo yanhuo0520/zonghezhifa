@@ -1,0 +1,244 @@
+<!doctype html>
+<html>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+    <title>添加企业</title>
+    <link href="../../css/mui.css" rel="stylesheet"/>
+	<link href="ani-css/home.css" rel="stylesheet" />
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title" id="com-title">养殖企业</h1>
+		</header>
+		<div class="mui-content company-add">
+			<div class="mui-input-group">
+				<div class="mui-input-row">
+					<label>企业名称：</label>
+					<input id="company" type="text" class="mui-input-clear" placeholder="请输入">
+				</div>
+				<div class="mui-input-row">
+					<label>注册地址：</label>
+					<input id="address" type="text" readonly="readonly" class="mui-input-clear" placeholder="请选择(省市县)">
+				</div>
+			</div>
+			<div class="mui-input-group">
+				<div class="mui-input-row">
+					<label>法人代表：</label>
+					<input id="legal-person" type="text" class="mui-input-clear" placeholder="请输入">
+				</div>
+				<div class="mui-input-row">
+					<label>联系电话：</label>
+					<input id="telephone" type="number" class="mui-input-clear" placeholder="请输入">
+				</div>
+			</div>
+			<div class="mui-input-group">
+				<div class="mui-input-row" style="height: auto;">
+					<label>畜禽种类：</label>
+					<div class="select-content">
+						<select id="oneKind">
+							<option value="">请选择</option> 
+						    <option value="pig">猪</option>  
+						    <option value="cattle">牛</option>  
+							<option value="sheep">羊</option>
+							<option value="poultry">禽类</option> 
+							<option value="equus">马属</option> 
+							<option value="camel">骆驼</option> 
+							<option value="small-animals">小动物</option> 
+							<option value="honeybee">蜜蜂</option> 
+							<option value="fry">鱼苗</option>
+						</select> 
+						<select id="twoKind" style="display: none;float: right;"></select>
+					</div>
+					 
+				</div>
+				<div class="mui-input-row">
+					<label>养殖规模：</label>
+					<input id="scale" type="text" class="mui-input-clear" placeholder="请输入(头、只、匹、羽)">
+				</div>
+				
+			</div>
+			<div class="mui-input-group">
+				<div class="mui-input-row">
+					<label>位置：</label>
+					<input id="mapLocation" type="text" class="mui-input-clear" placeholder="GPX:X; GPY:Y" readonly="readonly">
+				</div>
+			</div>
+			
+			<a href="javascript:;" class="mui-btn company-add-btn" id="saveBtn">修改</a>
+		</div>
+		<script src="../../js/mui.js"></script>
+		<script src="../../js/jquery.min.js"></script>
+		<script src="../js/content.js"></script>
+		<script src="ani-js/constant.js"></script>
+		<script type="text/javascript">
+			mui.plusReady(function(){
+				var uuid = plus.storage.getItem("uuid"); //用户的的id编号
+				if(uuid == "" || uuid == null || uuid == "undefined"){
+					mui.openWindow({
+						id: 'login.html',
+						url: '../login.html'
+					})
+				}
+				var self = plus.webview.currentWebview();
+				var qylx = self.qylx; // 企业类型
+				var comTitle = self.comTitle;
+				document.getElementById("com-title").innerHTML = comTitle;
+				var x = plus.storage.getItem("x");
+				var y = plus.storage.getItem("y");
+				
+				// 企业注册验证
+				document.getElementById("company").onkeyup = function(){
+					var company = document.getElementById("company").value;
+					mui.ajax(Constant.getConstant("SEARCH_COMPANY_BASE"), {
+						data:{
+							"qylx": qylx,
+							"name": company
+						},
+						dataType:'json',//服务器返回json格式数据
+						type:'post',//HTTP请求类型
+						timeout:10000,//超时时间设置为10秒；
+						success:function(data){
+							console.log(data.result)
+							if(data.result == "success"){
+								var jsonobj = data.jsonobj;
+								document.getElementById("address").value=jsonobj.address;
+								document.getElementById("legal-person").value=jsonobj.frName;
+								document.getElementById("telephone").value=jsonobj.phone;
+								document.getElementById("oneKind").value=jsonobj.address;
+								document.getElementById("twoKind").value=jsonobj.address;
+								document.getElementById("scale").value=jsonobj.address;
+								document.getElementById("mapLocation").value=jsonobj.address;
+							}else if(data.result == "failure"){
+								mui.toast("查询失败!");
+							}else{
+								mui.toast("失败!");
+							}
+						},
+						error:function(xhr,type,errorThrown){
+							mui.toast("数据获取失败，请稍后再试！");
+						}
+					});
+				}
+				
+				// 监听地址选择
+				window.addEventListener('selFinish',function(event){
+					 var mapGp = event.detail.mapGp;
+					 document.getElementById("mapLocation").value = mapGp;
+				});
+				
+				// 登录验证
+				document.getElementById("saveBtn").addEventListener('tap', function(){
+					var company = document.getElementById("company").value;
+					var address = document.getElementById("address").value;
+					var legalPerson = document.getElementById("legal-person").value;
+					var telephone = document.getElementById("telephone").value;
+					var oneKind = document.getElementById("oneKind").value;
+					var twoKind = document.getElementById("twoKind").value;
+					var scale = document.getElementById("scale").value;
+					
+					if(company == '' || company.length == 0){
+						mui.toast("企业名称不能为空！");
+						return;
+					}
+					if(address == '' || address.length == 0){
+						mui.toast("注册地址不能为空！");
+						return;
+					}
+					if(legalPerson == '' || legalPerson.length == 0){
+						mui.toast("法人姓名不能为空！");
+						return;
+					}
+					var myreg = /^[1][3,4,5,7,8][0-9]{9}$/;
+					if(telephone == '' || telephone.length == 0){
+						mui.toast("请输入联系方式！");
+						return;
+					}else if(!myreg.test(telephone)) {
+						mui.toast("请输入正确格式的手机号");
+						return;
+					}
+					if(oneKind == '' || oneKind.length == 0){
+						mui.toast("请选择种类！！");
+						return;
+					}
+					if((oneKind == "poultry" || oneKind == "equus" || oneKind == "small-animals") && (twoKind == '' || twoKind.length == 0)){
+						mui.toast("请选择二级种类！！");
+						return;
+					}
+					
+					if(scale == '' || scale.length == 0){
+						mui.toast("养殖规模不能为空！");
+						return;
+					}
+
+					var jsonobj = {};
+					jsonobj['x'] = x;
+					
+					// 执行保存
+					plus.nativeUI.showWaiting("正在保存……");
+					mui.ajax(Constant.getConstant("COMPANY_BASE_SAVE"), {
+						data:{
+							"qylx": qylx,
+							"a_id": uuid,
+							"jsonobj": jsonobj
+						},
+						dataType:'json',//服务器返回json格式数据
+						type:'post',//HTTP请求类型
+						timeout:10000,//超时时间设置为10秒；
+						success:function(data){
+							plus.nativeUI.closeWaiting();
+						},
+						error:function(xhr,type,errorThrown){
+							plus.nativeUI.closeWaiting();
+						}
+					});
+
+				});
+
+			
+			});
+			// 种类联动
+			var select = document.getElementById("oneKind");
+			select.onchange=function(){
+				var selvalue = select.value;
+				var val = document.getElementById("twoKind");
+				switch(selvalue){
+					case "poultry" : 
+						val.innerHTML="<option value=''>请选择</option><option value='chicken'>鸡</option><option value='duck'>鸭</option><option value='goose'>鹅</option><option value='quail'>鹌鹑</option><option value='dove'>鸽子</option><option value='bird'>鸟</option>";
+						$("#twoKind").show();
+						break;
+					case "equus" :
+						val.innerHTML="<option value=''>请选择</option><option value='horse'>马</option><option value='donkey'>驴</option><option value='mule'>骡</option>";
+						$("#twoKind").show();
+						break;
+					case "small-animals" :
+						val.innerHTML="<option value=''>请选择</option><option value='dog'>犬</option><option value='rabbit'>兔</option><option value='cat'>猫</option>";
+						$("#twoKind").show();
+						break;
+					default : $("#twoKind").hide();
+				}
+			};
+			
+			document.getElementById("address").addEventListener('tap', function(){
+				mui.openWindow({
+					url: 'city-select.html',
+					id: 'city-select.html',
+					waiting:{
+					  autoShow:true,//自动显示等待框，默认为true
+					  title:'正在加载...',//等待对话框上显示的提示内容
+					}
+				})
+			})
+			document.getElementById("mapLocation").addEventListener('tap', function(){
+				mui.openWindow({
+					url: 'loaction.html',
+					id: 'loaction.html',
+					waiting:{
+					  autoShow:true,//自动显示等待框，默认为true
+					  title:'正在加载...',//等待对话框上显示的提示内容
+					}
+				})
+			})
+		</script>
+	</body>
+
+</html>

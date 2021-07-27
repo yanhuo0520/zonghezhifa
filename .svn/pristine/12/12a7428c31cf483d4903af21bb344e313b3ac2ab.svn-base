@@ -1,0 +1,87 @@
+/* 共用样式 */
+html, body, div, ul, ol, dl, dt, dd, li, dl, h1, h2, h3, h4 {
+	margin: 0;
+	padding: 0;
+	font-style: normal;
+	font-size: 0.24rem;
+}
+
+ol, ul, li { list-style: none; font-size: 0.24rem; }
+
+a { color: #333; text-decoration: none; -webkit-touch-callout: none; -webkit-user-select: none; }
+
+a, input, select, option { -webkit-tap-highlight-color: transparent; -webkit-appearance: none; -moz-appearance: none; -webkit-border-radius: 0; font-size: 0.24rem !important; }
+
+:focus { outline: none }
+
+table { border-collapse: collapse; border-spacing: 0 }
+
+.clearfix { clear: both; }
+
+p { color: #333333; font-size: 0.24rem; }
+
+.max-width { max-width: 100%; max-height: 100%; }
+
+.bg-white { background: #FFFFFF; }
+
+input::-webkit-input-placeholder { color: #BBBBBB; }
+
+* { touch-action: pan-y; }
+
+.f-row { display: flex; flex-flow: row; display: -ms-flexbox; }
+
+.f-column { display: flex; flex-flow: column; display: -ms-flexbox; }
+
+.mui-hide { display: none; }
+
+
+/* 顶部 */
+.mui-bar { background: #33323E; box-shadow: none; }
+
+.mui-bar .mui-title, .mui-bar .mui-icon { color: #FFFFFF; }
+
+.mui-bar .mui-icon { font-size: 24px !important; }
+
+.tip-img { width: 0.43rem; margin-right: 8px; position: relative; }
+
+/* 案件受理列表 */
+.accept-panel{
+    margin: 0.2rem;
+    padding: 0.15rem;
+    background: rgba(255,255,255,1);
+    border: 1px solid rgba(210, 209, 219, 0.6);
+    border-radius: 8px;
+	font-size: 0.24rem;
+	color: #6A6882;
+}
+.accept-panel ul{
+	padding: 0.15rem;
+}
+.accept-panel .phone-img{
+    height: 0.35rem;
+    vertical-align: middle;
+	margin-left: 5px;
+}
+.accept-list .btn-list{
+	border-top: 1px solid #D2D1DB ;
+}
+.accept-panel .list-btn {
+    text-align: center;
+    font-size: 0.26rem;
+    color: #4989F2;
+    padding-top: 0.15rem;
+}
+
+/*运输记录*/
+.record-list{
+	margin:10px;
+	padding:10px;
+	height:208px;
+	background:#FFFFFF;
+	border:1px solid #D2D1DB;
+	border-radius:8px;
+}
+.record-list ul li{
+	font-size: 0.26rem;
+	line-height: 0.5rem;
+}

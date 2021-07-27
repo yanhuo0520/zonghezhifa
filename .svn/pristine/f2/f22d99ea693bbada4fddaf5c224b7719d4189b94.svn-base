@@ -1,0 +1,166 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>企业列表</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.css" rel="stylesheet"/>
+		<link href="ani-css/home.css" rel="stylesheet" />
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<a class="mui-icon mui-icon-plusempty mui-pull-right add-icon" id="addCompany"></a>
+			<h1 class="mui-title" id="com-title">养殖企业</h1>
+		</header>
+		<div class="mui-content company-content">
+			<p class="location-title">当前位置：<span id="loaction">济源市金龙家庭养殖农场</span></p>
+			<div class="company-list" id="company-list">
+				<!-- <div class="company-panel" com_id="22" type_id="1" name_id="饲料企业" add_id="流量计" x_id="x" y_id="y">
+					<p class="title">济源益农养殖责任公司<img src="ani-image/location-tip.png" class="mapGo"/></p>
+					<ul class="company-detail">
+						<li>法人：王建军</li>
+						<li>联系电话：112311</li>
+						<li>地址：王建军</li>
+					</ul>
+				</div> -->
+				
+			</div>
+			
+		</div>
+		<script src="../../js/mui.js"></script>
+		<script src="../../js/jquery.min.js"></script>
+		<script src="../js/content.js"></script>
+		<script src="ani-js/constant.js"></script>
+		<script type="text/javascript">
+			mui.plusReady(function(){
+				var uuid = plus.storage.getItem("uuid"); //用户的的id编号
+				if(uuid == "" || uuid == null || uuid == "undefined"){
+					mui.openWindow({
+						id: 'login.html',
+						url: '../login.html'
+					})
+				}
+				
+				var x = plus.storage.getItem("x");
+				var y = plus.storage.getItem("y");
+				var location = plus.storage.getItem("location");
+				var name = plus.storage.getItem("name"); // 用户系统所分配的登录名称
+				var self = plus.webview.currentWebview();
+				var qylx = self.qylx; // 企业类型
+				var comTitle = self.comTitle; 
+				document.getElementById("loaction").innerHTML = location;
+				document.getElementById("com-title").innerHTML = comTitle;
+				comList(x, y, qylx, name);
+				
+				// 跳转添加企业页面
+				document.getElementById("addCompany").addEventListener('tap', function(){
+					mui.openWindow({
+						url: 'company-add.html',
+						id: 'company-add',
+						extras: {
+							'qylx':qylx,
+							"comTitle": comTitle
+						},
+						waiting: {
+							autoShow: true,
+							title: '正在加载……'
+						}
+					})
+				});
+				
+				// 跳转日志列表
+				mui(".company-list").on('tap', '.company-detail', function(){
+					var comId = $(this).parent().attr("com_id");
+					var comName = $(this).parent().attr("name_id");
+					var comAddress = $(this).parent().attr("add_id");
+					mui.openWindow({
+						url: 'log-list.html',
+						id: 'log-list.html',
+						extras: {
+							'qylx':qylx,
+							'comId':comId,
+							'comName':comName,
+							'comAddress':comAddress
+						},
+						waiting: {
+							autoShow: true,
+							title: '正在加载……'
+						}
+					})
+				});
+				
+				// 跳转地图页面
+				mui(".company-list").on('tap', '.title', function(){
+					var comX = $(this).parent().attr("x_id");
+					var comY = $(this).parent().attr("y_id");
+					mui.openWindow({
+						url: 're_map.html',
+						id: 're_map',
+						extras: {
+							'qylx':qylx,
+							'x': comX,
+							'y': comY
+						},
+						waiting: {
+							autoShow: true,
+							title: '正在加载……'
+						}
+					})
+				});
+			
+			});
+			
+			function comList(x, y, qylx, name){
+				plus.nativeUI.showWaiting("正在加载……");
+				var _url=Constant.getConstant("COMPANY_LIST");
+				mui.ajax(_url,{
+					data:{
+						"qylx": qylx,
+						"x": x,
+						"y": y,
+						"a_name": name
+					},
+					dataType:'json',//服务器返回json格式数据
+					type:'post',//HTTP请求类型
+					timeout:10000,//超时时间设置为10秒；
+					success:function(data){
+						plus.nativeUI.closeWaiting();
+						if(data.result == "success"){
+							var result_array = data.result_array;
+							if(result_array.length == 0){
+								$("#company-list").html('<p class="no-date">-- 暂无数据 --</p>');
+								return;
+							}
+							// console.log(result_array.length);
+							$.each(result_array, function(i, item){
+								$("#company-list").append('<div class="company-panel" com_id="'+item.compId+'" type_id="'+qylx+'" name_id="'+item.compName+'" add_id="'+item.address+'" x_id="'+item.x+'" y_id="'+item.y+'">' +
+										'<p class="title">'+item.compName+'<img src="ani-image/location-tip.png" class="mapGo"/></p>' +
+										'	<ul class="company-detail">' +
+										'		<li>法人：'+item.frName+'</li>' +
+										'		<li>联系电话：'+item.phone+'</li>' +
+										'		<li>地址：'+item.address+'</li>' +
+										'	</ul>' +
+										'</div>');
+							})
+							
+						}else if(data.result == "failure"){
+							mui.toast("查询失败，请重试");
+						}else{
+							mui.toast("失败");
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						plus.nativeUI.closeWaiting();
+						mui.toast("查询失败");
+					}
+				});
+			}
+			
+			
+			
+			
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<link rel="stylesheet" href="../../../../css/mui.min.css">
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/mui-popover-self.css" />
+		<style>
+			html,body { background-color: #efeff4 !important; }
+			.mui-card { height: 208px; }
+			.mui-card:first-child { margin-top: 2px !important; }
+			.mui-card-content { height: 120px; }
+			.mui-card-footer { height: 44px; }
+			
+			.mui-card div { width: 97%; margin: 0 auto; }
+			.mui-card-header div, .mui-card-footer div { font-size: 13px; }
+			.mui-card-header div span, .mui-card-footer div span { color: #202934; }
+			.mui-card-header div .mui-icon { font-size: 20px; }
+			
+			.mui-col-sm-9 { width: 75% !important; }
+			.mui-col-sm-3 { width: 25% !important; }
+			.mui-col-sm-2 { width: 16.66666667% !important; }
+			
+			.mui-card-footer .mui-col-sm-3 button { border: 1px solid #2492FC; }
+			.mui-card-footer .mui-col-sm-3 button:active { background-color: #2492FC; }
+			.mui-card-footer .mui-col-sm-3 .mui-theme-color:active { color: #FFFFFF !important; }
+			
+			.mui-card-content div { width: 90% !important; height: 22px; line-height: 22px; font-size: 13px; color: #202934; }
+			.mui-card-content div:first-child { margin-top: 5px !important; }
+			.mui-card-content div:last-child { margin-bottom: 5px !important; }
+			.mui-card-content div span { color: #787B7E; }
+
+		</style>
+	</head>
+
+	<body>
+		<!--下拉刷新容器-->
+		<div id="wrap" class="mui-content"></div>
+		<div id="search_area"></div>
+		<div id="popover" class="mui-popover f-column">
+			<div class="mui-popover-title">搜索 - 运载车辆</div>
+			<div class="mui-popover-content" id="monitorForm">
+				<form class="mui-input-group">
+					<div class="mui-input-row">
+						<label>所有者：</label>
+						<input type="text" placeholder="请输入" id="searchMonitor_vehicleOwner">
+					</div>
+					<div class="mui-input-row">
+						<label>车牌号：</label>
+						<input type="text" placeholder="请输入" id="searchMonitor_vehicleNum">
+					</div>
+					<div class="mui-input-row">
+						<label>备案编号：</label>
+						<input type="text" placeholder="请输入" id="searchMonitor_recordNo">
+					</div>
+					<div class="mui-input-row">
+						<label>备案机关：</label>
+						<input type="text" placeholder="请输入" id="searchMonitor_address">
+					</div>
+					<div class="mui-input-row address-line">
+						<label>GPS编号：</label>
+						<input type="text" placeholder="请输入" id="searchMonitor_gpsDeviceNum">
+					</div>
+				</form>
+			</div>
+			<div class="mui-popover-footer">
+				<button type="button" class="mui-btn mui-btn-primary mui-icon mui-icon-search" onclick="searchFunc();">搜索</button>
+			</div>
+		</div>
+		<script id="resServiceItem" type="text/x-dot-template">
+			{{~it :item:idx}}
+				<div class="mui-card">
+					<div class="mui-card-header">
+						<div class="mui-theme-color"><span>备案编号：</span>{{=item.recordNo || ""}}</div>
+						<div class="mui-theme-color"><span>车牌号： </span>{{=item.vehicleNum || ""}}</div>
+						<!-- <div class="mui-col-sm-2" onclick="alert(1)"><span class="mui-icon mui-icon-trash"></span></div> -->
+					</div>
+					<div class="mui-card-content f-column">
+						<div><span>核定最大运载量（t）：&nbsp;&nbsp;</span>{{=item.maximumLoad || ""}}</div>
+						<div><span>所有者：&nbsp;&nbsp;</span>{{=item.vehicleOwner || ""}}</div>
+						<div><span>备案时间：&nbsp;&nbsp;</span>{{=item.fillingDate || ""}}</div>
+						<div><span>备案地址：&nbsp;&nbsp;</span>{{=item.address || ""}}</div>
+						<div><span>备案机关：&nbsp;&nbsp;</span>{{=item.fillingOffice || ""}}</div>
+					</div>
+					<div class="mui-card-footer">
+						<div class="mui-theme-color mui-col-sm-9"><span>GPS编号：</span>{{=item.gpsDeviceNum || ""}}</div>
+						<div class="mui-theme-color mui-col-sm-3" onclick="toInformationWeb('{{!item.vehicleNum}}')"><button type="button" class="mui-btn mui-theme-color mui-theme-border-color">证明信息</button></div>
+					</div>
+				</div>
+			{{~}}
+		</script>
+		<script type="text/javascript" src="../../../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../../../js/jquery-1.12.4.min.js"></script>
+		<script type="text/javascript" src="../../js/common.js"></script>
+		<script type="text/javascript" src="../../js/local/doT.min.js"></script>
+		<script type="text/javascript" src="../../js/remote/ui.js"></script>
+		<script type="text/javascript" src="../../js/remote/base.js"></script>
+		<script type="text/javascript" src="../../js/remote/square.js"></script>
+		<script type="text/javascript" src="../../js/local/page.js"></script>
+		<script>
+			mui.init({
+				pullRefresh: {
+					container: '#wrap',
+					down: {
+						style: "circle",
+						color: "#2492FC",				//可选，默认“#2BD009” 下拉刷新控件颜色
+						height: '30px',					//可选,默认50px.下拉刷新控件的高度,
+						range: '70px',					//可选 默认100px,控件可下拉拖拽的范围
+						offset: '0px',					//可选 默认0px,下拉刷新控件的起始位置
+						auto: true,					//可选,默认false.首次加载自动上拉刷新一次
+						callback: pullDownRefreshFun
+					},
+					up: {
+						height: 50, 					//可选.默认50.触发上拉加载拖动距离
+						auto: false, 					//可选,默认false.自动上拉加载一次
+						contentrefresh: "正在加载...",	//可选，正在加载状态时，上拉加载控件上显示的标题内容
+						contentnomore: '没有更多数据了',	//可选，请求完毕若没有更多数据时显示的提醒内容
+						callback: pullUpRefreshFun
+					}
+				}
+			});
+			
+			var userInfo = null;
+			var monitorListParam = {};
+			var dataLength = 0;
+			// 第一次搜索弹窗是否显示标识: true第一次搜索不弹窗 false非第一次搜索需弹窗
+			var firstSeachFlag = true;
+			mui.plusReady(function() {
+				var userInfo_str = plus.storage.getItem("userInfo_str");
+				if(userInfo_str && userInfo_str != null) {
+					userInfo = JSON.parse(userInfo_str);
+					monitorListParam = {
+						pageNum : 1,
+						pageSize : 10,
+						append : false,
+						"area1" : userInfo.area1,
+						"area2" : userInfo.area2,
+						"area3" : userInfo.area3
+					}
+				}
+				
+				// 监听其他页面调用reloadWebView方法
+				window.addEventListener("reloadWebView", function(event) {
+					pullDownRefreshFun();
+				});
+				
+				// 监听其他页面调用searchFunc方法
+				window.addEventListener("searchFunc", function(event) {
+					if(!firstSeachFlag) {
+						var bodyHeight = $("body").height();
+						var height_mui_popover = bodyHeight * 0.55;
+						$(".mui-popover").height(height_mui_popover);
+						$(".mui-popover-content").height(height_mui_popover - 100);
+						mui("#popover").popover('show', document.getElementById("search_area"));
+					} else {
+						firstSeachFlag = false;
+					}
+					
+				});
+				
+			//	resizeListener("monitor");
+				
+			});
+			
+			/**
+			 * 下拉刷新功能
+			 */
+			function pullDownRefreshFun() {
+				mui("#popover").popover('hide', document.getElementById("search_area"));
+				monitorListParam.pageNum = 1;
+				monitorListParam.append = false;
+				
+				monitorListParam.vehicleOwner = "";
+				monitorListParam.vehicleNum = "";
+				monitorListParam.recordNo = "";
+				monitorListParam.address = "";
+				monitorListParam.gpsDeviceNum = "";
+				
+				setTimeout(nextRefresh, 500);
+			}
+			
+			/**
+			 * 下拉刷新结束
+			 */
+			function nextRefresh() {
+				initMonitorList(monitorListParam);
+				mui('#wrap').pullRefresh().endPulldownToRefresh();
+				mui('#wrap').pullRefresh().refresh(true);
+				if(dataLength > 0) {
+					mui.toast("加载完成");
+				}
+			}
+			
+			/**
+			 * 上拉加载功能
+			 */
+			function pullUpRefreshFun() {
+				mui("#popover").popover('hide', document.getElementById("search_area"));
+				if(dataLength != 0) {
+					monitorListParam.pageNum++;
+				}
+				monitorListParam.append = true;
+				initMonitorList(monitorListParam);
+				mui('#wrap').pullRefresh().endPullupToRefresh(false);
+				mui('#wrap').pullRefresh().disablePullupToRefresh(); // 隐藏“上拉加载”所在区域
+			}
+			
+			function initMonitorList(loadParam) {
+				$page.render({
+					container: "wrap",
+					template: "resServiceItem",
+					loadFun: $square.getPigTransVehicleList, // 数据加载的函数
+					loadParam: loadParam,
+					context: function(ret) {
+					//	console.log(JSON.stringify(ret));
+						dataLength = ret.rows.length;
+						return ret.rows;
+					},
+				});
+			}
+			
+			function toInformationWeb(vehicleNum) {
+				if(vehicleNum) {
+					openNewWebView('information.html', 'information.html', {}, {
+						type: "证明",
+						vehicleNum: vehicleNum
+					});
+				} else {
+					mui.toas("信息不完整,无法获取证明信息");
+				}
+			}
+			
+			function searchFunc() {
+				monitorListParam.pageNum = 1;
+				monitorListParam.append = false;
+				
+				monitorListParam.vehicleOwner = mui("#searchMonitor_vehicleOwner")[0].value;
+				monitorListParam.vehicleNum = mui("#searchMonitor_vehicleNum")[0].value;
+				monitorListParam.recordNo = mui("#searchMonitor_recordNo")[0].value;
+				monitorListParam.address = mui("#searchMonitor_address")[0].value;
+				monitorListParam.gpsDeviceNum = mui("#searchMonitor_gpsDeviceNum")[0].value;
+				
+				setTimeout(nextRefresh, 500);
+				
+				mui("#searchMonitor_vehicleOwner")[0].value = "";
+				mui("#searchMonitor_vehicleNum")[0].value = "";
+				mui("#searchMonitor_recordNo")[0].value = "";
+				mui("#searchMonitor_address")[0].value = "";
+				mui("#searchMonitor_gpsDeviceNum")[0].value = "";
+				mui("#popover").popover('hide', document.getElementById("search_area"));
+			}
+		</script>
+	</body>
+
+</html>

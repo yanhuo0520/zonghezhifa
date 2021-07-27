@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>通讯录详情</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.css" rel="stylesheet" />
+		<link href="css/main.css" rel="stylesheet" />
+	</head>
+	<body>
+		<div class="mui-content mail-detail">
+			<div class="mail-base-top">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+				<img src="images/head-por.jpg" class="head-img max-width" id="headImg" />
+				<p class="name" id="personname">张淑茹</p>
+			</div>
+			<ul class="mui-table-view detail-list">
+				<li class="mui-table-view-cell">所属机构：<span class="detail" id="orgname">河南省动物卫生监督所</span></li>
+				<li class="mui-table-view-cell">职务：<span class="detail" id="duty">河南省动物卫生监督所</span></li>
+				<li class="mui-table-view-cell">电话：<a class="detail" id="mobiletel">18337107971</a></li>
+				<li class="mui-table-view-cell">传真：<span class="detail" id="fax">综合处信息统计科</span></li>
+				<li class="mui-table-view-cell">邮箱：<span class="detail" id="email">综合处信息统计科</span></li>
+				<li class="mui-table-view-cell">地址：<span class="detail" id="address">1105</span></li>
+			</ul>
+			
+		</div>
+		<script src="../js/mui.js"></script>
+		<script src="../js/jquery.min.js"></script>
+		<script src="js/content.js"></script>
+		<script src="js/constant.js"></script>
+		<script type="text/javascript">
+			mui.plusReady(function () {
+			    var uuid = plus.storage.getItem("uuid"); //用户的的id编号
+			    // if(uuid == "" || uuid == null || uuid == "undefined"){
+			    // 	mui.openWindow({
+			    // 		id: 'login.html',
+			    // 		url: '../login.html'
+			    // 	})
+			    // }
+			    
+			    var self = plus.webview.currentWebview();
+			    var oId = self.oId;
+				var orgname = self.title;
+				plus.nativeUI.showWaiting("加载中……");
+				// http://172.168.1.130:9056/xmdc/api/SsoBasPersonApi_getById.action?oid=70EFB53BBEAA4DA18A3A9E6E0F51A84D
+				mui.ajax(Constant.getConstant("MAIL_ID_DETAIL"),{
+					data:{
+						"oid": oId,
+					},
+					dataType:'json',//服务器返回json格式数据
+					type:'post',//HTTP请求类型
+					timeout:10000,//超时时间设置为10秒；
+					success:function(data){
+						plus.nativeUI.closeWaiting();
+						// jsonobj = JSON.stringify(data); 
+						// console.log(jsonobj);
+						if(data.photo != null && data.fileextname != null){
+							document.getElementById("headImg").src = data.photo + data.fileextname;
+						}
+						document.getElementById("personname").innerHTML = data.personname;
+						document.getElementById("orgname").innerHTML = orgname;
+						if(data.dutyname != null){
+							document.getElementById("duty").innerHTML = data.duty + "("+ data.dutyname +")";
+						}else{
+							document.getElementById("duty").innerHTML = data.duty;
+						}
+					
+						if(data.mobiletel != null){
+							document.getElementById("mobiletel").innerHTML = data.mobiletel;
+							document.getElementById("mobiletel").setAttribute("href", "tel:"+data.mobiletel);
+						}else if(data.mobiletel == null && data.tel != null){
+							document.getElementById("mobiletel").innerHTML = data.tel;
+							document.getElementById("mobiletel").setAttribute("href", "tel:"+data.tel);
+						}else{
+							document.getElementById("mobiletel").innerHTML = data.mobiletel;
+						}
+						document.getElementById("fax").innerHTML = data.fax;
+						document.getElementById("email").innerHTML = data.email;
+						document.getElementById("address").innerHTML = data.address;
+					},
+					error:function(xhr,type,errorThrown){
+						mui.toast("查询失败");
+					}
+				});
+			})
+		</script>
+	</body>
+
+</html>

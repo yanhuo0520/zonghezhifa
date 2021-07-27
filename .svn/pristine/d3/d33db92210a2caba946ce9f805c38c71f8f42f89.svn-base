@@ -1,0 +1,348 @@
+/* 共用样式 */
+html, body, div, ul, ol, dl, dt, dd, li, dl, h1, h2, h3, h4 {
+	margin: 0;
+	padding: 0;
+	font-style: normal;
+	font-size: 0.24rem;
+}
+
+ol, ul, li { list-style: none; font-size: 0.24rem; }
+
+a { color: #333; text-decoration: none; -webkit-touch-callout: none; -webkit-user-select: none; }
+
+a, input, select, option { -webkit-tap-highlight-color: transparent; -webkit-appearance: none; -moz-appearance: none; -webkit-border-radius: 0; font-size: 0.24rem !important; }
+
+:focus { outline: none }
+
+table { border-collapse: collapse; border-spacing: 0 }
+
+.clearfix { clear: both; }
+
+p { color: #333333; font-size: 0.24rem; }
+
+.max-width { max-width: 100%; max-height: 100%; }
+
+.bg-white { background: #FFFFFF; }
+
+input::-webkit-input-placeholder { color: #BBBBBB; }
+
+* { touch-action: pan-y; }
+
+.f-row { display: flex; flex-flow: row; display: -ms-flexbox; }
+
+.f-column { display: flex; flex-flow: column; display: -ms-flexbox; }
+
+.mui-hide { display: none; }
+
+.status-1 { color: #D52B2B; } /* 红 */
+.status-2 { color: #02CC9C; } /* 绿 */
+.status-3 { color: #4989F2; } /* 蓝 */
+.status-4 { color: #AB82FF; } /* 紫 */
+.status-5 { color: #CD9B1D; } /* 屎黄 */
+.status-6 { color: #2E2E2E; } /* 黑 */
+
+.w-33 { width: 33% !important; }
+.w-40 { width: 40% !important; }
+.w-45 { width: 45% !important; }
+.w-50 { width: 50% !important; }
+.w-52 { width: 52% !important; }
+.w-100 { width: 100% !important; }
+
+/* 顶部 */
+.mui-bar { background: #33323E; box-shadow: none; }
+
+.mui-bar .mui-title, .mui-bar .mui-icon { color: #FFFFFF; }
+
+.mui-bar .mui-icon { font-size: 24px !important; }
+
+.tip-img { width: 0.43rem; margin-right: 8px; position: relative; }
+
+/* 案件受理列表 */
+.accept-panel{
+    margin: 0.2rem;
+    padding: 0.15rem;
+    background: rgba(255,255,255,1);
+    border: 1px solid rgba(210, 209, 219, 0.6);
+    border-radius: 8px;
+	font-size: 0.24rem;
+	color: #6A6882;
+}
+.accept-panel ul{
+	padding: 0.15rem;
+	line-height: 0.4rem;
+}
+.accept-panel .phone-img{
+    height: 0.35rem;
+    vertical-align: middle;
+	margin-left: 5px;
+}
+.accept-list .btn-list{
+	border-top: 1px solid #D2D1DB ;
+}
+.accept-panel .list-btn {
+    text-align: center;
+    font-size: 0.26rem;
+    color: #4989F2;
+    padding-top: 0.15rem;
+}
+/* 保险变更 */
+.popover-cont{
+	width: 90%;
+	left: 5% !important;
+	top: 30% !important;
+}
+.popover-cont .title{
+	text-align: center;
+	padding-top: 15px;
+	font-size: 0.28rem;
+}
+.popover-cont .mui-popover-arrow{
+	display: none;
+}
+.popover-cont .save{
+	width: 96%;
+    margin: 20px 2%;
+    color: #FFFFFF;
+    padding: 10px 0;
+    background: linear-gradient(90deg,rgba(73,134,242,1),rgba(68,174,247,1));
+    border-radius: 5px;
+    border: none;
+    display: block;
+    text-align: center;
+}
+.popover-cont .mui-input-group{
+	margin-top: 15px;
+}
+.popover-cont .mui-input-row label {
+	font-size: 0.26rem;
+	width: 30%;
+	line-height: 0.4rem;
+}
+.popover-cont .mui-input-row select {
+	margin-bottom: 0;
+	font-size: 0.26rem !important;
+	width: 70%;
+	line-height: 0.80rem;
+}
+.popover-cont .mui-input-row option{
+	font-size: 0.2rem !important;
+}
+.popover-cont.popover-case .mui-input-row label {
+	font-size: 0.24rem;
+}
+.popover-cont.popover-case .mui-input-row select {
+	font-size: 0.24rem !important;
+}
+
+/*运输记录*/
+.record-list{
+	float: left;
+	margin:5px 10px;
+	padding:10px;
+	background:#FFFFFF;
+	border:1px solid #D2D1DB;
+	border-radius:8px;
+}
+.record-list:first-child{
+	margin-top:10px;
+}
+.record-list:last-child{
+	margin-bottom: 10px;
+}
+.record-list ul li{
+	width:50%;
+	float: left;
+	font-size: 0.2375rem !important;
+	line-height: 0.42rem;
+	color: #6A6882;
+}
+.record-list ul li span{
+	padding-left: 5px;
+}
+.record-list ul .title{
+	width: 100%;
+}
+.record-list ul .oper{
+	border-top:1px solid #D2D1DB;
+	width: 100%;
+	margin-top: 5px;
+	padding-top:5px;
+	padding-right: 10px;
+	text-align: right;
+}
+
+.record-detail{
+	float: left;
+	width:100%;
+	background: #FFFFFF;
+	border-bottom:1px solid #D2D1DB;
+}
+.record-detail ul{
+	float:left;
+	width:100%;
+}
+.record-detail ul li{
+	float:left;
+	width:50%;
+	height: 0.52rem;
+	line-height: 0.52rem;
+	padding-left: 10px;
+	font-size: 0.26rem;
+}
+
+.record-detail ul li span{
+	float: right;
+	width:60%;
+	text-align: left;
+	color: #6A6882;
+}
+
+/* 现场收集-无耳标 */
+.collect-ear-list{
+	margin: 0 0.2rem;
+	background: transparent;
+}
+.collect-ear-list .mui-table-view-cell{
+	margin-bottom: 10px;
+    background: #fff;
+    border-radius: 5px;
+}
+.collect-ear-list .mui-slider-handle div {
+	display: inline-block;
+	color: #6A6882;
+}
+
+.collect-ear-list .mui-slider-handle div:first-child {
+	margin-right: 10%;
+}
+
+.collect-ear-list.mui-table-view:before,
+.collect-ear-list.mui-table-view:after,
+.collect-ear-list .mui-table-view-cell:after,
+.collect-ear-list .mui-table-view:before{
+	height: 0;
+}
+.collect-ear-list .mui-table-view-cell > .mui-slider-left > .mui-btn, 
+.collect-ear-list .mui-table-view-cell > .mui-slider-right > .mui-btn{
+	left: 1px;
+}
+.collect-ear-list .conclusion,
+.collect-ear-list .weight{
+	width: 50%;
+	float: left;
+}
+.popover-cont.popover-no-ear .mui-input-row label{
+    width: 35%;
+}
+.popover-no-ear .mui-input-group input{
+	text-align: right;
+}
+.popover-no-ear .mui-input-row:last-child input{
+	padding-right: 40px;
+}
+
+.ear-num-row .mui-select{
+	width: 30%;
+	float: left;
+}
+.ear-num-row .ear-input{
+	width: 40%;
+	float: left;
+}
+.ear-weight-row{
+	height: 80px !important;
+}
+.ear-weight-row .title-label-short,
+.ear-img-content .title-label-short{
+	width: 100% !important;
+}
+.ear-weight-row input{
+	width: 95% !important;
+}
+.ear-img-content{
+	height: auto !important;
+}
+.ear-img-content ul{
+	margin-left: 5%;
+	width: 95% !important;
+}
+.popover-cont.popover-insure{
+	top: 20% !important;
+}
+.ear-img-content{
+	padding-bottom: 15px;
+}
+.ear-img-content:after{
+	height: 0 !important;
+}
+.ear-img-content li{
+	width: 1rem;
+	height: 1rem;
+	margin: 0.06rem 0.1rem;
+	float: left;
+	position: relative;
+}
+.ear-img-content li .picture{
+	line-height: 1rem;
+	text-align: center;
+}
+.ear-img-content li .detele-icon{
+	position: absolute;
+	z-index: 1;
+    width: 0.3rem;
+	right: -6px;
+    top: -6px;
+}
+.ear-detail-row {
+	height: 1.4rem !important;
+	margin: 8px 15px !important;
+	line-height: 0.39rem !important;
+	font-size: 0.2585rem !important;
+}
+.ear-detail-row .mui-scroll {
+	word-wrap:break-word;
+}
+/*畜禽病死记录*/
+.record-list-title{
+	position: fixed;
+	top: 44px;
+	left: 0px;
+	float: left;
+	width:100%;
+	height: 50px;
+	line-height: 50px;
+	background: #FFFFFF;
+	border-bottom:1px solid #D2D1DB;
+}
+.record-list-title ul li{
+	float: left;
+	height:50px;
+	font-size: 0.26rem;
+	text-align: center;
+	color: blue;
+}
+.animal-record-list-content{
+	margin-top: 50px;
+}
+.animal-record-list-content .animal-record-list{
+	width:100%;
+	float: left;
+	margin:5px 0px;
+	border-top:1px solid #D2D1DB;
+	border-bottom:1px solid #D2D1DB;
+	background: #FFFFFF;
+}
+.animal-record-list ul li{
+	float: left;
+	height: 50px;
+	font-size: 0.26rem;
+	line-height: 50px;
+	color:#6A6882;
+	text-align: center;
+}
+.animal-record-list:first-child{
+	margin-top:10px;
+}
+.animal-record-list:last-child{
+	margin-bottom: 10px;
+}

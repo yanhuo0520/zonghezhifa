@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+	<head>
+	    <meta charset="utf-8">
+	    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+	    <title>登录</title>
+	    <link href="../css/mui.css" rel="stylesheet"/>
+		<link href="css/main.css" rel="stylesheet" />
+	</head>
+	<body class="bg-white">
+		<div class="mui-content user-login bg-white">
+			<div class="login-bg">
+				<img class="logo-titl" src="images/logo.png" />
+			</div>
+			<div class="mui-input-group">
+				<div class="mui-input-row">
+					<img class="logo-title" src="images/mobile.png" />
+					<input id='username' type="text" class="mui-input-clear mui-input" placeholder="请输入账号">
+				</div>
+				<div class="mui-input-row">
+					<img class="logo-title" src="images/mm.png" />
+					<input id='password' type="password" class="mui-input-clear mui-input" placeholder="请输入密码">
+				</div>
+			</div>
+			<a href="javascript:;" class="mui-btn user-login-btn" id="login">登录</a>
+		</div>
+		<script src="../js/mui.js"></script>
+		<script src="../js/jquery.min.js"></script>
+		<script src="ani-husbandry/ani-js/content.js"></script>
+		<script src="ani-husbandry/ani-js/constant.js"></script>
+		<script type="text/javascript">
+			mui.plusReady(function () {
+			    var oldUsername = plus.storage.getItem("username");
+				if(oldUsername != null){
+					document.getElementById("username").value = oldUsername;
+				}
+				var loginBtn = document.getElementById("login");
+				loginBtn.addEventListener("tap", function(){
+					var username = document.getElementById("username").value;
+					var password = document.getElementById("password").value;
+					if(username == '' || username.length == 0){
+						mui.toast("账号不能为空！");
+						return;
+					}
+					if(password == '' || password.length == 0){
+						mui.toast("请输入密码");
+						return;
+					}
+					
+					// 执行登录
+					plus.nativeUI.showWaiting("正在登录……");
+					var _url=Constant.getConstant("LOGIN_IN");
+					mui.ajax(_url,{
+						data:{
+							"login_name": username,
+							"login_pwd": password
+						},
+						dataType:'json',//服务器返回json格式数据
+						type:'post',//HTTP请求类型
+						timeout:10000,//超时时间设置为10秒；
+						success:function(data){
+							plus.nativeUI.closeWaiting();
+							// console.log(data.result);
+							if(data.result == "success"){ // success 表明用户验证通过
+								saveUserInfo(data);
+								mui.toast("登录成功！");
+
+								var opener = plus.webview.currentWebview().opener(); // 查找父页面
+								opener.reload();
+
+								var self = plus.webview.currentWebview();
+								if(self.hid != null && self.hid != ""){
+									var wobj = plus.webview.getWebviewById(self.hid);//注意 HBuilder是1.html的ID 你如果1.html有ID要替换掉HBuilder，
+									wobj.reload(true);
+								}
+								mui.back();
+							}else if(data.result == "userlist"){ // userlist：表明该账户对应多个用户需要选择用户进行登录
+								
+							}else if(data.result == "failure"){ // failure 用户名或密码错误   
+								mui.toast("用户名或密码错误，请重试");
+							}
+						},
+						error:function(xhr,type,errorThrown){
+							plus.nativeUI.closeWaiting();
+							mui.toast("数据获取失败，请稍后再试！");
+						}
+					});
+				});
+
+				document.onkeydown = function(e) {
+					e = e || window.event;
+					if(e.keyCode == 13) {
+						mui.trigger(loginBtn, 'tap');
+						return false;
+					}
+				};
+				
+			});
+			
+
+			// 存储信息
+			function saveUserInfo(result) {
+				plus.storage.setItem('uuid', result.a_id); // 用户id
+				plus.storage.setItem('realname', result.a_realname); // 用户真实姓名
+				plus.storage.setItem('name', result.a_name); // 用户系统所分配的登录名称
+				plus.storage.setItem('role', result.role); // 用户角色名称
+				plus.storage.setItem('phone', result.a_phone); // 用户手机
+				plus.storage.setItem('dwmc', result.a_dwmc); // 工作单位
+				plus.storage.setItem('userlist', result.userlist); // 对应的用户列表
+			}
+		</script>
+	</body>
+
+</html>

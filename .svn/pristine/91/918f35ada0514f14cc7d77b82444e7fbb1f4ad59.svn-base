@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+    <title>地图</title>
+    <link href="../../css/mui.css" rel="stylesheet"/>
+	<link href="ani-css/home.css" rel="stylesheet" />
+</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<a class="mui-icon mui-pull-right icon-text" id="finish">完成</a>
+			<h1 class="mui-title">定位</h1>
+		</header>
+		<div class="mui-content">
+			<div id="map" class="map"></div>
+			<img src="ani-image/dingwei.png" class="reMap" /> <!-- 刷新定位 -->
+			<input id="adXY" type="text" style="display: none;" />
+		</div>
+		<script src="../../js/mui.js"></script>
+		<script src="../../js/jquery.min.js"></script>
+		<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=USojXHrGnD2gItzUXU9KLcupzeqcbCS2"></script>
+		<script src="../js/content.js"></script>
+		<script src="ani-js/constant.js"></script>
+		<script type="text/javascript">
+			$(function(){
+				var mobileHeight=(window.innerHeight-45)+"px";
+				$(".map").css("height", mobileHeight);
+			});
+			mui.plusReady(function () {
+				var uuid = plus.storage.getItem("uuid");
+				if(uuid == "" || uuid == null || uuid == "undefined") {
+					mui.openWindow({
+						id: 'login.html',
+						url: '../login.html'
+					})
+				}
+				var self = plus.webview.currentWebview();
+				var qylx = self.qylx; // 企业类型
+				var comId = self.comId; // 企业id
+				var company = self.company;
+				var x = self.gpsx;
+				var y = self.gpsy;
+				document.getElementById("adXY").value="GPSX:" + x+";GPSY:"+y;
+				showMap(x, y, company);
+				
+				$('.reMap').on('tap', function(){
+					map.clearOverlays();
+					showMap(x, y, company);
+				});
+				
+				document.getElementById("finish").addEventListener('tap', function(){
+					var mapLocation = document.getElementById("adXY").value;
+					
+					var loaction = mapLocation.split(";");
+					var gpsx = (loaction[0].substring(5));
+					var gpsy = (loaction[1].substring(5));
+					plus.nativeUI.showWaiting("正在更改……");
+					mui.ajax(Constant.getConstant("COMPANY_POINT_CHANGE"),{
+						data:{
+							"qylx": qylx,
+							"compId": comId,
+							"x": gpsx,
+							"y": gpsy
+						},
+						dataType:'json',//服务器返回json格式数据
+						type:'post',//HTTP请求类型
+						timeout:10000,//超时时间设置为10秒；
+						success:function(data){
+							plus.nativeUI.closeWaiting();
+							if(data.result == "success"){
+								mui.toast("坐标修改成功！")
+							}else{
+								mui.toast("坐标修改失败！")
+							}
+						},
+						error:function(xhr,type,errorThrown){
+							plus.nativeUI.closeWaiting();
+							mui.toast("查询失败")
+						}
+					});
+					var pointView = plus.webview.currentWebview().opener();
+					mui.fire(pointView,'mapFinish',{mapGp: mapLocation});
+					mui.back();
+				})
+				
+			});
+			// 初始化地图
+			var mapdx = 15;//地图缩放级别
+			var yyds = 500;//阴影覆盖大小
+			var map = new BMap.Map("map", {
+				minZoom: 5,
+				maxZoom: 19
+			});	
+			
+			// 默认坐标展示
+			function showMap(x, y, company){
+				var point = new BMap.Point(x, y);
+				map.centerAndZoom(point, mapdx);
+				map.panTo(point); //将地图的中心点更改为给定的点
+
+				map.enableScrollWheelZoom(true); // 开启鼠标滚轮缩放功能，仅对PC上有效
+				var icon = new BMap.Icon('ani-image/marker.png', //中心点坐标，单独设定图标的样式
+						new BMap.Size(30, 30), {　// 视窗大小
+							imageSize: new BMap.Size(30,30), // 引用图片实际大小
+							anchor: new BMap.Size(10, 30) // 图标定位的锚点
+				});
+				var mkr = new BMap.Marker(point, {icon: icon}); //创建一个图像标注实例。point参数指定了图像标注所在的地理位置
+				map.addOverlay(mkr); //将标注,覆盖物添加到地图中
+				
+				var html = '<div class="map-tip">' +
+						'<p class="com-name">'+company+'</p>' +
+						'<p class="com-address">GPSX:'+x+'; GPSY:'+y+'</p>' +
+						'<img src="ani-image/map-tip-bg.png" class="tip"/></div>';
+				var label = new BMap.Label(html,{offset:new BMap.Size(5, -90)});
+				label.setStyle({
+					border: "none",
+					background: "transparent"
+				 });
+				mkr.setLabel(label);
+			}
+			
+			// 监听点击坐标事件
+			var geocoder= new BMap.Geocoder(); 
+			map.addEventListener("click", function(e){
+				var marker = new BMap.Marker(e.point);  // 创建标注
+				map.clearOverlays();
+				map.addOverlay(marker); 
+				geocoder.getLocation(e.point, function(rs){
+					var html = '<div class="map-tip">' +
+							'<p class="com-name">'+rs.address+'</p>' +
+							'<p class="com-address">GPSX:'+e.point.lng+'; GPSY:'+e.point.lat+'</p>' +
+							'<img src="ani-image/map-tip-bg.png" class="tip"/></div>';
+					var label = new BMap.Label(html,{offset:new BMap.Size(5, -90)});
+					label.setStyle({
+						border: "none",
+						background: "transparent"
+					 });
+					marker.setLabel(label);
+					document.getElementById("adXY").value="GPSX:" + e.point.lng+";GPSY:"+e.point.lat;
+				})
+				
+			});
+			
+			
+		
+					
+		</script>
+	</body>
+
+</html>

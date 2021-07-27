@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+	<head>
+	    <meta charset="utf-8">
+	    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+	    <title>个人中心</title>
+	    <link href="../css/mui.css" rel="stylesheet"/>
+		<link href="css/main.css" rel="stylesheet" />
+	</head>
+	<body>
+		<div class="mui-content myinfo">
+			<div class="me-base mui-row">
+				<div class="mui-col-sm-4 mui-col-xs-4 user-photo"><img src="images/head-por.jpg" class="max-width" /></div>
+				<div class="user-name mui-col-sm-8 mui-col-xs-8">
+					<p class="name" id="name"></p>
+					<p class="phone hide"><img src="images/phone-icon.png" class="max-width"> &nbsp;<span id="phone"></span></p>
+				</div>
+			</div>
+			<div class="me-list">
+				<p class="title mui-pull-left">用户角色</p>
+				<p class="text mui-pull-right" id="myRole"></p>
+			</div>
+			<div class="me-list">
+				<p class="title mui-pull-left">版本号</p>
+				<p class="text mui-pull-right" id="version">1.0.7</p>
+			</div>
+			<div class="me-list">
+				<p class="title mui-pull-left">关于我们</p>
+				<p class="text mui-pull-right"><img src="images/right.png" class="right-icon"/></p>
+			</div>
+			<a href="javascript:;" id="sign-out" class="mui-btn loginout-btn hide">退出登录</a>
+		</div>
+		<script src="../js/mui.js"></script>
+		<script src="../js/jquery.min.js"></script>
+		<script src="js/content.js"></script>
+		<script type="text/javascript">
+			var uuid = "";
+			mui.plusReady(function () {
+				if(checkLogin()) {
+					setUserInfoHtml();
+				}
+			});
+			
+			function setUserInfoHtml() {
+				uuid = plus.storage.getItem("uuid");
+				if(uuid != "" && uuid != null && uuid != "undefined") {
+					$(".phone").show();
+					$("#sign-out").show();
+					var name = plus.storage.getItem("name");
+					var phone = plus.storage.getItem("phone");
+					var role = plus.storage.getItem("role");
+					var version = plus.storage.getItem("version");
+					$("#name").html(name);
+					$("#phone").html(phone);
+					$("#myRole").html(role);
+					$("#version").html(version);
+				}
+			}
+			// 退出登录
+			document.getElementById("sign-out").addEventListener("tap", function() {
+				var btnArray = ['是', '否'];
+				mui.confirm('确认退出？', '提示', btnArray, function(e) {
+					if (e.index == 0) {
+						// plus.storage.removeItem('uuid');
+						// plus.storage.removeItem('nickname');
+						var version = plus.storage.getItem("version");
+						plus.storage.clear();
+						plus.storage.setItem('version', version);
+						$(".phone").hide();
+						$("#sign-out").hide();
+						$("#name").html("");
+						$("#phone").html("");
+						$("#myRole").html("");
+						
+						mui.openWindow({
+							url: 'login.html',
+							id: 'login.html',
+							waiting: {
+								autoShow: true, //自动显示等待框，默认为true
+								title: '正在加载...' //等待对话框上显示的提示内容
+							}
+						});
+					}
+				});
+
+			});
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,130 @@
+<!doctype html>
+<html>
+	<head>
+	    <meta charset="utf-8">
+	    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+	    <title>首页</title>
+	    <link href="../css/mui.css" rel="stylesheet"/>
+		<link href="css/main.css" rel="stylesheet" />
+	</head>
+	<body class="bg-white">
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-icon mui-pull-right message-tip" id="message">
+				<img src="images/mes-tip.png" class="tip-img max-width"><p class="tip-text">3</p></a>
+			<h1 class="mui-title">济源市畜牧兽医综合执法</h1>
+		</header>
+		<div class="mui-content bg-white">
+			<!-- 轮播图 -->
+			<div class="mui-slider">
+			  <div class="mui-slider-group">
+				<!--第一个内容区容器-->
+				<div class="mui-slider-item"><img src="ani-husbandry/ani-image/ad.png" /></div>
+			  </div>
+			</div>
+			<!-- 模块 -->
+			 <div class="mui-row system-list">
+				<a class="home-icon mui-col-sm-3 mui-col-xs-3" id="" href="#">
+					<img src="ani-husbandry/ani-image/qua-declarate.png" class="img-icon" />
+					<p class="home-label">检疫申报</p>
+				</a>
+				<a class="home-icon mui-col-sm-3 mui-col-xs-3" id="" href="#">
+					<img src="ani-husbandry/ani-image/ele-certifice.png" class="img-icon" />
+					<p class="home-label">电子出证</p>
+				</a>
+				<a class="system-detail home-icon mui-col-sm-3 mui-col-xs-3" qylx_id="5" href="ani-husbandry/company-list.html">
+					<img src="ani-husbandry/ani-image/breed-com.png" class="img-icon" />
+					<p class="home-label">养殖企业</p>
+				</a>
+				<a class="system-detail home-icon mui-col-sm-3 mui-col-xs-3" qylx_id="8" href="ani-husbandry/company-list.html">
+					<img src="ani-husbandry/ani-image/breed-com.png" class="img-icon" />
+					<p class="home-label">屠宰企业</p>
+				</a>
+				<a class="system-detail home-icon mui-col-sm-3 mui-col-xs-3" qylx_id="9" href="ani-husbandry/company-list.html">
+					<img src="ani-husbandry/ani-image/animal-treat.png" class="img-icon" />
+					<p class="home-label">动物诊疗</p>
+				</a>
+				<a class="system-detail home-icon mui-col-sm-3 mui-col-xs-3" qylx_id="1" href="ani-husbandry/company-list.html">
+					<img src="ani-husbandry/ani-image/feed-produce.png" class="img-icon" />
+					<p class="home-label">饲料生产</p>
+				</a>
+				<a class="system-detail home-icon mui-col-sm-3 mui-col-xs-3" qylx_id="2" href="ani-husbandry/company-list.html">
+					<img src="ani-husbandry/ani-image/feed-sale.png" class="img-icon" />
+					<p class="home-label">饲料销售</p>
+				</a>
+				<a class="system-detail home-icon mui-col-sm-3 mui-col-xs-3" qylx_id="3" href="ani-husbandry/company-list.html">
+					<img src="ani-husbandry/ani-image/ani-drug-produce.png" class="img-icon" />
+					<p class="home-label">兽药生产</p>
+				</a>
+				<a class="system-detail home-icon mui-col-sm-3 mui-col-xs-3" qylx_id="4" href="ani-husbandry/company-list.html">
+					<img src="ani-husbandry/ani-image/ani-drug-sale.png" class="img-icon" />
+					<p class="home-label">兽药销售</p>
+				</a>
+				<a class="system-detail home-icon mui-col-sm-3 mui-col-xs-3" qylx_id="11" href="ani-husbandry/company-list.html">
+					<img src="ani-husbandry/ani-image/fresh-buy.png" class="img-icon" />
+					<p class="home-label">生鲜乳收购</p>
+				</a>
+				<a class="system-detail home-icon mui-col-sm-3 mui-col-xs-3" qylx_id="12" href="ani-husbandry/company-list.html">
+					<img src="ani-husbandry/ani-image/fresh-transport.png" class="img-icon" />
+					<p class="home-label">生鲜乳运输车辆</p>
+				</a>
+				<a class="home-icon mui-col-sm-3 mui-col-xs-3" id="" href="#">
+					<img src="ani-husbandry/ani-image/pig-transport.png" class="img-icon" href="#" />
+					<p class="home-label">生猪运输</p>
+				</a>
+				<a class="system-detail home-icon mui-col-sm-3 mui-col-xs-3" id="" href="ear-tag/er-home.html">
+					<img src="ani-husbandry/ani-image/ear-icon.png" class="img-icon" href="#" />
+					<p class="home-label">耳标管理</p>
+				</a>
+			</div>
+		</div>
+		<script src="../js/mui.js"></script>
+		<script src="../js/jquery.min.js"></script>
+		<script src="js/content.js"></script>
+		<script type="text/javascript">
+			mui.plusReady(function () {
+				var uuid = plus.storage.getItem("uuid");
+				if(uuid == "" || uuid == null || uuid == "undefined") {
+					mui.openWindow({
+						id: 'login.html',
+						url: 'login.html'
+					})
+				}
+				
+				mui(".system-list").on("tap",".system-detail",function(){
+					var targetTab = this.getAttribute('href');
+					var qylx = this.getAttribute('qylx_id'); // 企业类型
+					var comTitle = $(this).children('.home-label').html();
+					// 1.饲料生产企业；2.饲料销售企业；3.兽医生产企业；4.兽医销售企业；5.养殖企业；6.种畜禽企业；
+					// 7.生鲜乳企业；8.屠宰企业；9.动物诊疗机构；10.草原企业；11.生鲜乳收购站；12.生鲜乳运输车辆
+					mui.openWindow({
+						url: targetTab,
+						id: targetTab,
+						extras:{
+							"qylx": qylx,
+							"comTitle": comTitle
+						},
+						waiting:{
+						  autoShow:true,//自动显示等待框，默认为true
+						  title:'正在加载...',//等待对话框上显示的提示内容
+						}
+					})
+				});
+				
+				document.getElementById("message").addEventListener('tap', function(){
+					var targetTab = 'ani-husbandry/message-list.html';
+					mui.openWindow({
+						url: targetTab,
+						id: targetTab,
+						waiting:{
+						  autoShow:true,//自动显示等待框，默认为true
+						  title:'正在加载...',//等待对话框上显示的提示内容
+						}
+					})
+				})
+				
+			});
+			
+		</script>
+	</body>
+
+</html>

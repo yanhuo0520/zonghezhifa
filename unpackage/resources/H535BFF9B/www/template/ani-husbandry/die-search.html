@@ -1,0 +1,131 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>死亡记录搜索</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.css" rel="stylesheet" />
+		<link href="../../css/mui.picker.css" rel="stylesheet" />
+		<link href="../../css/mui.dtpicker.css" rel="stylesheet" />
+		<link href="ani-css/home.css" rel="stylesheet" />
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">搜索</h1>
+		</header>
+		<div class="mui-content company-add">
+			<div class="mui-input-group">
+				<div class="mui-input-row">
+					<label>耳&nbsp;&nbsp;标&nbsp;号：</label>
+					<input id="er-num" type="number" class="mui-input-clear" placeholder="请输入您要查询的耳标号" oninput="if(value.length>8)value=value.slice(0,8)" onafterpaste="this.value=this.value.replace(/\D/g,'')">
+				</div>
+			</div>
+			<div class="mui-input-group">
+				<div class="mui-input-row">
+					<label>开始日期：</label>
+					<input id="begin-time" type="text" class="mui-input-clear" placeholder="请选择开始日期" readonly="readonly">
+				</div>
+				<div class="mui-input-row">
+					<label>结束日期：</label>
+					<input id="end-time" type="text" class="mui-input-clear" placeholder="请选择结束日期" readonly="readonly">
+				</div>
+			</div>
+			<a href="javascript:;" class="mui-btn die-search-btn" id="searchBtn">查询</a>
+			
+			
+			
+		</div>
+
+	<script src="../../js/mui.js"></script>
+	<script src="../../js/jquery.min.js"></script>
+	<script src="../../js/mui.picker.js"></script>
+	<script src="../../js/mui.dtpicker.js"></script>
+	<script src="../js/content.js"></script>
+	<script>
+		mui.plusReady(function () {
+		    var ebst=plus.storage.getItem("ebstart"); //耳标开始七位
+
+			// 查询
+			document.getElementById("searchBtn").addEventListener('tap', function(){
+				var erNum = document.getElementById("er-num").value;
+				if(erNum.length > 0 && erNum .length < 8){
+					mui.toast("耳标号段为8位有效数字！");
+					document.getElementById("er-num").focus();
+					return;
+				}else if(erNum.length == 8){
+					erNum = ebst + erNum;
+				}else{
+					erNum == '';
+				}
+				var beginTime = document.getElementById("begin-time").value;
+				var endTime = document.getElementById("end-time").value;
+
+				var pointView = plus.webview.currentWebview().opener();
+				mui.fire(pointView,'selFinish',{
+					erNum: erNum,
+					beginTime: beginTime,
+					endTime: endTime
+				});
+				mui.back();
+			})
+			
+			
+		});
+		
+			// 开始日期	
+			document.getElementById("begin-time").addEventListener('tap', function(){
+				document.getElementById("end-time").value = '';
+                var dtpicker = new mui.DtPicker({
+                    type: "date", //设置日历初始视图模式    //真正的月份比写的多一个月。  type的类型你还是可以选择date datetime month time hour 
+                    labels: ['年', '月', '日'] ,//设置默认标签区域提示语 
+					endDate: new Date()
+                });
+                dtpicker.show(function(items) {
+					document.getElementById("begin-time").value = items.value;
+                });
+			});
+			// 设置默认当前日期
+			var myDate = new Date();
+			var nowDate;
+			if(myDate.getMonth() < 9){
+				if(myDate.getDate()<=9){
+					nowDate = myDate.getFullYear()+'-0'+(myDate.getMonth()+1)+'-0'+myDate.getDate();
+				}else{
+					nowDate = myDate.getFullYear()+'-0'+(myDate.getMonth()+1)+'-'+myDate.getDate();
+				}
+				document.getElementById("end-time").value = nowDate
+			}else{
+				if(myDate.getDate()<=9){
+					nowDate = myDate.getFullYear()+'-'+(myDate.getMonth()+1)+'-0'+myDate.getDate();	
+				}else{
+					nowDate = myDate.getFullYear()+'-'+(myDate.getMonth()+1)+'-'+myDate.getDate();
+				}
+				document.getElementById("end-time").value = nowDate
+			}
+			// 结束日期	
+			document.getElementById("end-time").addEventListener('tap', function(){
+				var beginTime = document.getElementById("begin-time").value;
+				var timeArr=beginTime.split('-');
+				if(beginTime != null || beginTime != '' || beginTime != undefined){
+					var beginDate = new Date(timeArr[0], timeArr[1]-1, timeArr[2]);
+				}else{
+					var beginDate = '';
+				}
+		        var dtpicker = new mui.DtPicker({
+		            type: "date", //设置日历初始视图模式    //真正的月份比写的多一个月。  type的类型你还是可以选择date datetime month time hour 
+		            labels: ['年', '月', '日'] ,//设置默认标签区域提示语 ,
+					beginDate: beginDate,//设置开始日期
+					endDate: new Date()
+		        });
+		        dtpicker.show(function(items) {
+					document.getElementById("end-time").value = items.value;
+		        });
+			});
+			
+
+		
+	</script>
+	</body>
+
+</html>

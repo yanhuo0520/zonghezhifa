@@ -1,0 +1,71 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<meta name="HandheldFriendly" content="true" />
+		<meta name="MobileOptimized" content="320" />
+		<title>Hello H5+</title>
+		<link rel="stylesheet" href="../../../../css/mui.min.css" type="text/css" />
+		<script type="text/javascript">
+			function renderLevelOneMap() {
+				plus.webview.currentWebview().opener().evalJS('renderLevelOneMap()');
+			}
+			function renderLevelTwoMap() {
+				plus.webview.currentWebview().opener().evalJS('renderLevelTwoMap()');
+			}
+		</script>
+		<style type="text/css">
+			html,
+			body {
+				background: none;
+				width: 100%;
+				overflow: hidden;
+				margin: 0 !important;
+				padding: 0 !important;
+				overflow: hidden;
+			}
+			.f-row { display: flex; flex-flow: row; display: -ms-flexbox; }/* 
+			.button {
+				font-size: 16px;
+				font-weight: normal;
+				text-decoration: none;
+				display: block;
+				text-align: center;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+				color: #FFF;
+				background-color: #FFCC33;
+				border: 1px solid #ECB100;
+				-webkit-border-radius: 5px;
+				border-radius: 5px;
+			}
+
+			.button:active {
+				outline: 0;
+				-webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+				box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+			} */
+			button { margin: 10px 5px auto !important;  border: 0.5px solid #2492FC !important; background-color: rgba(236,245,255, 0.65) !important;}
+			button:active {
+				color: #fff;
+				border: 1px solid #2492FC;
+				background-color: #2492FC !important;
+			}
+			.info-div { margin-left: 20px; margin-top: 10px; padding: 4px 5px 2px; border: 0.5px solid #2492FC !important; border-radius: 4px; background-color: rgba(236,245,255, 0.65) !important; }
+			.info-div span, .info-div img { height: 25px; vertical-align: middle; }
+			.info-div span { line-height: 25px; font-size: 14px; color: #2492FC !important; }
+		</style>
+	</head>
+	<body class="f-row">
+		<button type="button" class="mui-btn mui-btn-primary mui-btn-outlined" onclick="renderLevelOneMap()">省统计</button>
+		<button type="button" class="mui-btn mui-btn-primary mui-btn-outlined" onclick="renderLevelTwoMap()">市统计</button>
+		<div class="info-div">
+			<span>在线:</span>
+			<img src="../../images/ipos_on.png" />
+			<span>&nbsp;&nbsp;离线:</span>
+			<img src="../../images/ipos_off.png" height="30px" />
+		</div>
+	</body>
+</html>

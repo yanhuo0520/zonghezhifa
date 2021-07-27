@@ -1,0 +1,211 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>蓝牙连接</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="../../css/mui.css" />
+		<link rel="stylesheet" href="../css/generic.css"/>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<a class="mui-icon mui-icon-refreshempty mui-pull-right" id="btnRefresh"></a>
+			<h1 class="mui-title">打印</h1>
+		</header>
+		<div class="mui-content">
+			<h5 class="mui-content-padded">未配对蓝牙设备</h5>
+			<ul id="list1" class="mui-table-view">
+				
+			</ul>
+			<br>
+			<h5 class="mui-content-padded">已配对蓝牙设备</h5>
+			<ul id="list2" class="mui-table-view">
+				
+			</ul>
+		</div>
+		
+		<script type="text/javascript" src="../../js/mui.js"></script>
+		<script type="text/javascript" src="../../js/jquery-1.12.4.min.js"></script>
+		<script type="text/javascript" src="../js/content.js"></script>
+		<script type="text/javascript" src="../js/bluetooth-print.js"></script>
+		<script type="text/javascript">
+			
+			var noConnected_BleDevice = [];
+			var noConnected_Index = 0;
+
+			var vlist1 = null; //注册容器用来显示未配对设备
+			var vlist2 = null; //注册容器用来显示未配对设备
+			
+			mui.plusReady(function () {
+				initSettings(); 		// 初始化设置字体大小
+
+				vlist1 = document.getElementById('list1'); //注册容器用来显示未配对设备
+				vlist2 = document.getElementById('list2'); //注册容器用来显示未配对设备
+				if(mui.os.android){
+					openAndroidBluetooth(); // 打开蓝牙
+					setTimeout(// 设置延时，防止蓝牙未完全开启时调用
+						function() {
+							searchDevices();
+							return BAdapter.isEnabled();
+						},
+						function() {
+							getConnectedDevices();  // 获取已连接设备列表
+						},
+					3000);
+				}	
+				// 刷新(重新扫描)
+				var buttonRefresh = document.getElementById('btnRefresh');
+				buttonRefresh.addEventListener('tap', function(event) {
+					buttonRefresh.disabled = true;
+					if (mui.os.android) {
+						searchDevices(); // 扫描
+					}
+					buttonRefresh.disabled = false;
+				});
+				mui('#list1').on('tap', 'li', function() {
+					noConnected_Index = $(this).index();
+					connect(this.id, this.innerText);
+				});
+				mui('#list2').on('tap', 'li', function() {
+					// console.log(this.id)
+					plus.nativeUI.showWaiting("正在连接蓝牙打印设备……");
+					var wv = plus.webview.currentWebview();
+					plus.webview.close(wv);
+					chooseResult(this.id, this.innerText);
+				});
+				
+			})
+			
+			
+			
+			/* 打开蓝牙（Android） */
+			function openAndroidBluetooth() {
+				mMain = plus.android.runtimeMainActivity();
+				Context = plus.android.importClass("android.content.Context");
+				BManager = mMain.getSystemService(Context.BLUETOOTH_SERVICE);
+				plus.android.importClass(BManager); //引入相关的method函数
+				BAdapter = BManager.getAdapter();
+				plus.android.importClass(BAdapter); //引入相关的method函数，这样之后才会有isEnabled函数支持
+				if (!BAdapter.isEnabled()) {
+					BAdapter.enable();
+				}
+			}
+			/** 获取已配对的蓝牙设备列表 */
+			function getConnectedDevices() {
+				if (!BAdapter.isEnabled()) {
+					plus.nativeUI.toast('请先打开蓝牙');
+					return;
+				}
+				var lists = BAdapter.getBondedDevices(); //获取配对的设备列表
+				plus.android.importClass(lists);
+				var iterator = lists.iterator();
+				plus.android.importClass(iterator);
+				var vlist2 = document.getElementById('list2'); //注册容器用来显示未配对设备
+				while (iterator.hasNext()) {
+					var d = iterator.next();
+					plus.android.importClass(d);
+					var li2 = genLi(d);
+					vlist2.appendChild(li2);
+				}
+			}
+			/***扫描蓝牙设备 */
+			function searchDevices() {
+				//console.log("开始搜索设备");
+				if (!BAdapter.isEnabled()) {
+					plus.nativeUI.toast('请先打开蓝牙');
+					return;
+				}
+				plus.nativeUI.showWaiting('正在搜索设备，请稍后...', {
+					back: 'close' // 可取值"none"表示截获处理返回键，但不做任何响应；"close"表示截获处理返回键并关闭等待框；"transmit"表示不截获返回键，向后传递给Webview窗口继续处理（与未显示等待框的情况一致）。 
+				});
+				vlist1.innerHTML = ''; //清空容器
+				vlist2.innerHTML = ''; //清空容器
+				// 初始化蓝牙广播接收器 
+				initReceiver();
+				// 开启搜索
+				BAdapter.startDiscovery();
+				// 初始化广播信息过滤
+				initIntentFilter();
+			}
+			function initReceiver() {
+				BluetoothDevice = plus.android.importClass("android.bluetooth.BluetoothDevice");
+				var bdevice = new BluetoothDevice();
+				receiver = plus.android.implements('io.dcloud.android.content.BroadcastReceiver', {
+					onReceive: function(context, intent) { //实现onReceiver回调函数
+						plus.android.importClass(intent); //通过intent实例引入intent类，方便以后的‘.’操作
+						// console.log(intent.getAction()); //获取action
+						if (intent.getAction() == "android.bluetooth.adapter.action.DISCOVERY_FINISHED") {
+							mMain.unregisterReceiver(receiver); //取消监听
+							plus.nativeUI.closeWaiting();
+						} else {
+							BleDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+							//判断是否配对
+							if (BleDevice.getBondState() == bdevice.BOND_NONE) {
+								// console.log("未配对蓝牙设备：" + BleDevice.getName() + '    ' + BleDevice.getAddress());
+								if (!document.getElementById(BleDevice.getAddress())) { //判断防止重复添加
+									var li1 = genLi(BleDevice);
+									if(BleDevice.getName() != null) {
+										noConnected_BleDevice.push(BleDevice);
+										vlist1.appendChild(li1);
+									}
+								}
+							} else {
+								if (!document.getElementById(BleDevice.getAddress())) { //判断防止重复添加
+									// console.log("已配对蓝牙设备：" + BleDevice.getName() + '    ' + BleDevice.getAddress());
+									var li2 = genLi(BleDevice);
+									vlist2.appendChild(li2);
+								}
+							}
+						}
+					}
+				});
+			}
+			function initIntentFilter() { // 设置广播信息过滤  
+				var IntentFilter = plus.android.importClass('android.content.IntentFilter');
+				var filter = new IntentFilter();
+				filter.addAction(BluetoothDevice.ACTION_FOUND);
+				filter.addAction(BAdapter.ACTION_DISCOVERY_STARTED);
+				filter.addAction(BAdapter.ACTION_DISCOVERY_FINISHED);
+				filter.addAction(BAdapter.ACTION_STATE_CHANGED);
+				// 注册广播接收器，接收并处理搜索结果  
+				mMain.registerReceiver(receiver, filter);
+			}
+			
+			function connect(mac_address, mac_name) { // 查找蓝牙设备
+			//	plus.nativeUI.showWaiting("正在连接蓝牙打印设备……");
+				var unConnected = BAdapter.getRemoteDevice(mac_address);
+				if (unConnected) {
+					try {
+						if (noConnected_BleDevice[noConnected_Index].createBond()) { //配对命令.createBond()
+							console.log("配对成功");
+							
+							setTimeout(function() {
+								plus.nativeUI.closeWaiting();
+								var wv = plus.webview.currentWebview();
+								plus.webview.close(wv);
+								chooseResult(mac_address, mac_name);
+							}, 6000);
+							
+							getConnectedDevices();
+						}
+					} catch (e) { //TODO handle the exception
+						mui.alert('连接到设备失败');
+					}
+				}
+			}
+			
+			function chooseResult(mac_address, mac_name) {
+				var targetSearchWebView = plus.webview.getWebviewById("scene-collect-detail.html");
+				mui.fire(targetSearchWebView, "choosePrinterResult", {
+					"mac_address": mac_address,
+					"mac_name": mac_name
+				});
+			}
+			
+			
+			
+		</script>
+	</body>
+
+</html>

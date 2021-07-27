@@ -1,0 +1,228 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>无害化处理</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="../../css/mui.css"/>
+		<link rel="stylesheet" href="../css/generic.css"/>		
+		<link rel="stylesheet" href="../../css/mui.picker.css" />
+		<link rel="stylesheet" href="../../css/mui.dtpicker.css" />
+		<style>
+			.modify-mask { position: fixed; width: 100%; left: 0 !important; top: 44px !important; padding-right: 10px; border-radius: 0px; background-color: #FFFFFF; }
+			.big-commit-btn { margin: 20px 8%; width: 84%; height: 38px; padding-top: 9px; }			
+			.big-commit-btn .mui-icon { font-size: 19px; }
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<a class="mui-action-menu mui-icon mui-icon-search mui-pull-right" id="animal_search"></a>
+			<h1 class="mui-title" id="com-title">畜禽病死记录<span id="toalNum"></span></h1>
+		</header>
+		<div class="mui-content" id="pullrefresh">
+			<div class="record-list-title" id="record-list-title">
+				<ul><li style="width: 40%;">耳标号</li><li style="width: 30%;">养殖种类</li><li style="width: 30%;">死亡日期</li></ul>
+			</div>
+			<div class="animal-record-list-content" id="animal-record-list-content">
+				
+			</div>
+		</div>
+		<div id="qurarantine_popover" class="mui-popover modify-mask">
+			<div class="mui-input-group no-bottom-line">
+				<div class="mui-input-row f-row no-bottom-line">
+					<label class="title-label">案件状态：</label>
+					<div class="mui-radio mui-left">
+						<input type="number" placeholder="请填写耳标号" id="EARTAGNUM" />
+					</div>
+				</div>
+				<div class="mui-input-row f-row no-bottom-line">
+					<label class="title-label">开始时间：</label>
+					<div class="mui-radio mui-left">
+						<input type="text" id="frdate_LEAVELTIME" class="mui-navigate-right" readonly placeholder="请选择开始时间" />
+					</div>
+				</div>
+				<div class="mui-input-row f-row no-bottom-line">
+					<label class="title-label">结束时间：</label>
+					<div class="mui-radio mui-left">
+						<input type="text" id="todate_LEAVELTIME" class="mui-navigate-right" readonly placeholder="请选择结束时间" />
+					</div>
+				</div>
+			</div>
+			<div class="mui-btn mui-btn-primary big-commit-btn" id="animal_search_btn"><span class="mui-icon mui-icon-search"></span>&nbsp;&nbsp;搜&nbsp;&nbsp;索</div>
+		</div>
+		<script type="text/javascript" src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/jquery-1.12.4.min.js"></script>
+		<script type="text/javascript" src="../js/content.js"></script>
+		<script type="text/javascript" src="../js/constant.js"></script>
+		<script type="text/javascript" src="js/harmless-data.js"></script>
+		<script type="text/javascript" src="../../js/mui.picker.min.js"></script>
+		<script type="text/javascript" src="../../js/mui.dtpicker.js"></script>
+		<script type="text/javascript">
+			mui.plusReady(function () {
+				initSettings();
+				var currpage = 1;
+				
+				/**打开搜索界面方法**/
+				document.getElementById("animal_search").addEventListener('tap', function() {
+					mui('#qurarantine_popover').popover('toggle');
+				});
+				
+				function getList(currpage){
+				// console.log(currpage);
+				var huid = plus.storage.getItem('harmless_user_id'); //用户的id编号
+				var fname = plus.storage.getItem('harmless_user_realname'); //用户名称
+				var earNum = document.getElementById("EARTAGNUM").value;
+				var fDate = document.getElementById("frdate_LEAVELTIME").value;
+				var tDate = document.getElementById("todate_LEAVELTIME").value;
+				var result="";
+				var pageSize = 15;
+				plus.nativeUI.showWaiting("加载中……");
+				mui.ajax(Constant.getConstant("HARMLESS_BEASTS_AND_BIRDS_RECORD"), {
+					data:{
+						"a_id": huid,  //为企业类型
+						"api_method":'c.findDeadLogs', // 方法
+						"pageno": currpage,
+						"pagesize": pageSize,
+						"frName":fname,
+						"earTagNum": earNum,
+						"fromDate":fDate,
+						"toDate":tDate
+					},
+					dataType:'json',//服务器返回json格式数据
+					type:'post',//HTTP请求类型
+					timeout:10000,//超时时间设置为10秒；
+					success: function(data){
+						plus.nativeUI.closeWaiting();
+						// console.log(JSON.stringify(data));
+						if(data.result == "success"){
+							var result_array = data.data;
+							var page = data.result_page;
+							document.getElementById("toalNum").innerHTML = "（共"+page.total+"条）"
+							if(result_array==undefined || result_array.length == 0 || currpage > page.pageno ){
+								mui('#pullrefresh').pullRefresh().disablePullupToRefresh();
+								if(currpage == 1){
+									$('#animal-record-list-content').append('<p style="text-align: center;line-height: 1rem;">-- 暂无数据 --</p>')
+								}else{
+									mui.toast("已经到底了");
+								}
+							}else{
+								mui('#pullrefresh').pullRefresh().refresh(true);
+								for(var i=0;i<result_array.length;i++){
+									var date = new Date(result_array[i].DEADTIME); // 检查日期
+									Y = date.getFullYear();
+									M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1);
+									D = (date.getDate() < 10 ? '0'+(date.getDate()) : date.getDate());
+									var btnText;
+									if(result_array[i].EARTAGNUM == null){
+										btnText = '----';
+									}else{
+										btnText = result_array[i].EARTAGNUM;
+									}
+									result = '<div class="animal-record-list">' +
+											'<ul><li style="width: 40%;">'+btnText+'</li><li style="width: 30%;">'+result_array[i].BKNAME+'</li><li style="width: 30%;">'+Y+'-'+M+'-'+D+'</li></ul></div>';
+									$('#animal-record-list-content').append(result);
+								}
+							}
+						}else{
+							mui.toast("查询失败，请重试");
+						}
+						
+					},error:function(xhr,type,errorThrown){
+						plus.nativeUI.closeWaiting();
+						mui.toast("查询失败");
+					}
+							
+				})
+				}
+				mui.init({
+					pullRefresh : {
+						container: '#pullrefresh', //待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+						up : {
+							height:50,//可选.默认50.触发上拉加载拖动距离
+							auto:false,//可选,默认false.自动上拉加载一次
+							contentrefresh : "正在加载...",//可选，正在加载状态时，上拉加载控件上显示的标题内容
+							contentnomore:'没有数据了',//可选，请求完毕若没有更多数据时显示的提醒内容；
+							callback :pullupRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+						},
+						down: {
+							style: "circle",
+							color: "#33323E",				//可选，默认“#2BD009” 下拉刷新控件颜色
+							height: '30px',					//可选,默认50px.下拉刷新控件的高度,
+							range: '100px',					//可选 默认100px,控件可下拉拖拽的范围
+							offset: '0px',					//可选 默认0px,下拉刷新控件的起始位置
+							auto: true,					//可选,默认false.首次加载自动上拉刷新一次
+							callback: pullDownRefreshFun
+						}
+					}
+				});
+				
+				function pullupRefresh(){
+					setTimeout(function(){
+						currpage++;
+						getList(currpage);
+						mui('#pullrefresh').pullRefresh().endPullupToRefresh();
+					},1500)
+				}
+				
+				/**
+				 * 下拉刷新功能
+				 */
+				function pullDownRefreshFun() {
+					setTimeout(function() {
+						currpage = 1;
+						$('#animal-record-list-content').html("");
+						getList(currpage);
+						mui('#pullrefresh').pullRefresh().endPulldownToRefresh();
+						mui('#pullrefresh').pullRefresh().refresh(true);
+					}, 1500);
+				}
+				
+				/**开始时间**/
+				var frdateDatePicker = new mui.DtPicker({
+					type: "date", //设置日历初始视图模式 
+					beginDate: new Date(1999, 12, 01), // 设置开始日期 
+					endDate: new Date(2100, 11, 31), // 设置结束日期 
+					labels: ['年', '月', '日'] // 设置默认标签区域提示语
+				})
+				var frDate = document.getElementById('frdate_LEAVELTIME');
+				frDate.addEventListener('tap', function(event) {
+					document.activeElement.blur(); // 关闭手机软键盘
+					todateDatePicker.hide();
+					frdateDatePicker.show(function(items) {
+						// console.log(JSON.stringify(items));
+						frDate.value = items.value;
+					});
+				}, false);
+				
+				/**结束时间**/
+				var todateDatePicker = new mui.DtPicker({
+					type: "date", //设置日历初始视图模式 
+					beginDate: new Date(1999, 12, 01), // 设置开始日期 
+					endDate: new Date(2100, 11, 31), // 设置结束日期 
+					labels: ['年', '月', '日'] // 设置默认标签区域提示语
+				})
+				var toDate = document.getElementById('todate_LEAVELTIME');
+				toDate.addEventListener('tap', function(event) {
+					document.activeElement.blur(); // 关闭手机软键盘
+					frdateDatePicker.hide();
+					todateDatePicker.show(function(items) {
+						// console.log(JSON.stringify(items));
+						toDate.value = items.value;
+					});
+				}, false);
+				/*搜索*/
+				document.getElementById("animal_search_btn").addEventListener('tap', function() {
+					currpage = 1;
+					$('#animal-record-list-content').html("");
+					mui('#qurarantine_popover').popover('toggle');
+					getList(currpage);
+				});	
+				
+			})
+		</script>
+	</body>
+
+</html>

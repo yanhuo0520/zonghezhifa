@@ -1,0 +1,144 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+		<title>出栏记录</title>
+		<link href="../../css/mui.css" rel="stylesheet" />
+		<link href="ani-css/home.css" rel="stylesheet" />
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<a class="mui-icon mui-icon mui-icon-search mui-pull-right" id="searchBtn"></a>
+			<h1 class="mui-title">出栏记录</h1>
+		</header>
+		<div class="mui-content chualn-list" id="pullrefresh">
+			<div id="chualn-list">
+				
+			</div>
+		</div>
+		
+		
+		<script src="../../js/mui.js"></script>
+		<script src="../../js/jquery.min.js"></script>
+		<script src="../js/content.js"></script>
+		<script src="ani-js/constant.js"></script>
+		<script type="text/javascript">
+			mui.plusReady(function () {
+			    var self = plus.webview.currentWebview();
+				var comName = self.comName;
+				
+				var currpage = 1;
+				var certCode = '';
+				var fromDate = '';
+				var toDate = '';
+				chuLanList(currpage, certCode, fromDate, toDate);
+				
+				// 搜索条件选择
+				window.addEventListener('selFinish',function(event){
+					currpage = 1;
+					certCode = event.detail.jianYiNum;
+					fromDate = event.detail.beginTime;
+					toDate = event.detail.endTime;
+					 $("#chualn-list").html('');
+					chuLanList(currpage, certCode, fromDate, toDate);
+					 event.preventDefault(); // 阻止默认事件---阻止页面刷新
+					 
+				});
+				
+				function chuLanList(currpage, certCode, fromDate, toDate){
+					var result;
+					var pageSize = 10; 
+					plus.nativeUI.showWaiting("正在加载……");
+					mui.ajax(Constant.getConstant("COMPANY_CHULAN_LIST"),{
+						data:{
+							"a_id": 6963762,
+							"api_method": 'c.findbreedingOutLogs',
+							"pageno": currpage,
+							"pagesize": pageSize,
+							// "compName": comName,  //养殖企业名称
+							"compName": "济源市济源县克井镇大社郭红文养殖场",  //测试数据
+							"certCode": certCode,
+							"fromDate": fromDate,
+							"toDate": toDate,
+						},
+						dataType:'json',//服务器返回json格式数据
+						type:'post',//HTTP请求类型
+						timeout:10000,//超时时间设置为10秒；
+						success:function(data){
+							plus.nativeUI.closeWaiting();
+							if(data.result == "success"){
+								var result_array = data.data;
+								// console.log(result_array.length);
+								if (result_array.length == 0) {
+									mui('#pullrefresh').pullRefresh().disablePullupToRefresh();
+									if(currpage == 1){
+										$("#chualn-list").html('<p style="text-align: center;color: #888888;margin-top: 20px;">---- 暂无数据 ----</p>');
+									}else{
+										mui.toast("已经到底了");
+									}
+								}else{
+									mui('#pullrefresh').pullRefresh().refresh(true);
+									for(var i=0;i<result_array.length;i++){
+										result = '<ul class="die-panel company-panel">' +
+												'	<li>检疫证号：'+result_array[i].CODE+'</li>' +
+												'	<li>出栏日期：'+result_array[i].SIGNDATE+'</li>' +
+												'	<li>数量：'+result_array[i].NUM+' </li>' +
+												'</ul>';
+										$("#chualn-list").append(result);
+									}
+								}
+								
+							}else{
+								mui.toast("查询失败，请重试");
+							}
+						},
+						error:function(xhr,type,errorThrown){
+							plus.nativeUI.closeWaiting();
+							mui.toast("查询失败");
+						}
+					});
+				}
+				mui.init({
+					pullRefresh : {
+						container: '#pullrefresh', //待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+						up : {
+							height:50,//可选.默认50.触发上拉加载拖动距离
+							auto:false,//可选,默认false.自动上拉加载一次
+							contentrefresh : "正在加载...",//可选，正在加载状态时，上拉加载控件上显示的标题内容
+							contentnomore:'没有数据了',//可选，请求完毕若没有更多数据时显示的提醒内容；
+							callback :pullupRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+						}
+					}
+				});
+				
+				function pullupRefresh(){
+					setTimeout(function(){
+						currpage++;
+						chuLanList(currpage, certCode, fromDate, toDate);
+						mui('#pullrefresh').pullRefresh().endPullupToRefresh();
+					},1500)
+				}
+				
+				// 搜索页面
+				document.getElementById("searchBtn").addEventListener('tap', function(){
+					mui.openWindow({
+						url: 'chulan-search.html',
+						id: 'chulan-search.html',
+						waiting:{
+						  autoShow:true,//自动显示等待框，默认为true
+						  title:'正在加载...',//等待对话框上显示的提示内容
+						}
+					})
+					
+				});
+				
+				
+				
+			})
+			
+		</script>
+	</body>
+
+</html>

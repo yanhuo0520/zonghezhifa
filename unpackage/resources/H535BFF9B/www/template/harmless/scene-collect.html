@@ -1,0 +1,313 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>无害化处理</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="../../css/mui.css"/>
+		<link rel="stylesheet" href="../css/generic.css"/>
+		<style>			
+			.in-list { margin: 10px; background: #FFFFFF; border-radius: 5px; }
+			.in-list .title { font-size: 0.245rem; padding: 10px 15px 5px; border-bottom: 1px solid #EEEEEE; }
+			.in-list ul { color: #6A6882; line-height: 0.46rem; padding: 0 15px 8px; }
+			.in-list li span { display: inline-block; width: 49.5%; }
+			.in-list li span a { color: #6A6882 !important; }
+			.phone-img { height: 0.35rem; vertical-align: middle; margin-left: 8px; }
+			.status-1 { color: #D52B2B; }
+			.status-2 { color: #02CC9C; }
+			.accept-list { height: 100%; padding-bottom: 60px; }
+			.big-commit-btn-outlook { position: fixed; left: 0px; bottom: 0px; width: 100%; height: 55px; background-color: #FFFFFF; }
+			.big-commit-btn { margin: 8px 8%; width: 84%; height: 38px; padding-top: 9px; }
+		</style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">现场收集<span id="toalNum"></span></h1>
+		</header>
+		<div class="mui-content accept-list" id="pullrefresh">
+			<div class="in-list-content" id="in-list-content">
+				<!-- <div class="in-list">
+					<p class="title">养殖企业：&nbsp;&nbsp;轵城镇西轵城村 史小孬养殖场</p>
+					<ul>
+						<li>
+							<span>报&nbsp;案&nbsp;&nbsp;人：&nbsp;&nbsp;史小孬</span>
+							<span>
+								<a href="tel:13460302205">电&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;话：1214125412<img class="phone-img" src="images/phone.png"></a>
+							</span>
+						</li>
+						<li>
+							<span>畜&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别：&nbsp;&nbsp;育肥猪</span>
+							<span>收集状态：测试</span>
+						</li>
+						<li>报案时间：&nbsp;&nbsp;2019-07-30 15:21:45</li>
+						<li>受理时间：&nbsp;&nbsp;2019-07-30 15:21:45</li>
+					</ul>
+				</div> -->
+			</div>
+		</div>
+		<div class="big-commit-btn-outlook mui-hide">
+			<div class="mui-btn mui-btn-primary big-commit-btn" id="harmless_collect_commit">提交已收集信息</div>
+		</div>
+		<script type="text/javascript" src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/jquery-1.12.4.min.js"></script>
+		<script type="text/javascript" src="../js/content.js"></script>
+		<script type="text/javascript" src="../js/constant.js"></script>
+		<script type="text/javascript" src="js/harmless-data.js"></script>
+		<script type="text/javascript">
+			mui.init({
+				pullRefresh : {
+					container: '#pullrefresh', 			// 待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+					up: {
+						height: 50,						// 可选.默认50.触发上拉加载拖动距离
+						auto: false,					// 可选,默认false.自动上拉加载一次
+						contentrefresh: "正在加载...",	// 可选，正在加载状态时，上拉加载控件上显示的标题内容
+						contentnomore: '没有数据了',		// 可选，请求完毕若没有更多数据时显示的提醒内容；
+						callback: pullupRefreshFun 		// 必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+					},
+					down: {
+						style: "circle",
+						color: "#33323E",				//可选，默认“#2BD009” 下拉刷新控件颜色
+						height: '30px',					//可选,默认50px.下拉刷新控件的高度,
+						range: '100px',					//可选 默认100px,控件可下拉拖拽的范围
+						offset: '0px',					//可选 默认0px,下拉刷新控件的起始位置
+						auto: true,						//可选,默认false.首次加载自动上拉刷新一次
+						callback: pullDownRefreshFun
+					}
+				}
+			});
+			
+			var currpage = 1;
+			var totalPage = 0;
+			var totalRows = 0;
+			
+			var harmless_user_id = "";
+			var api_method = "";
+			var tslId = "";
+			var netUrl = "";
+			var transportRecordId = "";
+			
+			mui.plusReady(function() {
+				initSettings(); 		// 初始化设置字体大小
+				harmless_user_id = plus.storage.getItem("harmless_user_id"); //用户的的id编号
+				var self = plus.webview.currentWebview();
+				transportRecordId = self.transportRecordId;
+				if (transportRecordId != null && "" != transportRecordId) {
+					api_method = "c.findTslDetails";
+					tslId = transportRecordId;
+					netUrl = Constant.getConstant("HARMLESS_REPORT_LIST_TRANSOPRT_ID");
+				} else {
+					api_method = "c.findReportList";
+					netUrl = Constant.getConstant("HARMLESS_REPORT_LIST");
+				}
+				
+				// 监听其他页面调用setIndexLoactionInfo方法
+				window.addEventListener("comList", function(event) {
+					$('#in-list-content').html("");
+					comList();
+				});
+				
+				/** ---------------------- 收集详情提交 ---------------------- **/
+				document.getElementById("harmless_collect_commit").addEventListener('tap', function() {
+					plus.nativeUI.showWaiting("正在提交数据……");
+					mui.ajax(Constant.getConstant("HARMLESS_AFFIRM_CAR_COME_IN"), {
+						data:{
+							"api_method": "c.updateTSLInFac",
+							"a_id": harmless_user_id,
+							"tslId": transportRecordId
+						},
+						dataType: 'json',//服务器返回json格式数据
+						type: 'post',//HTTP请求类型
+						timeout: 10000,//超时时间设置为10秒；
+						success: function(data) {
+							console.log(JSON.stringify(data));
+							plus.nativeUI.closeWaiting();
+							if(data.resultStatus) {
+								if(data.resultCode === "HA900") {
+									var btnArray = ['是', '否'];
+									mui.confirm('尚有  ' + data.data + '  条信息未收集,是否继续提交?', data.resultMsg, btnArray, function(e) {
+										if (e.index == 0) {
+											continueCommit();
+										}
+									});
+								} else {
+									$('#in-list-content').html("");
+									comList();
+									mui.toast("信息已提交！");
+								}
+							} else {
+								mui.toast("收集信息提交失败，请重试");
+							}
+						},
+						error:function(xhr,type,errorThrown){
+							plus.nativeUI.closeWaiting();
+							mui.toast("收集信息提交失败");	
+						}
+					});
+				});
+			});
+
+			function comList() {
+				var result;
+				var pageSize = 10;
+				plus.nativeUI.showWaiting("正在加载……");
+				mui.ajax(netUrl, {
+					data:{
+						"api_method": api_method,
+						"a_id": harmless_user_id,
+						"tslId": tslId,
+						"page": currpage,
+						"rows": pageSize
+					},
+					dataType: 'json',//服务器返回json格式数据
+					type: 'post',//HTTP请求类型
+					timeout: 10000,//超时时间设置为10秒；
+					success: function(data) {
+						plus.nativeUI.closeWaiting();
+						totalPage = data.data.page.totalPage;
+						totalRows = data.data.page.totalRows;
+						transportRecordId = data.data.tsl.id;
+						mui("#toalNum")[0].innerHTML = " 共( " + totalRows + " ) 条"
+						if(data.resultStatus == true) {
+							var result_array = data.data.reportVos;
+							if(currpage == 1 && result_array.length == 0) {
+								mui('#pullrefresh').pullRefresh().disablePullupToRefresh();
+								$('#in-list-content').append('<p style="text-align: center;color: #888888;margin-top: 20px;">---- 暂无数据 ----</p>');
+							} else {
+								$(".big-commit-btn-outlook").show();
+								mui('#pullrefresh').pullRefresh().refresh(true);
+								for(var i = 0; i < result_array.length; i++) { 
+									var status_msg = "";
+									var status_class = "";
+									var status_result_1 = "";
+									var status_result_2 = "";
+									if(result_array[i].status === CollectStatus_SIX) {
+										status_msg = "收集完成";
+										status_class = "status-2";
+										var total_weight = numAdd(result_array[i].growPigWeight, result_array[i].boarWeight);
+										var total_weight_1 = numAdd(total_weight, result_array[i].sowWeight);
+										var total_num = parseInt(result_array[i].boarNum) + parseInt(result_array[i].sowNum) + parseInt(result_array[i].growPigNum);
+										status_result_1 = '<li><span>重&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;量：&nbsp;' + total_weight_1 + ' 公斤</span>'
+											+ '<span>数&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;量：&nbsp;' + total_num + ' 头</span></li>'
+										status_result_2 = '<li>收集时间：&nbsp;' + result_array[i].collectDate + '</li>';
+									} else {
+										status_msg = "收集中";
+										status_class = "status-1";
+									}
+									
+									result = '<div class="in-list" onclick="toSceneCollectDetail(\'' 
+											+ result_array[i].id + '\', \'' + result_array[i].reportPersonName + '\', \'' + result_array[i].address + '&nbsp;' + result_array[i].reportUnit + '\', \''
+											+ result_array[i].bkName + '\', \'' + result_array[i].telephone + '\', \'' + result_array[i].status + '\', \'' + data.data.tsl.truckPlate + '\', \''
+											+ result_array[i].collectDate +'\')">'
+											+ '<p class="title">养殖企业：&nbsp;' + result_array[i].address + '&nbsp;' + result_array[i].reportUnit + '</p>'
+											+ '<ul><li><span>报&nbsp;案&nbsp;&nbsp;人：&nbsp;' + result_array[i].reportPersonName + '</span>'
+											+ '<span><a href="tel:' + result_array[i].telephone + '">电&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;话：&nbsp;' + result_array[i].telephone 
+											+ '<img class="phone-img" src="images/phone.png"></a></span></li>'
+											+ '<li><span>畜&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别：&nbsp;' + result_array[i].bkName + '</span>'
+											+ '<span>案件进度：&nbsp;<label class="' + status_class + '">' + status_msg + '</label></span></li>'
+											+ status_result_1
+											+ '<li>报案时间：&nbsp;' + result_array[i].createTime + '</li>'
+											+ '<li>受理时间：&nbsp;' + result_array[i].updateTime + '</li>'
+											+ status_result_2
+											+ '</ul></div>';
+									$('#in-list-content').append(result);
+								}
+							}
+						} else {
+							mui.toast("现场收集信息获取失败，请重试")
+						}
+					},
+					error:function(xhr,type,errorThrown) {
+						plus.nativeUI.closeWaiting();
+						mui.toast("现场收集信息获取失败");	
+					}
+				});
+			}
+			
+			/**
+			 * 上滑加载更多功能
+			 */
+			function pullupRefreshFun() {
+				setTimeout(function() {
+					currpage++;
+					if(currpage >= totalPage) {
+						mui.toast("已经到底了");
+						mui('#pullrefresh').pullRefresh().disablePullupToRefresh();
+					} else {
+						comList();
+					}
+					mui('#pullrefresh').pullRefresh().endPullupToRefresh();
+				}, 1500);
+			}
+			
+			/**
+			 * 下拉刷新功能
+			 */
+			function pullDownRefreshFun() {
+				setTimeout(function() {
+					currpage = 1;
+					$('#in-list-content').html("");
+					comList();
+					mui('#pullrefresh').pullRefresh().endPulldownToRefresh();
+					mui('#pullrefresh').pullRefresh().refresh(true);
+				}, 1500);
+			}
+			
+			function continueCommit() {
+				plus.nativeUI.showWaiting("正在提交数据……");
+				mui.ajax(Constant.getConstant("HARMLESS_AFFIRM_CAR_COME_IN_NOT_COMPLETE"), {
+					data:{
+						"api_method": "c.updateTSLInFacNotComplete",
+						"a_id": harmless_user_id,
+						"tslId": transportRecordId
+					},
+					dataType: 'json',//服务器返回json格式数据
+					type: 'post',//HTTP请求类型
+					timeout: 10000,//超时时间设置为10秒；
+					success: function(data) {
+						console.log(JSON.stringify(data));
+						plus.nativeUI.closeWaiting();
+						if(data.resultStatus) {
+							if(data.resultStatus == true) {
+								$('#in-list-content').html("");
+								comList();
+								mui.toast("收集信息已提交！");
+							} else {
+								mui.toast("收集信息提交失败，请重试");
+							}
+						} else {
+							mui.toast("收集信息提交失败，请重试");
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						plus.nativeUI.closeWaiting();
+						mui.toast("收集信息提交失败");	
+					}
+				});
+			}
+			
+			function toSceneCollectDetail(reportId, farmer, companyName, 
+						bkName, telephone, status, truckPlate, collectDate) {
+				mui.openWindow({
+					url: "scene-collect-detail.html",
+					id: "scene-collect-detail.html",
+					extras: {
+						"reportId": reportId,
+						"farmer": farmer,
+						"companyName": companyName,
+						"bkName": bkName,
+						"telephone": telephone,
+						"status": status,
+						"truckPlate": truckPlate,
+						"collectDate": collectDate
+					},
+					waiting: {
+						autoShow: true, //自动显示等待框，默认为true
+						title: '正在加载...', //等待对话框上显示的提示内容
+					}
+				});
+			}
+		</script>
+	</body>
+
+</html>

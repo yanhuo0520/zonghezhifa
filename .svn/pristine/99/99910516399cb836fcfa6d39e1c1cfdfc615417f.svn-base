@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+		<title>首页</title>
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/index.css" rel="stylesheet" />
+		<style>			
+			.title {
+				margin: 20px 15px 10px;
+				color: #6d6d72;
+				font-size: 15px;
+				padding-bottom: 51px;
+			}
+			
+			.mui-icon { width: 2.8rem !important; height: 3.3rem !important; }
+		</style>
+	</head>
+
+	<body>
+		<nav id="bottom" class="mui-bar mui-bar-tab">
+			<a class="mui-tab-item mui-active" target_id="monitor">
+				<span class="mui-icon monitor"></span>
+			</a>
+			<a class="mui-tab-item" target_id="enclosure">
+				<span class="mui-icon enclosure"></span>
+			</a>
+			<a class="mui-tab-item" target_id="disinfection">
+				<span class="mui-icon disinfection"></span>
+			</a>
+			<a class="mui-tab-item" target_id="analysis">
+				<span class="mui-icon analysis"></span>
+			</a>
+		</nav>
+
+		<script src="../../js/mui.min.js"></script>
+		<script src="js/common.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			mui.init({
+				swipeBack : true, //启用右滑关闭功能
+
+				beforeback : function() {	
+					plus.navigator.setStatusBarStyle('light');
+					plus.navigator.setStatusBarBackground('#33323E');				
+					// 设置IOS状态栏
+					if (mui.os.ios) {
+						plus.navigator.setStatusBarStyle('UIStatusBarStyleBlackOpaque');
+						plus.navigator.setStatusBarBackground("#33323E"); //背景颜色
+					}
+					return true;
+				}
+			});
+			
+			var subpages = [{
+					url: 'html/monitor/monitor.html',
+					id: 'monitor'
+				}, {
+					url: 'html/enclosure/enclosure.html',
+					id: 'enclosure'
+				}, {
+					url: 'html/disinfection/disinfection.html',
+					id: 'disinfection'
+				}, {
+					url: 'html/analysis/analysis.html',
+					id: 'analysis'
+				}];
+			var subpage_style = {
+				top: '0',
+				bottom: '52px'
+			};
+			
+			var aniShow = {};
+			var temp = {};
+			
+			//创建子页面，首个选项卡页面显示，其它均隐藏；
+			mui.plusReady(function() {
+				plus.navigator.setStatusBarStyle('dark');
+				plus.navigator.setStatusBarBackground('#FFFFFF');
+				// 设置IOS状态栏
+				if (mui.os.ios) {
+					plus.navigator.setStatusBarStyle('UIStatusBarStyleBlackOpaque');
+					plus.navigator.setStatusBarBackground("#FFFFFF"); //背景颜色
+				}
+				
+				var self = plus.webview.currentWebview();
+				// 初始化第一个tab项为首次显示
+				temp[self.id] = "true";
+				mui.extend(aniShow, temp);
+				
+				// 预加载所有
+				for (var i = 0, len = subpages.length; i < len; i++) {
+					if (!plus.webview.getWebviewById(subpages[i].id)) {
+						var sub = plus.webview.create(subpages[i].url, subpages[i].id, subpage_style);
+						
+						//初始化隐藏
+						sub.hide();
+						// append到当前父webview
+						self.append(sub);
+					}
+				}
+
+				//初始化显示第一个子页面
+				plus.webview.show(plus.webview.getWebviewById(subpages[0].id));
+
+			});
+			//当前激活选项
+			var activeTab = subpages[0].id;
+			/*底部菜单切换效果*/
+			mui("#bottom").on("tap", ".mui-tab-item", function() {
+				var targetTab = this.getAttribute('target_id');
+				mui("#bottom .mui-tab-item").each(function() {
+					this.classList.remove("mui-active");
+				});
+				this.classList.add("mui-active");
+				if (targetTab == activeTab) {
+					return;
+				}
+				
+				//若为iOS平台或非首次显示，则直接显示
+				if (mui.os.ios || aniShow[targetTab]) {
+					plus.webview.show(targetTab);
+				} else {
+					//否则，使用fade-in动画，且保存变量
+					temp[targetTab] = "true";
+					mui.extend(aniShow, temp);
+					plus.webview.show(targetTab, "fade-in", 300);
+				}
+				
+				//隐藏当前 除了第一个父窗口
+				if (activeTab !== subpages[0].id) {
+					plus.webview.hide(activeTab);
+				}
+				 
+				//更改当前活跃的选项卡
+				activeTab = targetTab;
+			});
+		</script>
+	</body>
+
+</html>

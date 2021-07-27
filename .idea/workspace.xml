@@ -1,0 +1,687 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="bffa63ff-fa5e-4f97-846e-3d7fbedf7f59" name="Default Changelist" comment="" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DefaultGradleProjectSettings">
+    <option name="isMigrated" value="true" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/template/harmless/collect-no-ear.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="276">
+              <caret line="102" column="61" lean-forward="true" selection-start-line="102" selection-start-column="61" selection-end-line="102" selection-end-column="61" />
+              <folding>
+                <element signature="n#style#0;n#p#0;n#!!top" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>gohome</find>
+      <find>41</find>
+      <find>rewrite</find>
+      <find>show</find>
+      <find>sign_clear</find>
+      <find>clearImg</find>
+      <find>sign_cancel</find>
+      <find>sign_ok</find>
+      <find>preview</find>
+      <find>showcanvas</find>
+      <find>sign_show</find>
+      <find>b</find>
+      <find>upload-btn</find>
+      <find>input name=</find>
+      <find>CITY_GRANT_STOCK_LIST</find>
+      <find>xiang</find>
+      <find>getXiang</find>
+      <find>select-xiang</find>
+      <find>setInterval</find>
+      <find>getComName</find>
+      <find>mapLocation</find>
+      <find>address</find>
+      <find>\n</find>
+      <find>\t</find>
+    </findStrings>
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/company-information.html" />
+        <option value="$PROJECT_DIR$/file.html" />
+        <option value="$PROJECT_DIR$/js/audio.js" />
+        <option value="$PROJECT_DIR$/js/esign.js" />
+        <option value="$PROJECT_DIR$/add.html" />
+        <option value="$PROJECT_DIR$/css/index.css" />
+        <option value="$PROJECT_DIR$/css/image.viewer.css" />
+        <option value="$PROJECT_DIR$/on-site-audit.html" />
+        <option value="$PROJECT_DIR$/login.html" />
+        <option value="$PROJECT_DIR$/my.html" />
+        <option value="$PROJECT_DIR$/company-list.html" />
+        <option value="$PROJECT_DIR$/log-list.html" />
+        <option value="$PROJECT_DIR$/log-view.html" />
+        <option value="$PROJECT_DIR$/log-add.html" />
+        <option value="$PROJECT_DIR$/log-farm-com-add.html" />
+        <option value="$PROJECT_DIR$/company-add.html" />
+        <option value="$PROJECT_DIR$/log-feed-produce-add.html" />
+        <option value="$PROJECT_DIR$/home.html" />
+        <option value="$PROJECT_DIR$/template/ani-husbandry/log-feed-produce-add.html" />
+        <option value="$PROJECT_DIR$/template/my.html" />
+        <option value="$PROJECT_DIR$/template/ani-husbandry/log-animal-add.html" />
+        <option value="$PROJECT_DIR$/template/ani-husbandry/log-breed-add.html" />
+        <option value="$PROJECT_DIR$/template/ani-husbandry/log-slaughter-add.html" />
+        <option value="$PROJECT_DIR$/template/ani-husbandry/log-vet-drug-pro-add.html" />
+        <option value="$PROJECT_DIR$/template/ani-husbandry/log-vet-drug-sale-add.html" />
+        <option value="$PROJECT_DIR$/template/ani-husbandry/log-animal-view.html" />
+        <option value="$PROJECT_DIR$/template/ani-husbandry/log-breed-view.html" />
+        <option value="$PROJECT_DIR$/template/ani-husbandry/log-vet-drug-pro-view.html" />
+        <option value="$PROJECT_DIR$/template/ani-husbandry/log-vet-drug-sale-view.html" />
+        <option value="$PROJECT_DIR$/template/ani-husbandry/company-add.html" />
+        <option value="$PROJECT_DIR$/template/ani-husbandry/city-select.html" />
+        <option value="$PROJECT_DIR$/template/ani-husbandry/map.html" />
+        <option value="$PROJECT_DIR$/template/ani-husbandry/loaction.html" />
+        <option value="$PROJECT_DIR$/template/ani-husbandry/log-list.html" />
+        <option value="$PROJECT_DIR$/template/ani-husbandry/log-feed-pro-add.html" />
+        <option value="$PROJECT_DIR$/template/ani-husbandry/log-feed-pro-view.html" />
+        <option value="$PROJECT_DIR$/template/ear-tag/er-js/constant.js" />
+        <option value="$PROJECT_DIR$/template/ear-tag/in-list.html" />
+        <option value="$PROJECT_DIR$/template/ear-tag/er-stock-list.html" />
+        <option value="$PROJECT_DIR$/index.html" />
+        <option value="$PROJECT_DIR$/template/new_file.html" />
+        <option value="$PROJECT_DIR$/template/js/content.js" />
+        <option value="$PROJECT_DIR$/template/ani-husbandry/company-modify.html" />
+        <option value="$PROJECT_DIR$/template/ani-husbandry/die-search.html" />
+        <option value="$PROJECT_DIR$/template/ear-tag/city-issued.html" />
+        <option value="$PROJECT_DIR$/template/ani-husbandry/die-list.html" />
+        <option value="$PROJECT_DIR$/template/zcs-dayin.html" />
+        <option value="$PROJECT_DIR$/template/js/pr.js" />
+        <option value="$PROJECT_DIR$/template/ani-husbandry/company-list.html" />
+        <option value="$PROJECT_DIR$/template/harmless/accept-case.html" />
+        <option value="$PROJECT_DIR$/template/harmless/collect-no-ear.html" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="121" />
+    <option name="y" value="314" />
+    <option name="width" value="1400" />
+    <option name="height" value="867" />
+  </component>
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="Scope" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="husbandry" type="b2602c69:ProjectViewProjectNode" />
+              <item name="husbandry" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="husbandry" type="b2602c69:ProjectViewProjectNode" />
+              <item name="husbandry" type="462c0819:PsiDirectoryNode" />
+              <item name="template" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="husbandry" type="b2602c69:ProjectViewProjectNode" />
+              <item name="husbandry" type="462c0819:PsiDirectoryNode" />
+              <item name="template" type="462c0819:PsiDirectoryNode" />
+              <item name="harmless" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="PackagesPane" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration" cleanupOnStartRun="true">
+    <configuration>C:\Users\lenovo\AppData\Roaming\Subversion</configuration>
+    <supportedVersion>125</supportedVersion>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="bffa63ff-fa5e-4f97-846e-3d7fbedf7f59" name="Default Changelist" comment="" />
+      <created>1559022856649</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1559022856649</updated>
+      <workItem from="1559022857766" duration="1309000" />
+      <workItem from="1559118353184" duration="1851000" />
+      <workItem from="1559184682808" duration="3282000" />
+      <workItem from="1559288156912" duration="893000" />
+      <workItem from="1559293272084" duration="1218000" />
+      <workItem from="1559539962455" duration="5806000" />
+      <workItem from="1559619972614" duration="13465000" />
+      <workItem from="1559638211801" duration="751000" />
+      <workItem from="1559703660471" duration="12411000" />
+      <workItem from="1559734429598" duration="454000" />
+      <workItem from="1559786685675" duration="1387000" />
+      <workItem from="1559792476949" duration="4125000" />
+      <workItem from="1560137444946" duration="6489000" />
+      <workItem from="1560217431512" duration="10205000" />
+      <workItem from="1560239595880" duration="2815000" />
+      <workItem from="1560251977404" duration="1234000" />
+      <workItem from="1560305481014" duration="10655000" />
+      <workItem from="1560505447046" duration="1225000" />
+      <workItem from="1560581211529" duration="1730000" />
+      <workItem from="1560738348622" duration="777000" />
+      <workItem from="1560839895386" duration="1917000" />
+      <workItem from="1560862898077" duration="1090000" />
+      <workItem from="1560926777987" duration="1109000" />
+      <workItem from="1560932605757" duration="2390000" />
+      <workItem from="1560939259836" duration="236000" />
+      <workItem from="1560939656131" duration="707000" />
+      <workItem from="1561009603203" duration="784000" />
+      <workItem from="1561017030503" duration="2393000" />
+      <workItem from="1561022829321" duration="1386000" />
+      <workItem from="1561083315058" duration="5064000" />
+      <workItem from="1561100371349" duration="2152000" />
+      <workItem from="1561445071958" duration="755000" />
+      <workItem from="1561512365536" duration="3142000" />
+      <workItem from="1561527273177" duration="2272000" />
+      <workItem from="1562557918768" duration="12467000" />
+      <workItem from="1563938921924" duration="847000" />
+      <workItem from="1563952113078" duration="2491000" />
+      <workItem from="1564037663504" duration="1886000" />
+      <workItem from="1564131625021" duration="1386000" />
+      <workItem from="1564133061775" duration="682000" />
+      <workItem from="1564368292663" duration="3968000" />
+      <workItem from="1564540698019" duration="7769000" />
+      <workItem from="1564630261396" duration="5460000" />
+      <workItem from="1564994901645" duration="226000" />
+      <workItem from="1564999209836" duration="127000" />
+      <workItem from="1565073896629" duration="629000" />
+      <workItem from="1565247201288" duration="1560000" />
+      <workItem from="1565576154469" duration="159000" />
+      <workItem from="1565853862917" duration="950000" />
+      <workItem from="1566180699851" duration="80000" />
+      <workItem from="1566459422966" duration="79000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="148245000" />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-8" y="-8" width="1616" height="876" extended-state="6" />
+    <layout>
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.019280206" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Image Layers" order="2" />
+      <window_info id="Designer" order="3" />
+      <window_info id="UI Designer" order="4" />
+      <window_info id="Capture Tool" order="5" />
+      <window_info id="Favorites" order="6" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" order="8" />
+      <window_info anchor="bottom" id="Database Changes" order="9" />
+      <window_info anchor="bottom" id="Terminal" order="10" />
+      <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="Palette" order="3" />
+      <window_info anchor="right" id="Theme Preview" order="4" />
+      <window_info anchor="right" id="Maven" order="5" />
+      <window_info anchor="right" id="Capture Analysis" order="6" />
+      <window_info anchor="right" id="Palette&#9;" order="7" />
+      <window_info anchor="right" id="Database" order="8" />
+    </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/template/ani-husbandry/company-list.html</url>
+          <line>141</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/template/ani-husbandry/company-list.html</url>
+          <line>75</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/template/ani-husbandry/company-list.html</url>
+          <line>57</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/template/ani-husbandry/company-list.html</url>
+          <line>102</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/template/ani-husbandry/company-list.html</url>
+          <line>78</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/template/ani-husbandry/company-list.html</url>
+          <line>118</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/template/ani-husbandry/company-list.html</url>
+          <line>146</line>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/login.html" />
+    <entry file="file://$PROJECT_DIR$/log-add.html" />
+    <entry file="file://$PROJECT_DIR$/log-view.html" />
+    <entry file="file://$PROJECT_DIR$/log-farm-com-add.html" />
+    <entry file="file://$PROJECT_DIR$/company-add.html" />
+    <entry file="file://$PROJECT_DIR$/log-feed-produce-add.html" />
+    <entry file="file://$PROJECT_DIR$/home.html" />
+    <entry file="file://$PROJECT_DIR$/template/ani-husbandry/log-feed-produce-add.html" />
+    <entry file="file://$PROJECT_DIR$/template/my.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="440">
+          <caret line="68" column="21" selection-start-line="68" selection-start-column="21" selection-end-line="68" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/ani-husbandry/log-animal-add.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-3404">
+          <caret line="454" column="53" selection-start-line="454" selection-start-column="42" selection-end-line="454" selection-end-column="53" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/ani-husbandry/log-breed-add.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="234">
+          <caret line="593" column="65" selection-start-line="593" selection-start-column="65" selection-end-line="593" selection-end-column="65" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/ani-husbandry/log-feed-sale-add.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-9591" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/ani-husbandry/log-raw-milk-buy-add.html">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/ani-husbandry/log-raw-milk-trans-add.html">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/ani-husbandry/log-slaughter-add.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="24">
+          <caret line="899" column="58" selection-start-line="899" selection-start-column="58" selection-end-line="899" selection-end-column="58" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/ani-husbandry/log-vet-drug-pro-add.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-735">
+          <caret line="281" column="32" selection-start-line="281" selection-start-column="32" selection-end-line="281" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/ani-husbandry/log-vet-drug-sale-add.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="471" column="58" selection-start-line="471" selection-start-column="58" selection-end-line="471" selection-end-column="58" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/ani-husbandry/log-animal-view.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1996">
+          <caret line="406" selection-start-line="406" selection-end-line="406" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/ani-husbandry/log-breed-view.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="161">
+          <caret line="7" column="65" selection-start-line="7" selection-start-column="65" selection-end-line="7" selection-end-column="65" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/ani-husbandry/log-feed-sale-view.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1311">
+          <caret line="169" column="41" selection-start-line="169" selection-start-column="41" selection-end-line="169" selection-end-column="41" />
+          <folding>
+            <element signature="n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" />
+            <element signature="n#div#1;n#div#0;n#body#0;n#html#0;n#!!top" />
+            <element signature="n#style#0;n#p#0;n#div#1;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#div#2;n#div#0;n#body#0;n#html#0;n#!!top" />
+            <element signature="n#style#0;n#p#0;n#div#2;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#div#3;n#div#0;n#body#0;n#html#0;n#!!top" />
+            <element signature="n#style#0;n#p#0;n#div#3;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#div#4;n#div#0;n#body#0;n#html#0;n#!!top" />
+            <element signature="n#style#0;n#p#0;n#div#4;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#div#5;n#div#0;n#body#0;n#html#0;n#!!top" />
+            <element signature="n#style#0;n#p#0;n#div#5;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#div#6;n#div#0;n#body#0;n#html#0;n#!!top" />
+            <element signature="n#style#0;n#p#0;n#div#6;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#div#8;n#div#0;n#body#0;n#html#0;n#!!top" />
+            <element signature="n#div#9;n#div#0;n#body#0;n#html#0;n#!!top" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/ani-husbandry/log-raw-milk-buy-view.html">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/ani-husbandry/log-raw-milk-trans-view.html">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/ani-husbandry/log-vet-drug-pro-view.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="713">
+          <caret line="31" column="114" selection-start-line="31" selection-start-column="114" selection-end-line="31" selection-end-column="114" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/ani-husbandry/log-vet-drug-sale-view.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="138">
+          <caret line="6" column="65" selection-start-line="6" selection-start-column="65" selection-end-line="6" selection-end-column="65" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/home.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="276">
+          <caret line="93" column="32" selection-start-line="93" selection-start-column="24" selection-end-line="93" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/ani-husbandry/map.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="713">
+          <caret line="31" column="15" selection-start-line="31" selection-start-column="15" selection-end-line="31" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/ani-husbandry/loaction.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2553">
+          <caret line="111" column="43" selection-start-line="111" selection-start-column="43" selection-end-line="111" selection-end-column="43" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/ani-husbandry/log-list.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2668">
+          <caret line="116" column="85" selection-start-line="116" selection-start-column="85" selection-end-line="116" selection-end-column="85" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/ani-husbandry/log-feed-pro-add.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="13133">
+          <caret line="597" selection-start-line="597" selection-end-line="597" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/ani-husbandry/log-feed-pro-view.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="647">
+          <caret line="407" column="25" selection-start-line="407" selection-start-column="25" selection-end-line="407" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/ani-husbandry/city-select.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="647">
+          <caret line="106" column="15" selection-start-line="106" selection-start-column="15" selection-end-line="106" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/ear-tag/issued-list.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="n#style#0;n#p#0;n#!!top" expanded="true" />
+            <element signature="e#256#262#0" expanded="true" />
+            <element signature="e#262#268#0" expanded="true" />
+            <element signature="e#268#274#0" expanded="true" />
+            <element signature="e#274#280#0" expanded="true" />
+            <element signature="e#280#286#0" expanded="true" />
+            <element signature="e#286#292#0" expanded="true" />
+            <element signature="e#292#298#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/ear-tag/in-list.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="164" column="20" selection-start-line="164" selection-start-column="20" selection-end-line="189" selection-end-column="25" />
+          <folding>
+            <element signature="n#style#0;n#p#0;n#!!top" expanded="true" />
+            <element signature="e#296#302#0" expanded="true" />
+            <element signature="e#302#308#0" expanded="true" />
+            <element signature="e#308#314#0" expanded="true" />
+            <element signature="e#314#320#0" expanded="true" />
+            <element signature="e#320#326#0" expanded="true" />
+            <element signature="e#326#332#0" expanded="true" />
+            <element signature="e#332#338#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/ear-tag/er-stock-list.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="449">
+          <caret line="213" column="21" selection-start-line="213" selection-start-column="21" selection-end-line="213" selection-end-column="21" />
+          <folding>
+            <element signature="n#style#0;n#p#0;n#!!top" expanded="true" />
+            <element signature="e#286#292#0" expanded="true" />
+            <element signature="e#292#298#0" expanded="true" />
+            <element signature="e#298#304#0" expanded="true" />
+            <element signature="e#304#310#0" expanded="true" />
+            <element signature="e#310#316#0" expanded="true" />
+            <element signature="e#316#322#0" expanded="true" />
+            <element signature="e#322#328#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/ear-tag/er-js/constant.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="611">
+          <caret line="41" column="5" selection-start-line="41" selection-start-column="5" selection-end-line="41" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/new_file2.html" />
+    <entry file="file://$PROJECT_DIR$/template/login.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="371">
+          <caret line="62" column="57" selection-start-line="62" selection-start-column="57" selection-end-line="62" selection-end-column="57" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="23">
+          <caret line="29" selection-start-line="29" selection-end-line="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/js/content.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="256">
+          <caret line="44" column="5" lean-forward="true" selection-start-line="44" selection-start-column="5" selection-end-line="44" selection-end-column="5" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/ani-husbandry/company-modify.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4186">
+          <caret line="182" column="94" selection-start-line="182" selection-start-column="94" selection-end-line="182" selection-end-column="94" />
+          <folding>
+            <element signature="n#style#0;n#input#1;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/new_file.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="437">
+          <caret line="19" column="27" lean-forward="true" selection-end-line="307" />
+          <folding>
+            <element signature="n#style#0;n#header#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#header#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#1;n#header#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/ani-husbandry/company-add.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="82">
+          <caret line="131" column="16" selection-start-line="131" selection-start-column="16" selection-end-line="135" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/ani-husbandry/company-add-scale.html">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/ani-husbandry/die-search.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="23">
+          <caret line="55" column="17" selection-start-line="55" selection-start-column="17" selection-end-line="55" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/ear-tag/city-issued.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="647">
+          <caret line="337" column="18" selection-start-line="337" selection-start-column="18" selection-end-line="337" selection-end-column="18" />
+          <folding>
+            <element signature="n#style#0;n#div#4;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/ani-husbandry/die-list.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="506">
+          <caret line="90" column="49" selection-start-line="90" selection-start-column="49" selection-end-line="90" selection-end-column="49" />
+          <caret line="91" column="49" selection-start-line="91" selection-start-column="49" selection-end-line="91" selection-end-column="49" />
+          <caret line="92" column="52" selection-start-line="92" selection-start-column="52" selection-end-line="92" selection-end-column="52" />
+          <caret line="93" column="49" selection-start-line="93" selection-start-column="49" selection-end-line="93" selection-end-column="49" />
+          <folding>
+            <element signature="n#style#0;n#p#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/js/pr.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="440">
+          <caret line="117" column="14" selection-start-line="117" selection-start-column="8" selection-end-line="117" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/zcs-dayin.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="486">
+          <caret line="253" column="9" selection-start-line="253" selection-start-column="9" selection-end-line="253" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/harmless/accept-case.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3404">
+          <caret line="135" column="49" selection-start-line="135" selection-start-column="49" selection-end-line="135" selection-end-column="49" />
+          <caret line="136" column="49" selection-start-line="136" selection-start-column="49" selection-end-line="136" selection-end-column="49" />
+          <caret line="137" column="49" selection-start-line="137" selection-start-column="49" selection-end-line="137" selection-end-column="49" />
+          <caret line="138" column="49" selection-start-line="138" selection-start-column="49" selection-end-line="138" selection-end-column="49" />
+          <caret line="139" column="49" selection-start-line="139" selection-start-column="49" selection-end-line="139" selection-end-column="49" />
+          <caret line="140" column="49" selection-start-line="140" selection-start-column="49" selection-end-line="140" selection-end-column="49" />
+          <caret line="141" column="49" selection-start-line="141" selection-start-column="49" selection-end-line="141" selection-end-column="49" />
+          <caret line="142" column="49" selection-start-line="142" selection-start-column="49" selection-end-line="142" selection-end-column="49" />
+          <caret line="143" column="49" selection-start-line="143" selection-start-column="49" selection-end-line="143" selection-end-column="49" />
+          <caret line="144" column="49" selection-start-line="144" selection-start-column="49" selection-end-line="144" selection-end-column="49" />
+          <caret line="145" column="49" selection-start-line="145" selection-start-column="49" selection-end-line="145" selection-end-column="49" />
+          <caret line="146" column="49" selection-start-line="146" selection-start-column="49" selection-end-line="146" selection-end-column="49" />
+          <caret line="147" column="49" selection-start-line="147" selection-start-column="49" selection-end-line="147" selection-end-column="49" />
+          <caret line="148" column="49" selection-start-line="148" selection-start-column="49" selection-end-line="148" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/ani-husbandry/company-list.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="341">
+          <caret line="206" column="59" selection-start-line="206" selection-start-column="59" selection-end-line="206" selection-end-column="59" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/harmless/collect-no-ear.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="276">
+          <caret line="102" column="61" lean-forward="true" selection-start-line="102" selection-start-column="61" selection-end-line="102" selection-end-column="61" />
+          <folding>
+            <element signature="n#style#0;n#p#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>

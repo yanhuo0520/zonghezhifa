@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.css" rel="stylesheet" />
+	</head>
+
+	<body>
+		<script src="js/mui.js"></script>
+		<script type="text/javascript">
+			var plusReady = function(){
+				plus.nativeUI.showWaiting();
+				var src = $("#barcode").attr("src")//base64字符串
+				bitmapSavePic(src)
+			};
+
+			function bitmapSavePic(src){
+				var bm = new plus.nativeObj.Bitmap("barcode")//path: ( String ) 可选 Bitmap对象自动加载图片的地址
+				bm.loadBase64Data( src, bmloadSuccessCB, bmloadErrorCB );//加载base64为数据到bm实例对象
+				console.log(bm)
+				
+				var myDate = new Date();
+				var random = Math.floor(Math.random()*100000);
+				fName = myDate.getFullYear()+'-'+(myDate.getMonth()+1)+'-'+myDate.getDate()+'-'+random+'.png';
+				
+				var path = "_doc/" + fName;
+				// var path ="_doc/project_barcode.jpg";
+				var options = {"overwrite":true,"format":"png","quality":50}
+				bm.save( path, options, bmSaveSuccessCB, bmSaveErrorCB );//将图片保存到指定的路径（仅支持本地文件系统）
+//保存到相册后，回收Bitmap图片内存
+				bm.recycle();
+			}
+			var bmloadSuccessCB = function (e){
+				console.log("加载base64数据成功")
+			}
+			var bmloadErrorCB = function (err){
+				console.log("加载base64数据失败")
+				console.log(err)
+			}
+			var bmSaveSuccessCB = function (e){
+				console.log(e)
+				console.log("保存成功")
+				console.log("保存地址："+e.target)
+				saveToGallery(e.target)
+			}
+			var bmSaveErrorCB = function (error){
+				plus.nativeUI.toast("保存失败")
+				console.log("code："+error.code+";msg:"+error.message);
+			}
+			function saveToGallery(path){
+				console.log(path)
+				plus.gallery.save( path, function(e){
+					var successI18n = $("#successI18n").html();
+					plus.nativeUI.toast(successI18n)
+					console.log(JSON.stringify(e));
+				},function(err){
+					var failedI18n = $("#failedI18n").html();
+					plus.nativeUI.toast(err.message+failedI18n)
+					console.log("保存到相册失败："+JSON.stringify(err));
+				});
+			}
+		</script>
+	</body>
+
+</html>

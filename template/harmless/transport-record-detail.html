@@ -1,0 +1,233 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>无害化处理</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="../../css/mui.css"/>
+		<link rel="stylesheet" href="../css/generic.css"/>
+		<style>
+			.phone-img { height: 0.35rem; vertical-align: middle; margin-left: 8px; }
+		</style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title" id="com-title">记录详情<span id="toalNum"></span></h1>
+		</header>
+		<div class="mui-content" id="pullrefresh">
+			<div class="record-detail" id="record-detail">
+				<ul><li>运输人:<span id="transportPersonName"></span></li><li>车牌号:<span id="truckPlate"></span></li><li>总重量:<span id="totalweight"></span></li><li>总数量:<span id="totalnum"></span></li><li>运输日期:<span id="createTime"></span></li></ul>
+			</div>
+			<div class="record-list-content" id="record-list-content">
+				
+			</div>
+		</div>
+		
+		
+		<script type="text/javascript" src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/jquery-1.12.4.min.js"></script>
+		<script type="text/javascript" src="../js/content.js"></script>
+		<script type="text/javascript" src="../js/constant.js"></script>
+		<script type="text/javascript" src="js/harmless-data.js"></script>
+		<script type="text/javascript">
+		
+			mui.plusReady(function () {
+				initSettings(); 		// 初始化设置字体大小
+				
+			    var currpage = 1;
+			//    getList(currpage);
+				
+				var self = plus.webview.currentWebview();
+				var rid = self.transportRecordId;
+				var tName = self.tName;
+				var tp=self.tPlate;
+				var cdate = self.cdate;
+				var totalweight = self.totalweight;
+				var totalnum = self.totalnum;
+				
+				document.getElementById('transportPersonName').innerHTML=tName;
+				document.getElementById('truckPlate').innerHTML=tp;
+				document.getElementById('totalweight').innerHTML=totalweight+" KG";
+				document.getElementById('totalnum').innerHTML=totalnum+" 头";
+				document.getElementById('createTime').innerHTML=cdate; 
+				
+				function getList(currpage){
+				var huid = plus.storage.getItem('harmless_user_id'); //用户的的id编号
+				var result="";
+				var pageSize = 10;
+				plus.nativeUI.showWaiting("加载中……");
+				mui.ajax(Constant.getConstant("HARMLESS_REPORT_LIST_TRANSOPRT_ID"), {
+					data:{
+						"a_id": huid,  //为企业类型
+						"tslId":rid,
+						"api_method":'c.findTslDetails', // 方法
+						"page": currpage,
+						"rows": pageSize
+					},
+					dataType:'json',//服务器返回json格式数据
+					type:'post',//HTTP请求类型
+					timeout:10000,//超时时间设置为10秒；
+					success: function(data){
+						// console.log(JSON.stringify(data));
+						plus.nativeUI.closeWaiting();
+						if(data.resultStatus == true){
+							var dataResult = data.data; 
+							var page = dataResult.page;
+							var result_array = dataResult.reportVos;
+							document.getElementById("toalNum").innerHTML = "（共"+page.totalRows+"条）"
+							// console.log(JSON.stringify(dataResult));
+							if(result_array==undefined || result_array.length == 0 || currpage > page.totalPage ){
+								mui('#pullrefresh').pullRefresh().disablePullupToRefresh();
+								if(currpage == 1){
+									$('#record-list-content').append('<p style="text-align: center;color: #888888;margin-top: 20px;">---- 暂无数据 ----</p>')
+								}else{
+									mui.toast("已经到底了");
+								}
+							}else{
+								mui('#pullrefresh').pullRefresh().refresh(true);
+								for(var i=0;i<result_array.length;i++){
+									var date = new Date(result_array[i].collectDate); // 检查日期
+									Y = date.getFullYear();
+									M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1);
+									D = (date.getDate() < 10 ? '0'+(date.getDate()) : date.getDate());
+									var btnText;
+									// console.log(result_array[i].status);
+									if(result_array[i].status == "10001"){
+										btnText = '<span class="status-4">'+'未受理'+'</span>';
+									}else if(result_array[i].status == "10002"){
+										btnText = '<span class="status-1">'+'收集中'+'</span>';
+									}else if(result_array[i].status == "10006"){
+										btnText = '<span class="status-2">'+'收集完成'+'</span>';
+									}
+									var total_weight = numAdd(result_array[i].growPigWeight, result_array[i].boarWeight);
+									var total_weight_1 = numAdd(total_weight, result_array[i].sowWeight);
+									var total_num = parseInt(result_array[i].boarNum) + parseInt(result_array[i].sowNum) + parseInt(result_array[i].growPigNum);
+									// result_array[i].ysfs
+									result = '<div class="record-list">' +
+											'<ul class="record-info"><li>养殖户名称：<span>'+result_array[i].reportPersonName+'</span></li>' +
+											'<li>电话：<span><a href="tel:' + result_array[i].telephone + '">'+result_array[i].telephone+'<img class="phone-img" src="images/phone.png"></a></span></li>'+
+											'<li style="width:100%">养殖企业：<span>'+result_array[i].reportUnit+'</span></li>'+
+											'<li>畜别:<span>'+result_array[i].bkName+'</span></li>'+
+											'<li>收集状态:<span>'+btnText+'</span></li>'+
+											'<li>重量:<span>'+total_weight_1+' 公斤</span></li>'+
+											'<li>数量:<span>'+total_num+' 头</span></li>'+
+											'<li style="width:100%">报案时间:<span>'+result_array[i].createTime+'</span></li>'+
+											'<li style="width:100%">受理时间:<span>'+result_array[i].updateTime+'</span></li>'+
+											'<li style="width:100%">收集时间:<span>'+result_array[i].collectDate+'</span></li>'+
+											'</ul></div>';
+									$('#record-list-content').append(result);
+								}
+							}
+						}else{
+							mui.toast("查询失败，请重试");
+						}
+						
+					},error:function(xhr,type,errorThrown){
+						plus.nativeUI.closeWaiting();
+						mui.toast("查询失败");
+					}
+			
+				})
+				}
+				mui.init({
+					pullRefresh : {
+						container: '#pullrefresh', //待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+						up : {
+							height:50,//可选.默认50.触发上拉加载拖动距离
+							auto:false,//可选,默认false.自动上拉加载一次
+							contentrefresh : "正在加载...",//可选，正在加载状态时，上拉加载控件上显示的标题内容
+							contentnomore:'没有数据了',//可选，请求完毕若没有更多数据时显示的提醒内容；
+							callback :pullupRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+						},
+						down: {
+							style: "circle",
+							color: "#33323E",				//可选，默认“#2BD009” 下拉刷新控件颜色
+							height: '30px',					//可选,默认50px.下拉刷新控件的高度,
+							range: '100px',					//可选 默认100px,控件可下拉拖拽的范围
+							offset: '0px',					//可选 默认0px,下拉刷新控件的起始位置
+							auto: true,					//可选,默认false.首次加载自动上拉刷新一次
+							callback: pullDownRefreshFun
+						}
+					}
+				});
+				
+				function pullupRefresh(){
+					setTimeout(function(){
+						currpage++;
+						getList(currpage);
+						mui('#pullrefresh').pullRefresh().endPullupToRefresh();
+					},1500)
+				}
+				
+				/**
+				 * 下拉刷新功能
+				 */
+				function pullDownRefreshFun() {
+					setTimeout(function() {
+						currpage = 1;
+						$('#record-list-content').html("");
+						getList(currpage);
+						mui('#pullrefresh').pullRefresh().endPulldownToRefresh();
+						mui('#pullrefresh').pullRefresh().refresh(true);
+					}, 1500);
+				}
+				
+				//入厂操作
+				mui(".record-list-content").on('tap','.issued-btn',function(){
+				  var recordid = this.getAttribute("recordid");
+				  var huid = plus.storage.getItem('harmless_user_id'); //用户的的id编号
+				  var btnArray = ['是', '否'];
+				  mui.confirm('是否入厂？', '提示', btnArray, function(e) {
+					if (e.index == 0) {
+					  plus.nativeUI.showWaiting("执行中……");
+					  mui.ajax(Constant.getConstant("HARMLESS_UPDATE_TRANSPORT_RECORD_STATUS"),{
+						  data:{
+							  "transportLogId": recordid,  //为运输记录的id编号
+							  "a_id": huid, //为用户的的id编号
+							  "api_method":'c.deleteReportDetail', // 方法 
+						  },
+						  dataType:'json',//服务器返回json格式数据
+						  type:'post',//HTTP请求类型
+						  timeout:10000,//超时时间设置为10秒；
+						  success:function(data){
+							  plus.nativeUI.closeWaiting();
+							  // console.log(JSON.stringify(data));
+							  if(data.resultStatus == true){
+								  mui.toast("入厂成功！");
+								  // 刷新页面
+								  setTimeout('location.reload()', 200);
+							  }else{
+								  mui.toast("入厂失败，请重试");
+							  }
+						  },
+						  error:function(xhr,type,errorThrown){
+							  plus.nativeUI.closeWaiting();
+							  mui.toast("失败");
+						  }
+					  });
+					 }
+					});
+				})				
+				
+				mui(".record-list-content").on('tap','record-info',function(){
+					var targetTab = this.getAttribute('target_id');
+					var comTitle = $(this).children('.home-label').html();
+					mui.openWindow({
+						url: targetTab,
+						id: targetTab,
+						extras: {
+							"comTitle": comTitle
+						},
+						waiting: {
+							autoShow: true, //自动显示等待框，默认为true
+							title: '正在加载...', //等待对话框上显示的提示内容
+						}
+					});
+				})
+				
+			})
+
+		</script>
+	</body>
+</html>

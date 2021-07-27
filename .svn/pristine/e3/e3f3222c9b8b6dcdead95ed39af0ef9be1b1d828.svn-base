@@ -1,0 +1,742 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>无害化处理</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" type="text/css" href="../../css/mui.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/ajax-picker/ajax-picker.css">
+		<link rel="stylesheet" type="text/css" href="../../css/ajax-picker/ajax-picker-self.css">
+		<link rel="stylesheet" type="text/css" href="../css/generic.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/mobileNumbk.css"/>
+        <link rel="stylesheet" type="text/css" href="../css/feedback-page.css" />
+        <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min.css" />
+		<link href="../ani-husbandry/ani-css/image.viewer.css" rel="stylesheet" />
+		<style type="text/css">
+			.mui-input-row #earNums { padding-right: 0px !important; float: left; }
+			.mui-input-row .mui-btn { height: 28; line-height: 28px; padding: 0px !important; margin: 5px 8px 3px 0px; background: linear-gradient(90deg,rgba(73,134,242,1),rgba(68,174,247,1)); }
+			
+            .del { position: absolute; top: 0px; right: 0px; width: 20px !important; height: 20px !important; display: block; line-height: 1; cursor: pointer; color: #ff3333; }
+			.del div { font-size: 0.3675rem !important;}
+			.image-item_2  img { width: 45px; height: 45px; border-radius: 5px; margin-right: 8px; margin-bottom: 8px; }
+		</style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<a class="mui-icon mui-icon-plusempty mui-pull-right add-icon" style="font-weight: bold;" id="addEar"></a>
+			<h1 class="mui-title">有耳标（有保险）<span id="toalNum"></span></h1>
+		</header>
+		<div class="mui-content"> 
+			<ul id="ear-uninsure-list" class="collect-ear-list mui-table-view">
+				<!-- <li class="mui-table-view-cell">
+					<div class="mui-slider-right mui-disabled">
+						<a class="mui-btn mui-btn-red">删除</a>
+					</div>
+					<div class="mui-slider-handle">
+						<div class="w-52">耳&nbsp;&nbsp;标&nbsp;&nbsp;号： 141108111540531</div>
+						<div class="w-33">重&nbsp;&nbsp;&nbsp;量： 54 KG</div>
+						<div class="w-100">初步结论： 疑似猪肠胃炎</div>
+						<div class="image-item_2" style="width: 96%; margin: 16px 2% 0;">
+							<img data-preview-src="" data-preview-group="1" src="http://172.168.0.111:8080/jyharmless/imgupload/report/imgs/15668088514922997.jpg" />
+							<img data-preview-src="" data-preview-group="1" src="http://172.168.0.111:8080/jyharmless/imgupload/report/imgs/15668088514922997.jpg" />
+							<img data-preview-src="" data-preview-group="1" src="http://172.168.0.111:8080/jyharmless/imgupload/report/imgs/15668088514922997.jpg" />
+							<img data-preview-src="" data-preview-group="1" src="http://172.168.0.111:8080/jyharmless/imgupload/report/imgs/15668088514922997.jpg" />
+							<img data-preview-src="" data-preview-group="1" src="http://172.168.0.111:8080/jyharmless/imgupload/report/imgs/15668088514922997.jpg" />
+							<img data-preview-src="" data-preview-group="1" src="http://172.168.0.111:8080/jyharmless/imgupload/report/imgs/15668088514922997.jpg" />
+						</div>
+					</div>
+				</li> -->
+			</ul>
+		</div>
+	
+		<!-- 有耳标（有保险） -->
+		<div id="popover" class="popover-insure popover-cont mui-popover modify-mask">
+			<p class="title">有耳标（有保险）</p>
+			<div class="mui-input-group">
+				<div class="mui-input-row ear-num-row">
+					<label class="title-label-short">耳&nbsp;&nbsp;标&nbsp;&nbsp;号：</label>
+					<div class="mui-select">
+						<input type="text" id="earHead" class="mui-navigate-right" readonly="readonly" />
+					</div>
+					<input type="number" id="earLast" maxlength="8" class="ear-input" placeholder="请输入耳标尾号" οnblur="javascript:maxLengthDispose(this, 8);" />
+				</div>
+				<div class="mui-input-row">
+					<label class="title-label-short">耳标个数：</label>
+					<input type="number" id="earNums" class="w-40" placeholder="请输入耳标个数" />
+					<div class="mui-btn mui-btn-primary" id="earSure">确定</div>
+				</div>
+				<div class="mui-input-row ear-detail-row">
+					<!-- <textarea id="earFinalTags"></textarea> -->
+					<!-- 区域滚动的父容器 -->
+					<div class="mui-scroll-wrapper">
+					 		<!-- 区域滚动的子容器 -->
+					 		<div class="mui-scroll" id="earFinalTags" contenteditable="true"></div>
+					</div>
+				</div>
+				<div class="mui-input-row ear-weight-row">
+					<label class="title-label-short">重量(KG)：</label>
+					<input type="text" id="earWeight" placeholder="（请输入重量用“*”隔开，不填则默认为0）" />
+				</div>
+				<div class="mui-input-row mui-select">
+					<label class="title-label-short">初步结论：</label>
+					<input type="text" id="conclusion" class="mui-navigate-right" readonly="readonly" placeholder="请选择" />
+					<input type="text" id="causeOfDead" value="" style="display: none;" />
+				</div>
+				<div class="mui-input-row ear-img-content">
+					<label class="title-label-short">上传照片：</label>
+					<ul>
+						<div id="upload-content" class="upload-content feedback">
+							<!-- <li><img src="images/ad.png" class="max-width picture"><img src="images/close-icon.png" class="detele-icon"></li> -->
+						</div>
+						<li class="upload-btn" id="upload-btn">
+							<img src="images/upload.png" onclick="showActionSheet(this);" class="max-width">
+						</li>
+					</ul>
+				</div>
+			</div>
+			<a href="javascript:;" class="save" id="SaveBtn">保存</a>
+		</div>
+		
+		<div id="earHeadCont" class="myAjaxPicker"></div>
+		<div id="conclusionCont" class="myAjaxPicker"></div>
+		
+		<script type="text/javascript" src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/mui.zoom.js"></script>
+		<script type="text/javascript" src="../../js/mui.previewimage.js"></script>
+		<script type="text/javascript" src="../../js/jquery-1.12.4.min.js"></script>
+		<script type="text/javascript" src="../../js/ajax-picker/ajax-picker.min.js"></script>
+		<script type="text/javascript" src="../../js/mobileNumkb.js"></script>
+		<script type="text/javascript" src="../../js/date-format.js"></script>
+		<script type="text/javascript" src="../js/content.js"></script>
+		<script type="text/javascript" src="../js/constant.js"></script>
+		<!-- <script type="text/javascript" src="../js/template-common.js"></script> -->
+		<script type="text/javascript" src="js/harmless-data.js"></script>
+		<script type="text/javascript">
+			
+			var reportId = "";
+			var status = "";
+			var bkName = "";
+			var farmer = "";
+			
+			var harmless_user_id = "";
+			var harmlessUseRoleId = "";
+			
+			var local_imgs_paths = [];
+			var upload_imgs_urls = [];
+			
+			var earFinalTags = "";
+			var earWeight = "";
+			var conclusion = "";
+			var causeOfDead = "";
+			
+			mui.plusReady(function() {
+				
+				mui('.mui-scroll-wrapper').scroll({
+					scrollY: true, //是否竖向滚动
+					scrollX: false, //是否横向滚动
+					startX: 0, //初始化时滚动至x
+					startY: 0, //初始化时滚动至y
+					indicators: true, //是否显示滚动条
+					deceleration: 0.0006, //阻尼系数,系数越小滑动越灵敏
+					bounce: true //是否启用回弹
+				});
+
+				initSettings(); 			// 初始化设置字体大小
+				
+				dailogBackKeyFunction(true); 	// 返回键逻辑处理
+				
+				harmless_user_id = plus.storage.getItem("harmless_user_id"); //用户的的id编号
+				harmlessUseRoleId = plus.storage.getItem('harmless_user_roleId'); // 获取无害化用户角色id
+				var self = plus.webview.currentWebview();
+				reportId = self.reportId; 
+				status = self.status; 
+				bkName = self.bkName;  // 蓄别
+				farmer = self.farmer;  // 养殖户名称
+				if(harmlessUseRoleId == TOWN_SUPERVISE && status != CollectStatus_SIX) {var softInput_options2 = {
+						style: 2, //颜色风格
+						valueArea: 1
+					}
+					$("#earWeight").numbk(softInput_options2).click(function() {});
+					$("#addEar").show();
+				} else {
+					$("#addEar").hide();
+				}
+				earList();
+				mui.previewImage();
+				
+				// 侧滑删除
+				var btnArray = ['确认', '取消'];
+				mui('.collect-ear-list').on('tap', '.mui-btn', function(event) {
+					var elem = this;
+					var li = elem.parentNode.parentNode;
+					var reportDetailVoId = $(this).parents('.mui-table-view-cell').attr("id_id");
+					mui.confirm('是否删除该条信息？', '删除操作', btnArray, function(e) {
+						if (e.index == 0) {
+							li.parentNode.removeChild(li);
+							plus.nativeUI.showWaiting("保存中……");
+							mui.ajax(Constant.getConstant("HARMLESS_REPORT_DETAILS_DELETE"),{
+								data:{
+									"api_method":"c.deleteReportDetail",
+									"a_id":harmless_user_id,
+									"reportDetailVoId": reportDetailVoId
+								},
+								dataType:'json',//服务器返回json格式数据
+								type:'post',//HTTP请求类型
+								timeout:10000,//超时时间设置为10秒；
+								success:function(data){
+									plus.nativeUI.closeWaiting();
+									if(data.resultStatus == true) {
+								
+										var targetSearchWebView = plus.webview.getWebviewById("scene-collect-detail.html");
+										mui.fire(targetSearchWebView, "initCollectDetails", {});
+										
+										mui.toast("删除成功！");
+									}else{
+										mui.toast("删除失败，请重试！");
+									}
+								},
+								error:function(xhr,type,errorThrown){
+									plus.nativeUI.closeWaiting();
+									mui.toast("删除失败");	
+								}
+							});
+						} else {
+							setTimeout(function() {
+								mui.swipeoutClose(li);
+							}, 0);
+						}
+				
+					});
+				
+				});
+				
+				// 添加耳标
+				document.getElementById("addEar").addEventListener('tap', function() {
+					mui('#popover').popover('toggle');
+					
+					local_imgs_paths = [];
+					upload_imgs_urls = [];
+					$("#upload-content").innerHTML = "";
+					
+					if(bkName.indexOf("猪") != -1) {
+						mui("#earHead")[0].value = json_unit[0].value;
+					} else if(bkName.indexOf("牛") != -1) {
+						mui("#earHead")[0].value = json_unit[1].value;
+					} else if(bkName.indexOf("羊") != -1) {
+						mui("#earHead")[0].value = json_unit[2].value;
+					}
+					// 耳标开始号段
+					var earHeadPicker = new AjaxPicker({
+						title: "耳标开始号段", //选择器标题
+						tipText: ['开始号段'], // 选择器提示语（可以一个也可以多个，对应每一栏的选择提示语）
+						input: "earHead", // 点击触发选择器的input的id
+						container: "earHeadCont", // 选择器的容器的id
+						renderArr: [
+							function() {// 保险公司数据列表
+								earHeadPicker.render(json_unit);
+							},
+						],
+						success: function(arr) {
+							mui("#earHead")[0].value = arr[0].value;
+						}
+					});
+					
+					// 初步结论
+					var deadList = [{"id": 42, "value": "疑似猪胃肠炎"}];
+					mui("#conclusion")[0].value = deadList[0].value;
+					mui("#causeOfDead")[0].value = deadList[0].id;
+					var unitPicker = new AjaxPicker({
+						title: "初步结论", //选择器标题
+						tipText: ['初步结论'], // 选择器提示语（可以一个也可以多个，对应每一栏的选择提示语）
+						input: "conclusion", // 点击触发选择器的input的id
+						container: "conclusionCont", // 选择器的容器的id
+						renderArr: [
+							function() {// 保险公司数据列表
+								deadList = [];
+								mui.ajax(Constant.getConstant("HARMLESS_CONSTRANT_DATA"),{
+									data:{
+										"api_method":"c.findConstantData",
+										"a_id":harmless_user_id,
+										"type":2
+									},
+									dataType:'json',//服务器返回json格式数据
+									type:'post',//HTTP请求类型
+									timeout:10000,//超时时间设置为10秒；
+									success:function(data){
+										if(data.resultStatus == true){
+											var causeOfDeadMap = data.data.causeOfDeadMap;
+											var result_array = causeOfDeadMap["11001"];
+											for(var i = 0; i < result_array.length; i++){
+												var item = {};
+												item.id = result_array[i].id;
+												item.value = result_array[i].causeOfDead;
+												deadList.push(item);
+												if (deadList.length <= 0) {
+													deadList = [{
+														"id": "",
+														"value": "暂无数据"
+													}];
+												}
+												unitPicker.render(deadList);
+											}
+										}else{
+											mui.toast("加载失败")
+										}
+									},
+									error:function(xhr,type,errorThrown){
+										mui.toast("查询失败");
+									}
+								});
+							},
+						],
+						success: function(arr) {
+							mui("#conclusion")[0].value = arr[0].value;
+							mui("#causeOfDead")[0].value = arr[0].id;
+						}
+					});
+				});
+				
+				// 批量生成耳标
+				document.getElementById("earSure").addEventListener('tap', function() {
+					var earHead = mui("#earHead")[0].value
+					var earLast = mui("#earLast")[0].value;
+					if(earLast == "" || earLast == null || earLast.length > 8) {
+						mui.toast("请输入 8 位耳标尾号！");
+						return;
+					}
+					
+					var earNums = mui("#earNums")[0].value;
+					if(earNums == "" || earNums == null) {
+						mui.toast("请输入耳标个数！");
+						return;
+					}
+					
+					var earSignNums = "";
+					var ear_0 = "";
+					var ear_baseNum = Number(earLast);
+					if(earLast.length < 8 && earLast.length > 0) {
+						for (var i = 0, len = earLast.length; i < 8 - len; i++) {
+							ear_0 += "0";
+						}
+					}
+					
+					for(var j = 0; j < earNums; j++) {
+						earSignNums += earHead + ear_0 + ear_baseNum + ",";
+						ear_baseNum++;
+					}
+					earSignNums = earSignNums.substring(0, earSignNums.length - 1);
+					
+					plus.nativeUI.showWaiting("正在查重……");
+					mui.ajax(Constant.getConstant("HARMLESS_JUDGING_EARSIGNNUM_REPEAT"),{
+						data:{
+							"api_method": "c.judgingEarSignNumRepeat",
+							"a_id": harmless_user_id,
+							"earSignNums": earSignNums
+						},
+						dataType: 'json',//服务器返回json格式数据
+						type: 'post',//HTTP请求类型
+						timeout: 10000,//超时时间设置为10秒；
+						success: function(data) {
+							plus.nativeUI.closeWaiting();
+							if (data.resultStatus == true) {
+								var earSignNums_result = data.extraMsg
+								if(earSignNums_result && earSignNums_result != undefined) {
+									mui.toast(earSignNums_result + " 耳标号已经存在！");
+									var earSignNums_results = earSignNums_result.split(",");
+									mui("#earNums")[0].value = earNums - earSignNums_results.length;
+									for(var x = 0; x < earSignNums_results.length; x++) {
+										if(earSignNums.indexOf(earSignNums_results[x] + ",") != -1) {
+											earSignNums = earSignNums.replace(earSignNums_results[x] + ",", "");
+										}
+										if(earSignNums.indexOf("," + earSignNums_results[x]) != -1) {
+											earSignNums = earSignNums.replace("," + earSignNums_results[x], "");
+										}
+										if(earSignNums.indexOf(earSignNums_results[x]) != -1) {
+											earSignNums = earSignNums.replace(earSignNums_results[x], "");
+										}
+									}
+								}
+								earFinalTags = earSignNums;
+								document.getElementById("earFinalTags").innerHTML = earSignNums;
+							} else {
+								mui.toast("耳标号查重失败，请重试")
+							}
+						},
+						error: function(xhr, type, errorThrown) {
+							plus.nativeUI.closeWaiting();
+							mui.toast("耳标号查重失败");
+						}
+					});
+				});
+				
+				// 添加
+				document.getElementById("SaveBtn").addEventListener('tap', function() {
+					earFinalTags = document.getElementById("earFinalTags").innerHTML;
+					earWeight = document.getElementById("earWeight").value;
+					conclusion = document.getElementById("conclusion").value;
+					causeOfDead = document.getElementById("causeOfDead").value;
+					if(earFinalTags == '' || earFinalTags.length == 0){
+						mui.toast("请输入耳标号！");
+						return;
+					}
+					if(conclusion == '' || conclusion.length == 0){
+						mui.toast("请选择初步结论！");
+						return;
+					}
+					if(local_imgs_paths.length == 0) {
+						commitCollectData();
+					} else {
+						uploadImgs();
+					}
+				});
+			});
+				
+				
+			function earList() {
+				var result;
+				plus.nativeUI.showWaiting("正在加载……");
+				mui.ajax(Constant.getConstant("HARMLESS_REPORT_DETAILS"),{
+					data:{
+						"api_method": "c.findReportDetails",
+						"a_id": harmless_user_id,
+						"type": "2",
+						"reportId": reportId
+					},
+					dataType: 'json',//服务器返回json格式数据
+					type: 'post',//HTTP请求类型
+					timeout: 10000,//超时时间设置为10秒；
+					success: function(data) {
+						plus.nativeUI.closeWaiting();
+						if(data.resultStatus == true){
+							var result_array = data.data.detailVos;
+						//	console.log(JSON.stringify(data));
+							if(result_array.length == 0){
+								document.getElementById("toalNum").innerHTML = "（共0条）";
+								$("#ear-uninsure-list").html('<p style="text-align: center;color: #888888;margin-top: 20px;">---- 暂无数据 ----</p>');
+							} else {
+								document.getElementById("toalNum").innerHTML = "（共 " + result_array.length + " 条）";
+								
+								var delete_str = "";
+								if(harmlessUseRoleId == TOWN_SUPERVISE && status != CollectStatus_SIX) {
+									delete_str = '<div class="mui-slider-right mui-disabled"><a class="mui-btn mui-btn-red">删除</a></div>'
+								}
+								for(var i = 0; i < result_array.length; i++) {
+									var imgArea = ""
+									if(result_array[i].imgList && result_array[i].imgList.length > 0) {
+										var imgArea_base_0 = '<div class="image-item_2" style="width: 96%; margin: 16px 2% 0;">';
+										var imgArea_base_1 = '';
+										var imgArea_base_2 = '</div>';
+										for(var j = 0; j <result_array[i].imgList.length; j++) {
+											imgArea_base_1 += '<img data-preview-src="" data-preview-group="' + i + '" src="' + result_array[i].imgList[j] + '" />'
+										}
+										imgArea = imgArea_base_0 + imgArea_base_1 + imgArea_base_2;
+									}
+									result = '<li class="mui-table-view-cell" id_id="'+result_array[i].id+'">' +
+											delete_str +
+											'<div class="mui-slider-handle">' +
+											'	<div class="w-52">耳&nbsp;&nbsp;标&nbsp;&nbsp;号： ' + result_array[i].earTagNum + '</div>' +
+											'	<div class="w-33">重&nbsp;&nbsp;&nbsp;量： ' + result_array[i].weight + ' KG</div>' +
+											'	<div class="w-100">初步结论： ' + result_array[i].causeOfDeadName + '</div>' +
+											'</div>' + imgArea +
+										'</li>';
+									$("#ear-uninsure-list").append(result);
+								}
+							}
+						}else{
+							mui.toast("查询失败，请重试")
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						plus.nativeUI.closeWaiting();
+						mui.toast("查询失败");	
+					}
+				});
+			}
+			
+			function uploadImgs() {
+				for(var i = 0; i < local_imgs_paths.length; i++) {
+					var uploadImg_tips = "正在上传第 " + (i + 1) + "/" + local_imgs_paths.length + " 张图片";
+					var fileName = local_imgs_paths[i].substring(local_imgs_paths[i].lastIndexOf("/") + 1, local_imgs_paths[i].length);
+					plus.nativeUI.showWaiting(uploadImg_tips);
+					var task = plus.uploader.createUpload(Constant.getConstant("HARMLESS_UPLOAD_IMG"), {method:"POST"}, function(t, status) { //上传完成
+						if(status == 200) {
+							plus.nativeUI.closeWaiting();
+							// console.log(t.responseText);
+							var msg = eval('(' + t.responseText + ')');
+							if(msg.resultStatus == true) {
+								console.log("第 " + i + " 张图片上传成功！");
+								upload_imgs_urls.push(msg.data.savePath);
+								if(i == local_imgs_paths.length) {
+									removeFileByPath(FILE_PATH_EARTAG);
+									commitCollectData();
+								}
+							} else {
+								mui.toast("第 " + i + " 张图片图片上传失败！");
+								console.log("第 " + i + " 张图片图片上传失败！");
+							}
+						} else {
+							mui.toast("第 " + i + " 张图片图片上传失败！" + status);
+							console.log("第 " + i + " 张图片图片上传失败：" + status);
+						}
+					});
+					task.addData("api_method", "c.uploadImg"); //添加其他参数
+					task.addData("a_id", harmless_user_id);
+					task.addData("reportId", reportId);
+					task.addData("tslId", "");
+					task.addData("type", SIGNIMG_TYPE_REPORTDETAIL);
+					task.addData("fileFileName", fileName);
+					// 页面中要上传的 图片路径
+					task.addFile(local_imgs_paths[i], { key: "file" } );
+					task.start();
+				}
+			}
+			
+			function commitCollectData() {
+				
+				plus.nativeUI.showWaiting("正在添加耳标信息……");
+				var array_earFinalTags = earFinalTags.split(",");
+				var array_earWeight = earWeight.split("*");
+				var array_new_earWeight = [];
+				var reportDetailVosArr = [];
+				var uploadImg = upload_imgs_urls.join(",");
+				
+				for(var i = 0; i < array_earFinalTags.length; i++) {
+					var reportDetailVos = {};
+					reportDetailVos["bkid"] = "";
+					reportDetailVos["causeOfDead"] = causeOfDead; //  死因ID
+					reportDetailVos["causeOfDeadName"] = conclusion; // 疑似猪胃炎
+					reportDetailVos["collectStatus"] = "";
+					reportDetailVos["dayOfAge"] = "";
+					reportDetailVos["deadTime"] = "";
+					reportDetailVos["earTagNum"] = array_earFinalTags[i];
+					reportDetailVos["id"] = "";
+					reportDetailVos["imgs"] = uploadImg;
+					reportDetailVos["insuranceFacId"] = "";
+					reportDetailVos["insuranceFacName"] = "";
+					reportDetailVos["insuranceType"] = "";
+					reportDetailVos["insuranceTypeName"] = "";
+					reportDetailVos["isInsurance"] = "1";
+					reportDetailVos["num"] = "1"; // 数量
+					reportDetailVos["remark"] = "";
+					reportDetailVos["reportId"] = "";
+					reportDetailVos["status"] = "";
+					reportDetailVos["symptomOfDead"] = "";
+					reportDetailVos["weight"] = array_earWeight[i] ? array_earWeight[i] : "0"; // 重量
+					
+					reportDetailVosArr[i] = reportDetailVos;
+				}
+				var reportDetailsStr = {};
+				reportDetailsStr["id"] = reportId;
+				reportDetailsStr["reportDetailVos"] = reportDetailVosArr;
+				mui.ajax(Constant.getConstant("HARMLESS_ADD_REPORT"),{
+					data:{
+						"api_method": "c.saveReportDetails",
+						"a_id": harmless_user_id,
+						"reportDetailsStr": JSON.stringify(reportDetailsStr)
+					},
+					dataType: 'json',//服务器返回json格式数据
+					type: 'post',//HTTP请求类型
+					timeout: 10000,//超时时间设置为10秒；
+					success: function(data) {
+						plus.nativeUI.closeWaiting();
+						if(data.resultStatus == true){
+							mui.toast("添加成功！")
+							
+							var targetSearchWebView = plus.webview.getWebviewById("scene-collect-detail.html");
+							mui.fire(targetSearchWebView, "initCollectDetails", {});
+							
+							setTimeout('location.reload()', 300);
+						} else {
+							mui.toast("变更失败，请重试！")
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						plus.nativeUI.closeWaiting();
+						mui.toast("查询失败");	
+					}
+				});
+			}
+			
+			//选取图片的来源，拍照和相册  
+			function showActionSheet(conf) {
+				
+				if(REPORTDETAIL_IMG_MAXNUM == local_imgs_paths.length) {
+					mui.toast("图片数量已经达到上限！")
+				} else {
+					var actionbuttons = [{ title: "拍照"}, {title: "相册选取"}];  
+					var actionstyle = {title: "选择照片", cancel: "取消", buttons:actionbuttons};  
+					plus.nativeUI.actionSheet(actionstyle, function(e) {  
+						if(e.index == 1) {  
+							getImage();  
+						} else if(e.index == 2) {  
+							galleryImg();
+						}  
+					});
+				}
+			}
+			
+			// 相册选择
+			function galleryImg() {
+				plus.gallery.pick(function(e) {
+					//alert(e.files.length);
+					var zm = 0;
+					setTimeout(file, 200);
+					function file() {
+						plus.io.resolveLocalFileSystemURL(e.files[zm], function(entry) {
+								compressImage(entry.toLocalURL(), entry.name); 
+						}, function(e) {
+								plus.nativeUI.toast("读取拍照文件错误：" + e.message);
+						});
+						zm++;
+						if(zm < e.files.length) {
+							setTimeout(file, 200);
+						}
+					}
+				}, function(e) {
+					
+				}, {
+					filename: "_doc/camera/",
+					filter: "image",
+					multiple: true,
+					maximum: 6, // 最多选择6张图片
+					system: false,
+					onmaxed: function() {
+						plus.nativeUI.alert('最多只能选择6张图片');
+					},
+				});
+			}
+			
+			// 拍照  
+			function getImage() {  
+				var cmr = plus.camera.getCamera();  
+				cmr.captureImage(function(p) {  
+					plus.io.resolveLocalFileSystemURL(p, function(entry) {
+						compressImage(entry.toLocalURL(), entry.name);  
+					}, function(e) {  
+						plus.nativeUI.toast("读取拍照文件错误：" + e.message);  
+					});  
+				}, function(e) {  
+					
+				}, {  
+					filename: "_doc/camera/",  
+					index: 1  
+				});  
+			}
+			
+			var divid = "HARMLESS_REPORTDETAIL";
+			//压缩图片  
+			function compressImage(url, filename) {  
+				var name = FILE_PATH_EARTAG + divid + "-" + filename; // _doc/upload/F_ZDDZZ-1467602809090.jpg  
+				plus.zip.compressImage({  
+					src: url,//src: (String 类型 )压缩转换原始图片的路径  
+					dst: name,//压缩转换目标图片的路径  
+					quality: 25,//quality: (Number 类型 )压缩图片的质量.取值范围为1-100  
+					overwrite: true//overwrite: (Boolean 类型 )覆盖生成新文件  
+				}, function(event) {
+					var path = name;//压缩转换目标图片的路径  
+					//event.target获取压缩转换后的图片url路
+					var repeat_paths = local_imgs_paths.filter(function(item) {
+						return item == event.target;
+					});
+					if(repeat_paths.length > 0) {
+						mui.toast("请勿重复选择图片！");
+					} else {
+						mui.toast("压缩上传中……")
+						// local_imgs_paths.push(event.target);
+						
+						// 水印预览展示
+						var src = 'src="' + event.target + '"';
+						var contentName = "养殖户名称：" + farmer;
+						var contentX = "X：" + plus.storage.getItem("x");
+						var contentY = "Y：" + + plus.storage.getItem("y");
+						var date = new Date();
+						var contentTime = date.Format("yyyy-MM-dd HH:mm:ss");
+						var cb = null;
+						var img = new Image();
+						img.src = event.target;
+						img.crossOrigin = 'anonymous';
+						img.onload = function () {
+						const canvas = document.createElement('canvas');
+						canvas.width = img.width;
+						canvas.height = img.height;
+						const ctx = canvas.getContext('2d');
+						ctx.drawImage(img, 0, 0);
+						ctx.textAlign = 'left';
+						ctx.textBaseline = 'top';
+						ctx.font = '32px Microsoft Yahei';
+						ctx.fillStyle = 'rgba(255, 0, 0, 1)';
+						ctx.fillText(contentName, 20, 20);
+						ctx.fillText(contentX, 20, 60);
+						ctx.fillText(contentY, 20, 100);
+						ctx.fillText(contentTime, 20, 140);
+						const base64Url = canvas.toDataURL();
+					//	document.querySelector('img').src = base64Url;
+						  
+						// 水印图片保存本机
+						var bitmap = new plus.nativeObj.Bitmap("image"); //path: ( String ) 可选 Bitmap对象自动加载图片的地址
+						bitmap.loadBase64Data(base64Url, function(e){ //加载base64为数据到bm实例对象
+							console.log("加载base64数据成功")
+						}, function(error){
+							console.log("加载base64数据失败" + error.message)
+						} );
+						var path = FILE_PATH_EARTAG + divid + "-" + filename;
+						var options = {"overwrite":true,"format":"png","quality":50}; 
+						bitmap.save( path, options, function(e){ 
+							// console.log("保存成功地址："+e.target); 保存本机
+							local_imgs_paths.push(e.target);
+							showImgDetail (filename.substring(0, filename.indexOf(".")), divid, 'src="' + base64Url + '"');
+							bitmap.recycle(); //保存到相册后，回收Bitmap图片内存(不可放外面，否则不兼容Android手机)
+						}, function(error){
+							console.log("保存失败code："+error.code+";msg:"+error.message);
+							bitmap.recycle();
+						}); 
+						  
+						}
+					}
+				}, function(error) {  
+					plus.nativeUI.toast("压缩图片失败，请稍候再试");  
+				});  
+			}
+			
+			// 加载页面初始化需要加载的图片信息  
+			// 或者相册IMG_20160704_112620.jpg  
+			// imgId: 图片名称：1467602809090或者IMG_20160704_112620  
+			// imgkey: 字段例如：F_ZDDZZ  
+			// ID： 站点编号ID, 例如429
+			// src：src="file:///storage/emulated/0/Android/data/io.dcloud.HBuilder/.HBuilder/apps/HBuilder/doc/upload/F_ZDDZZ-1467602809090.jpg"  
+			function showImgDetail(imgId, imgkey, src) {
+				var html = "";
+				html += '<li id="Img' + imgId + imgkey + '" class="image-item">';
+				html += '    <img id="picBig" ' + src + '/>';
+				html += '    <span class="del" onclick="delImg(\'' + imgId + '\',\''+ imgkey + '\');">';
+				html += '        <div class="fa fa-times-circle"></div>'; 
+				html += '    </span>';
+				html += '</li>';  
+				$("#upload-content").append(html);
+			}  
+			
+			// 删除图片  
+			// imgId图片名称：IMG_20160704_112614  
+			// imgkey: 字段，例如F_ZDDZZ
+			function delImg(imgId, imgkey) {
+				var bts = ["是", "否"];  
+				plus.nativeUI.confirm("是否删除图片？", function(e) {
+					var i = e.index;  
+					if (i == 0) {
+						
+						var baseUrl_1 = plus.webview.currentWebview().getURL();
+						var baseUrl_2 = baseUrl_1.substring(0, baseUrl_1.indexOf("www"));
+						
+						var imgPath = baseUrl_2 + "doc/earTag/" + imgkey + "-" + imgId + ".jpg"
+						$("#Img" + imgId + imgkey).remove();
+						local_imgs_paths = local_imgs_paths.filter(function(item) {
+							return item != imgPath;
+						});
+					}  
+				}, "删除操作提醒", bts);
+			}  
+		</script>
+	</body>
+
+</html>

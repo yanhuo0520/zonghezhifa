@@ -1,0 +1,285 @@
+<!doctype html>
+<html>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+    <title>添加企业</title>
+    <link href="../../css/mui.css" rel="stylesheet"/>
+	<link href="ani-css/home.css" rel="stylesheet" />
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title" id="com-title">养殖企业</h1>
+		</header>
+		<div class="mui-content company-add">
+			<div class="mui-input-group">
+				<div class="mui-input-row">
+					<label>企业名称：</label>
+					<input id="company" type="text" class="mui-input-clear" placeholder="请输入">
+					<input id="getComName" type="text" style="display: none;" />
+				</div>
+				<div class="mui-input-row">
+					<label>注册地址：</label>
+					<input id="address" type="text" readonly="readonly" class="mui-input-clear" placeholder="请选择(省市县)">
+				</div>
+			</div>
+			<div class="mui-input-group">
+				<div class="mui-input-row">
+					<label>法人代表：</label>
+					<input id="faName" type="text" class="mui-input-clear" placeholder="请输入">
+				</div>
+				<div class="mui-input-row">
+					<label>联系电话：</label>
+					<input id="telephone" type="number" class="mui-input-clear" placeholder="请输入">
+				</div>
+			</div>
+			<div class="mui-input-group">
+				<div class="mui-input-row">
+					<label>修改位置：</label>
+					<input id="mapLocation" type="text" class="mui-input-clear" placeholder="GPSX:X;GPSY:Y" readonly="readonly">
+					<input id="comId" type="text" style="display: none;" />
+				</div>
+			</div>
+			<p class="com-add-itp"><span>*</span>如果公司已存在，则只能修改地址。</p>
+			
+			<a href="javascript:;" class="mui-btn company-add-btn" id="saveBtn">修改</a>
+		</div>
+		<script src="../../js/mui.js"></script>
+		<script src="../../js/jquery.min.js"></script>
+		<script src="../js/content.js"></script>
+		<script src="ani-js/constant.js"></script>
+		<script type="text/javascript">
+			mui.plusReady(function(){
+				// 监控返回操作,刷新上一个页面
+				var old_back = mui.back;
+				mui.back = function(){
+					var opener = plus.webview.currentWebview().opener();
+					opener.reload();
+					old_back();
+				};
+				
+				var uuid = plus.storage.getItem("uuid"); //用户的的id编号
+				if(uuid == "" || uuid == null || uuid == "undefined"){
+					mui.openWindow({
+						id: 'login.html',
+						url: '../login.html'
+					})
+				}
+				var self = plus.webview.currentWebview();
+				var qylx = self.qylx; // 企业类型
+				var comTitle = self.comTitle;
+				
+				document.getElementById("com-title").innerHTML = comTitle;
+				var x = plus.storage.getItem("x");
+				var y = plus.storage.getItem("y");
+				document.getElementById("mapLocation").value="GPSX:" + x+";GPSY:"+y;
+				
+				// 企业注册验证
+				document.getElementById("company").onkeyup = function(){
+					var company = document.getElementById("company").value;
+					mui.ajax(Constant.getConstant("SEARCH_COMPANY_BASE"), {
+						data:{
+							"qylx": qylx,
+							"name": company
+						},
+						dataType:'json',//服务器返回json格式数据
+						type:'post',//HTTP请求类型
+						timeout:10000,//超时时间设置为10秒；
+						success:function(data){
+							if(data.result == "success"){
+								var jsonobj = data.jsonobj;
+								// 饲料生产(Slscqy.java) 饲料销售(FeedSale.java) 兽药生产(MedicineProduce.java) 兽药销售(MedicineSale.java)
+								var getComName = jsonobj.name;
+								var address = jsonobj.address;
+								var frName = jsonobj.fr;
+								var phone = jsonobj.telphone;
+								if(qylx == 5){ // 养殖企业 YzqyInfo.java
+									var address = jsonobj.regiaddr;
+									var frName = jsonobj.legarepr;
+									var phone = jsonobj.legareprnumb;
+								}else if(qylx == 8){ // 屠宰企业 TzqyInfo.java
+									var address = jsonobj.regiaddr;
+									var frName = jsonobj.legarepr;
+									var phone = jsonobj.contnumb;
+								}else if(qylx == 9){ // 动物诊疗 AnimalzlInfo.java
+									var getComName = jsonobj.jgmc;
+									var frName = jsonobj.fddbr;
+									var phone = jsonobj.telephone;
+								}
+								var GPSX = jsonobj.gpsx;
+								var GPSY = jsonobj.gpsy;
+								document.getElementById("getComName").value=getComName;
+								document.getElementById("address").value=address;
+								document.getElementById("faName").value=frName;
+								document.getElementById("telephone").value=phone;
+								document.getElementById("mapLocation").value="GPSX:" + GPSX+";GPSY:"+GPSY;
+								document.getElementById("comId").value=jsonobj.id;
+							}else{
+								mui.toast("查询失败!");
+								document.getElementById("getComName").value='';
+								document.getElementById("address").value='';
+								document.getElementById("faName").value='';
+								document.getElementById("telephone").value='';
+								document.getElementById("mapLocation").value='';
+								document.getElementById("comId").value='';
+							}
+						},
+						error:function(xhr,type,errorThrown){
+							mui.toast("数据获取失败，请稍后再试！");
+						}
+					});
+				};
+				
+				// 监听地址选择
+				window.addEventListener('selFinish',function(event){
+					 var address = event.detail.address;
+					 document.getElementById("address").value = address;
+				});
+				
+				// 监听坐标选择
+				window.addEventListener('mapFinish',function(event){
+					 var mapGp = event.detail.mapGp;
+					 document.getElementById("mapLocation").value = mapGp;
+				});
+				
+				// 提交
+				document.getElementById("saveBtn").addEventListener('tap', function(){
+					var getComName = document.getElementById("getComName").value;
+					var company = document.getElementById("company").value;
+					var address = document.getElementById("address").value;
+					var faName = document.getElementById("faName").value;
+					var telephone = document.getElementById("telephone").value;
+					var mapLocation = document.getElementById("mapLocation").value;
+					
+					if(company == '' || company.length == 0){
+						mui.toast("企业名称不能为空！");
+						return;
+					}
+					if(address == '' || address.length == 0){
+						mui.toast("注册地址不能为空！");
+						return;
+					}
+					if(faName == '' || faName.length == 0){
+						mui.toast("法人姓名不能为空！");
+						return;
+					}
+					var myreg = /^[1][3,4,5,7,8][0-9]{9}$/;
+					if(telephone == '' || telephone.length == 0){
+						mui.toast("请输入联系方式！");
+						return;
+					}else if(!myreg.test(telephone)) {
+						mui.toast("请输入正确格式的手机号");
+						return;
+					}
+					if(getComName == '' || getComName.length == 0){
+						mui.toast("未获取企业信息，请重新获取！");
+						return;
+					}
+					if(mapLocation == '' || mapLocation.length == 0){
+						mui.toast("位置坐标不能为空！");
+						return;
+					}
+					var loaction = mapLocation.split(";");
+					var gpsx = (loaction[0].substring(5));
+					var gpsy = (loaction[1].substring(5));
+					var jsonobj = {};
+					if(qylx == 5){ // 养殖企业 YzqyInfo.java
+						jsonobj['name'] = company;
+						jsonobj['regiaddr'] = address;
+						jsonobj['legarepr'] = faName;
+						jsonobj['legareprnumb'] = telephone;
+					}else if(qylx == 8){ // 屠宰企业 TzqyInfo.java
+						jsonobj['name'] = company;
+						jsonobj['regiaddr'] = address;
+						jsonobj['legarepr'] = faName;
+						jsonobj['contnumb'] = telephone;
+					}else if(qylx == 9){ // 动物诊疗 AnimalzlInfo.java
+						jsonobj['jgmc'] = company;
+						jsonobj['address'] = address;
+						jsonobj['fddbr'] = faName;
+						jsonobj['telephone'] = telephone;
+					}else if(qylx == 1 || qylx == 2|| qylx == 3|| qylx == 4){ // 饲料生产(Slscqy.java) 饲料销售(FeedSale.java) 兽药生产(MedicineProduce.java) 兽药销售(MedicineSale.java)
+						jsonobj['name'] = company;
+						jsonobj['address'] = address;
+						jsonobj['fr'] = faName;
+						jsonobj['telphone'] = telephone;
+					}else if(qylx == 11){ // 生鲜乳收购
+						
+					}else if(qylx == 12){ // 生鲜乳运输车辆
+						
+					}
+					
+					jsonobj['gpsx'] = gpsx;
+					jsonobj['gpsy'] = gpsy;
+					jsonobj = JSON.stringify(jsonobj); 
+					// 执行保存
+					plus.nativeUI.showWaiting("正在保存……");
+					mui.ajax(Constant.getConstant("COMPANY_BASE_SAVE"), {
+						data:{
+							"qylx": qylx,
+							"a_id": uuid,
+							"jsonobj": jsonobj
+						},
+						dataType:'json',//服务器返回json格式数据
+						type:'post',//HTTP请求类型
+						timeout:10000,//超时时间设置为10秒；
+						success:function(data){
+							plus.nativeUI.closeWaiting();
+							console.log(data.result);
+							if(data.result == "success"){
+								mui.toast("企业信息修改成功！");
+								setTimeout("mui.back()",200);
+							}else{
+								mui.toast("企业信息修改失败！")
+							}
+						},
+						error:function(xhr,type,errorThrown){
+							plus.nativeUI.closeWaiting();
+							mui.toast("查询失败")
+						}
+					});
+
+				});
+
+				document.getElementById("address").addEventListener('tap', function(){
+					mui.openWindow({
+						url: 'city-select.html',
+						id: 'city-select.html',
+						waiting:{
+						  autoShow:true,//自动显示等待框，默认为true
+						  title:'正在加载...',//等待对话框上显示的提示内容
+						}
+					})
+				});
+				document.getElementById("mapLocation").addEventListener('tap', function(){
+					var company = document.getElementById("company").value;
+					var comId = document.getElementById("comId").value;
+					var mapLocation = document.getElementById("mapLocation").value;
+					var loaction = mapLocation.split(";");
+					var gpsx = (loaction[0].substring(5));
+					var gpsy = (loaction[1].substring(5));
+					mui.openWindow({
+						url: 'loaction.html',
+						id: 'loaction.html',
+						extras: {
+							"qylx": qylx,
+							"company": company,
+							"comId": comId,
+							"gpsx": gpsx,
+							"gpsy": gpsy
+						},
+						waiting:{
+						  autoShow:true,//自动显示等待框，默认为true
+						  title:'正在加载...',//等待对话框上显示的提示内容
+						}
+					})
+				})
+
+
+			});
+	
+			
+			
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,116 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>地址地选择</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.css" rel="stylesheet" />
+		<link href="ani-css/home.css" rel="stylesheet" />
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<a class="mui-icon mui-pull-right icon-text" id="finish">完成</a>
+			<h1 class="mui-title">选择地区</h1>
+		</header>
+		<div class="mui-content city-content bg-white">
+			<ul class="row-title"><li>省</li><li>市</li><li>县</li></ul>
+			<ul class="row-content one-cate" id="one-cate">
+				<li id="2c90813c0a252d31010a252e4ae70001" name="河南省" class="active">河南省</li>
+			</ul>
+			<ul class="row-content second-cate" id="second-cate">
+				<!-- <li id="21" name="21">21</li>
+				<li id="22" name="22" class="active">22</li> -->
+			</ul>
+			<ul class="row-content third-cate" id="third-cate">
+				<!-- <li id="31" name="31" class="active">32</li>
+				<li id="32" name="32">32</li> -->
+			</ul>
+			
+		</div>
+		<script src="../../js/mui.js"></script>
+		<script src="../../js/jquery.min.js"></script>
+		<script src="../js/content.js"></script>
+		<script src="ani-js/constant.js"></script>
+		<script type="text/javascript">
+			mui.plusReady(function () {
+				getList("2c90813c0a252d31010a252e4ae70001", $("#second-cate")); // 河南省
+				getList("2c9081850a261103010a26aeaa250314", $("#third-cate")); // 济源市
+				mui(".second-cate").on('tap','li',function(){
+					if(!$(this).hasClass("active")){
+						$(this).addClass("active").siblings().removeClass("active");
+						var parentId = $(this).attr("id");
+						getList(parentId, $("#third-cate"));
+					}
+				});
+				mui(".row-content").on('tap','li',function(){
+					$(this).addClass("active").siblings().removeClass("active");
+				});
+				
+				function getList(parentId, listCont){
+					plus.nativeUI.showWaiting("加载中……");
+					mui.ajax(Constant.getConstant("GET_AREA"),{
+						data:{
+							"parentId": parentId
+						},
+						dataType:'json',//服务器返回json格式数据
+						type:'post',//HTTP请求类型
+						timeout:10000,//超时时间设置为10秒；
+						success:function(data){
+							plus.nativeUI.closeWaiting();
+							if(data.result == "success"){
+								listCont.html('');
+								var result_array = data.result_array;
+								$.each(result_array, function(i, item){
+									res = '<li id="'+item.id+'" name="'+item.name+'">'+item.name+'</li>';
+									resA = '<li id="'+item.id+'" name="'+item.name+'" class="active">'+item.name+'</li>';
+									if(item.name == "济源市"){
+										listCont.append(resA)
+									}else{
+										listCont.append(res)
+									}
+									
+								})
+							}else{
+								mui.toast("查询失败！");
+							}
+						},
+						error:function(xhr,type,errorThrown){
+							plus.nativeUI.closeWaiting();
+							mui.toast("数据获取失败，请稍后再试！");
+						}
+					});
+				}
+				
+				document.getElementById("finish").addEventListener('tap', function(){
+					var oneCate = $(".one-cate").find(".active").html();
+					var secondCate = $(".second-cate").find(".active").html();
+					var thirdCate = $(".third-cate").find(".active").html();
+					if(oneCate==''||oneCate==undefined){
+						mui.toast('请选择省');
+						return;
+					}
+					if(secondCate==''||secondCate==undefined){
+						mui.toast('请选择市');
+						return;
+					}
+					if(thirdCate==''||thirdCate==undefined){
+						mui.toast('请选择县');
+						return;
+					}
+					var addActive = oneCate+'-'+secondCate+'-'+thirdCate;
+					var pointView = plus.webview.currentWebview().opener();
+					mui.fire(pointView,'selFinish',{address: addActive});
+					mui.back();
+				})
+			    
+			});
+			var seHeight = window.screen.availHeight - 164 + 'px';
+			$(".row-content").css("height", seHeight);
+			
+			
+			
+		</script>
+	</body>
+
+</html>

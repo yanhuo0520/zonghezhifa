@@ -1,0 +1,617 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>无害化处理</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="../../css/mui.css"/>
+		<link rel="stylesheet" href="../../css/ajax-picker/ajax-picker.css">
+		<link rel="stylesheet" href="../../css/ajax-picker/ajax-picker-self.css">
+		<link rel="stylesheet" href="../css/generic.css"/>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">案件受理<span id="toalNum"></span></h1>
+		</header>
+		<div class="mui-content" id="pullrefresh">
+			<div class="accept-list" id="accept-list">
+				<!-- <div class="accept-panel" report_id="" insuranceFacName_id="" insuranceTypeName_id="" insuranceFacId_id="">
+					<ul>
+						<li>报案时间：2019-07-30 15:21:45</li>
+						<li>地&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;址：测试</li>
+						<li>报&nbsp;案&nbsp;&nbsp;人：测试<a href="tel:13460302205" class="mui-pull-right">电话：1214125412<img src="images/phone.png" class="phone-img"></a></li>
+						<li>保安企业：测试</li>
+						<li>保险公司：测试</li>
+					</ul>
+					<div class="btn-list mui-row">
+						<a class="mui-col-sm-3 mui-col-xs-3"></a>
+						<a class="mui-col-sm-3 mui-col-xs-3"></a>
+						<a class="edit-btn list-btn mui-col-sm-3 mui-col-xs-3">变更保险</a>
+						<a class="case-btn list-btn mui-col-sm-3 mui-col-xs-3">案件受理</a>
+					</div>
+				</div> -->
+			</div>          
+		</div>
+		<!-- 变更保险 -->
+		<div id="popover" class="popover-edit popover-cont mui-popover modify-mask">
+			<p class="title">选择保险公司和保险类型</p>
+			<div class="mui-input-group" id="company-edit">
+				<div class="mui-input-row mui-select">
+					<label class="title-label-short">保险公司：</label>
+					<input type="text" id="select-company" class="mui-navigate-right" readonly="readonly" placeholder="请选择" />
+					<input type="text" id="reportIds" value="" style="display: none;" />
+					<input type="text" id="insuranceFacName" value="" style="display: none;" />
+					<input type="text" id="insuranceFacId" value="" style="display: none;" />
+				</div>
+				<div class="mui-input-row mui-select">
+					<label class="title-label-short">保险类型：</label>
+					<input type="text" id="select-type" class="mui-navigate-right" readonly="readonly" placeholder="请选择" />
+					<input type="text" id="insuranceType" value="" style="display: none;" />
+					<input type="text" id="insuranceTypeName" value="" style="display: none;" />
+				</div>
+			</div>
+			<a href="javascript:;" class="save" id="editSaveBtn">保存</a>
+		</div>
+		
+		<!-- 案件受理 -->
+		<div id="casePopover" class="popover-case popover-cont mui-popover modify-mask">
+			<p class="title">案件受理</p>
+			<div class="mui-input-group">
+				<div class="mui-input-row mui-select">
+					<label class="title-label-short">运输人员：</label>
+					<input type="text" id="selectDriver" value="李顺明" class="mui-navigate-right" readonly="readonly" placeholder="请选择" />
+					<input type="text" id="transportId" value="1395" style="display: none;" />
+					<input type="text" id="transportPersonId" value="3467485" style="display: none;" />
+					
+					<input type="text" id="reportIds0" value="" style="display: none;" />
+				</div>
+				<div class="mui-input-row mui-select">
+					<label class="title-label-short">车辆信息：</label>
+					<input type="text" id="selectCarInfo" class="mui-navigate-right" readonly="readonly" placeholder="请选择" />
+					<input type="text" id="truckId" value="" style="display: none;" />
+				</div>
+				<div class="mui-input-row mui-select">
+					<label class="title-label-short">无害化处理厂：</label>
+					<input type="text" id="selectHFactorys" class="mui-navigate-right" readonly="readonly" placeholder="请选择" />
+					<input type="text" id="harmlessId" value="" style="display: none;" />
+				</div>
+			</div>
+			<a href="javascript:;" class="save" id="acceptSaveBtn">保存</a>
+		</div>
+		<!-- 变更保险内容 -->
+		<div id="container_company" class="myAjaxPicker"></div>
+		
+		<!-- 案件受理内容 -->
+		<div id="driverContent" class="myAjaxPicker"></div>
+		<div id="carInfoContent" class="myAjaxPicker"></div>
+		<div id="hFactorysContent" class="myAjaxPicker"></div>
+		
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/jquery-1.12.4.min.js"></script>
+		<script type="text/javascript" src="../../js/ajax-picker/ajax-picker.min.js"></script>
+		<script src="../js/content.js"></script>
+		<script src="../js/constant.js"></script>
+		<script src="js/harmless-data.js"></script>
+		<script type="text/javascript">
+			mui.plusReady(function() {
+				initSettings(); 		// 初始化设置字体大小
+				dailogBackKeyFunction(false); // 未自定义键盘禁用
+				var harmless_user_id = plus.storage.getItem("harmless_user_id"); //用户的的id编号
+				var currpage = 1;
+				// comList(currpage);
+				
+				// 加载列表
+				function comList(currpage){
+					var result;
+					var pageSize = 10;
+					plus.nativeUI.showWaiting("正在加载……");
+					mui.ajax(Constant.getConstant("HARMLESS_ACCEPT_CASE_LIST"),{
+						data:{
+							"api_method":"c.reportList",
+							"a_id":harmless_user_id,
+							"page":currpage,
+							"rows":pageSize
+						},
+						dataType:'json',//服务器返回json格式数据
+						type:'post',//HTTP请求类型
+						timeout:10000,//超时时间设置为10秒；
+						success:function(data){
+							plus.nativeUI.closeWaiting();
+							if(data.resultStatus == true){
+								var dataResult = data.data;
+								var page = dataResult.page;
+								document.getElementById("toalNum").innerHTML = "（共"+page.totalRows+"条）"
+								var result_array = dataResult.reportVos;
+								if(result_array.length == 0 || currpage > page.totalPage){
+									mui('#pullrefresh').pullRefresh().disablePullupToRefresh();
+									if(currpage == 1){
+										$("#accept-list").html('<p style="text-align: center;color: #888888;margin-top: 20px;">---- 暂无数据 ----</p>');
+									}else{
+										mui.toast("已经到底了");
+									}
+								}else{
+									mui('#pullrefresh').pullRefresh().refresh(true);
+									for(var i=0;i<result_array.length;i++){
+										result = '<div class="accept-panel" report_id="'+result_array[i].ID+'" insuranceFacName_id="'+result_array[i].INSURANCEFACNAME+'" insuranceFacId_id="'+result_array[i].INSURANCEFACID+'" insuranceTypeName_id="'+result_array[i].INSURANCETYPENAME+'" >' +
+												'	<ul>' +
+												'		<li>报案时间：'+result_array[i].CREATETIME+'</li>' +
+												'		<li>地&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;址：'+result_array[i].ADDRESS+'</li>' +
+												'		<li>报&nbsp;案&nbsp;&nbsp;人：'+result_array[i].REALNAME+'<a href="tel:'+result_array[i].PHONE+'" class="mui-pull-right">电话：'+result_array[i].PHONE+'<img src="images/phone.png" class="phone-img"></a></li>' +
+												'		<li>报案企业：'+result_array[i].REPORTUNIT+'</li>' +
+												'		<li>保险公司：'+result_array[i].INSURANCEFACNAME+'</li>' +
+												'	</ul>' +
+												'	<div class="btn-list mui-row">' +
+												'		<a class="mui-col-sm-3 mui-col-xs-3"></a>' +
+												'		<a class="mui-col-sm-3 mui-col-xs-3"></a>' +
+												'		<a class="edit-btn list-btn mui-col-sm-3 mui-col-xs-3">变更保险</a>' +
+												'		<a class="case-btn list-btn mui-col-sm-3 mui-col-xs-3">案件受理</a>' +
+												'		</div>' +
+												'</div>'
+										$("#accept-list").append(result);
+									}
+									
+									
+								}
+							}else{
+								mui.toast("查询失败，请重试")
+							}
+						},
+						error:function(xhr,type,errorThrown){
+							plus.nativeUI.closeWaiting();
+							mui.toast("查询失败");	
+						}
+					});
+				}
+				
+				mui.init({
+					pullRefresh : {
+						container: '#pullrefresh', //待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+						up : {
+							height:50,//可选.默认50.触发上拉加载拖动距离
+							auto:false,//可选,默认false.自动上拉加载一次
+							contentrefresh : "正在加载...",//可选，正在加载状态时，上拉加载控件上显示的标题内容
+							contentnomore:'没有数据了',//可选，请求完毕若没有更多数据时显示的提醒内容；
+							callback :pullupRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+						},
+						down : {
+							style: "circle",
+							color: "#33323E",				//可选，默认“#2BD009” 下拉刷新控件颜色
+							height: '30px',					//可选,默认50px.下拉刷新控件的高度,
+							range: '100px',					//可选 默认100px,控件可下拉拖拽的范围
+							offset: '0px',					//可选 默认0px,下拉刷新控件的起始位置
+							auto: true,					//可选,默认false.首次加载自动上拉刷新一次
+							callback: pullDownRefreshFun
+						}
+					}
+				});
+				
+				function pullupRefresh(){
+					setTimeout(function(){
+						currpage++;
+						comList(currpage);
+						mui('#pullrefresh').pullRefresh().endPullupToRefresh();
+					},1500)
+				}
+				function pullDownRefreshFun() {
+					setTimeout(function() {
+						currpage = 1;
+						$('#company-list').html("");
+						comList(currpage);
+						mui('#pullrefresh').pullRefresh().endPulldownToRefresh();
+						mui('#pullrefresh').pullRefresh().refresh(true);
+					}, 1500);
+				}
+				
+				
+				// 保险变更
+				mui(".accept-list").on('tap', '.edit-btn', function() {
+					mui('#popover').popover('toggle');
+					var insuranceFacName = $(this).parents('.accept-panel').attr("insuranceFacName_id"); // 保险公司名称
+					var insuranceTypeName = $(this).parents('.accept-panel').attr("insuranceTypeName_id"); // 保险类型名称
+					var reportIds = $(this).parents('.accept-panel').attr("report_id"); // 案件ID
+					var insuranceFacId = $(this).parents('.accept-panel').attr("insuranceFacId_id"); //保险公司id
+					if(insuranceFacName == '' ||insuranceFacName == null || insuranceFacName == undefined){
+						document.getElementById("select-company").value = '';
+						document.getElementById("insuranceFacName").value = '';
+					}else{
+						document.getElementById("select-company").value = insuranceFacName;
+						document.getElementById("insuranceFacName").value = insuranceFacName;
+					}
+					if(insuranceTypeName == '' ||insuranceTypeName == null || insuranceTypeName == undefined){
+						document.getElementById("select-type").value = '';
+						document.getElementById("insuranceTypeName").value = '';
+					}else{
+						document.getElementById("select-type").value = insuranceTypeName;
+						document.getElementById("insuranceTypeName").value = insuranceTypeName;
+					}
+					document.getElementById("reportIds").value = reportIds;
+					if(insuranceFacId == '' ||insuranceFacId == null || insuranceFacId == undefined){
+						document.getElementById("insuranceFacId").value = '';
+					}else{
+						document.getElementById("insuranceFacId").value = insuranceFacId;
+					}
+					var unitPicker = new AjaxPicker({
+						title: "保险选择", //选择器标题
+						tipText: ['保险公司', '保险类型'], // 选择器提示语（可以一个也可以多个，对应每一栏的选择提示语）
+						input: "company-edit", // 点击触发选择器的input的id
+						container: "container_company", // 选择器的容器的id
+						renderArr: [ // 渲染函数数组，第一个函数对应第一个列表，以此类推，该数组中的函数数量和列表的数量一致
+							function() {// 保险公司数据列表
+								var companyList = [];
+								mui.ajax(Constant.getConstant("HARMLESS_CONSTRANT_DATA"),{
+									data:{
+										"api_method":"c.findConstantData",
+										"a_id":harmless_user_id,
+										"type":2
+									},
+									dataType:'json',//服务器返回json格式数据
+									type:'post',//HTTP请求类型
+									timeout:10000,//超时时间设置为10秒；
+									success:function(data){
+										if(data.resultStatus == true){
+											var insurance = data.data.insurance;
+											if(insurance.length == 0){
+												companyList = [{
+													"id": "",
+													"value": "暂无数据"
+												}];
+											}else{
+												for(var i = 0; i < insurance.length; i++){
+													var item = {};
+													item.id = insurance[i].id;
+													item.value = insurance[i].companyName;
+													companyList.push(item);
+												}
+											}
+											unitPicker.render(companyList);
+										}else{
+											mui.toast("加载失败")
+										}
+									},
+									error:function(xhr,type,errorThrown){
+										mui.toast("查询失败");
+									}
+								});
+							},
+							function(){ // 保险类型
+								var companyType = [];
+								var index = unitPicker.result1.index;
+								mui.ajax(Constant.getConstant("HARMLESS_CONSTRANT_DATA"),{
+									data:{
+										"api_method":"c.findConstantData",
+										"a_id":harmless_user_id,
+										"type":2
+									},
+									dataType:'json',//服务器返回json格式数据
+									type:'post',//HTTP请求类型
+									timeout:10000,//超时时间设置为10秒；
+									success:function(data){
+										if(data.resultStatus == true){
+											var insurance = data.data.insurance;
+											var typeVos = insurance[index].typeVos;
+											if(typeVos.length == 0){
+												companyType = [{
+													"id": "",
+													"value": "暂无数据"
+												}];
+											}else{
+												for(var i = 0; i < typeVos.length; i++){
+													var item = {};
+													item.id = typeVos[i].id;
+													item.value = typeVos[i].insuranceType;
+													companyType.push(item);
+												}
+											}
+											unitPicker.render(companyType);
+										}else{
+											mui.toast("加载失败")
+										}
+									},
+									error:function(xhr,type,errorThrown){
+										mui.toast("查询失败");
+									}
+								});		
+							}
+						],
+						success: function(arr) {
+							// 用户选择完毕后调用，返回结果数组
+							mui("#select-company")[0].value = arr[0].value;
+							mui("#insuranceFacId")[0].value = arr[0].id;
+							mui("#select-type")[0].value = arr[1].value;
+							mui("#insuranceType")[0].value = arr[1].id;
+						}
+					});
+				});
+				
+				// 保存保险变更
+				document.getElementById("editSaveBtn").addEventListener('tap', function(){
+					var selectComName = document.getElementById("select-company").value;
+					var selectTypeName = document.getElementById("select-type").value;
+					var insuranceFacName = document.getElementById("insuranceFacName").value;
+					var insuranceTypeName = document.getElementById("insuranceTypeName").value;
+					var reportIds = document.getElementById("reportIds").value;
+					var insuranceFacId = document.getElementById("insuranceFacId").value;
+					var insuranceType = document.getElementById("insuranceType").value;
+					if(selectComName === insuranceFacName && selectTypeName === insuranceTypeName){
+						mui.toast("信息重复");
+						return;
+					}else{
+						
+						var jsonobj = {};
+						jsonobj["insuranceFacId"] = insuranceFacId;
+						jsonobj["insuranceFacName"] = selectComName;
+						jsonobj["insuranceType"] = insuranceType;
+						jsonobj["insuranceTypeName"] = selectTypeName;
+						plus.nativeUI.showWaiting("保存中……");
+						mui.ajax(Constant.getConstant("HARMLESS_ADD_INSURANCE_TO_REPORT"),{
+							data:{
+								"api_method":"c.updateReport",
+								"a_id":harmless_user_id,
+								"reportStr":JSON.stringify(jsonobj),
+								"reportIds" :reportIds
+							},
+							dataType:'json',//服务器返回json格式数据
+							type:'post',//HTTP请求类型
+							timeout:10000,//超时时间设置为10秒；
+							success:function(data){
+								plus.nativeUI.closeWaiting();
+								if(data.resultStatus == true){
+									mui.toast("变更成功！")
+									setTimeout('location.reload()', 300);
+								}else{
+									mui.toast("变更失败，请重试！")
+								}
+							},
+							error:function(xhr,type,errorThrown){
+								plus.nativeUI.closeWaiting();
+								mui.toast("查询失败");	
+							}
+						});
+					}
+					
+					
+				})
+				
+				// 案件受理
+				mui(".accept-list").on('tap', '.case-btn', function(){
+					mui('#casePopover').popover('toggle');
+					var reportIds = $(this).parents('.accept-panel').attr("report_id"); // 案件ID
+					document.getElementById("reportIds0").value = reportIds;
+					// 运输人员
+					var driverPicker = new AjaxPicker({
+						title: "运输人员", //选择器标题
+						tipText: ['请选择'], // 选择器提示语（可以一个也可以多个，对应每一栏的选择提示语）
+						input: "selectDriver", // 点击触发选择器的input的id
+						container: "driverContent", // 选择器的容器的id
+						renderArr: [ // 渲染函数数组，第一个函数对应第一个列表，以此类推，该数组中的函数数量和列表的数量一致
+							function() {
+								var driverList = [];
+								mui.ajax(Constant.getConstant("HARMLESS_GET_DRIVER"),{
+									data:{
+										"api_method":"c.getTransportorList",
+										"a_id":harmless_user_id
+									},
+									dataType:'json',//服务器返回json格式数据
+									type:'post',//HTTP请求类型
+									timeout:10000,//超时时间设置为10秒；
+									success:function(data){
+										if(data.resultStatus == true){
+											var dataDirver = data.data;
+											var item = {};
+											if(dataDirver.length == 0){
+												driverList = [{
+													"id": "",
+													"value": "暂无数据"
+												}];
+											}else{
+												for(i = 0; i < dataDirver.length; i++){
+													item.id = dataDirver[i].FACTORYID;
+													item.value = dataDirver[i].REALNAME;
+													item.index = dataDirver[i].ID;
+													driverList.push(item);
+												}
+											}
+											driverPicker.render(driverList);
+										}else{
+											mui.toast("加载失败")
+										}
+									},
+									error:function(xhr,type,errorThrown){
+										mui.toast("查询失败");
+									}
+								});
+							}
+						],
+						success: function(arr) {// 用户选择完毕后调用，返回结果数组
+							mui("#selectDriver")[0].value = arr[0].value;
+							mui("#transportId")[0].value = arr[0].id;
+							mui("#transportPersonId")[0].value = arr[0].other_id;
+							
+						}
+					});
+					
+					// 运输车辆
+					var carList = [];
+					var carPicker = new AjaxPicker({
+						title: "运输车辆", //选择器标题
+						tipText: ['请选择'], // 选择器提示语（可以一个也可以多个，对应每一栏的选择提示语）
+						input: "selectCarInfo", // 点击触发选择器的input的id
+						container: "carInfoContent", // 选择器的容器的id
+						renderArr: [ // 渲染函数数组，第一个函数对应第一个列表，以此类推，该数组中的函数数量和列表的数量一致
+							function() {
+								document.activeElement.blur(); // 关闭手机软键盘
+								var transportId = document.getElementById("transportId").value; //运输公司id
+								mui.ajax(Constant.getConstant("HARMLESS_GET_CAR_INFO_BY_DRIVER"),{
+									data:{
+										"api_method":"c.getTruckLists",
+										"a_id":harmless_user_id,
+										"transportId": transportId
+									},
+									dataType:'json',//服务器返回json格式数据
+									type:'post',//HTTP请求类型
+									timeout:10000,//超时时间设置为10秒；
+									success:function(data){
+										if(data.resultStatus == true){
+											var carData = data.data;
+											if(carData.length == 0){
+												carList = [{
+													"id": "",
+													"value": "暂无数据"
+												}];
+											}else{
+												for(i = 0; i < carData.length; i++){
+													var item = {};
+													item.id = carData[i].ID;
+													item.value = carData[i].PLATE;
+													carList.push(item);
+												}
+											}
+											carPicker.render(carList);
+											
+										}else{
+											mui.toast("加载失败")
+										}
+									},
+									error:function(xhr,type,errorThrown){
+										mui.toast("查询失败");
+									}
+								});
+								
+							}
+						],
+						success: function(arr) {// 用户选择完毕后调用，返回结果数组
+							mui("#selectCarInfo")[0].value = arr[0].value;
+							mui("#truckId")[0].value = arr[0].id;
+						}
+					});
+					
+					// 无害化处理厂信息
+					var factorysList = [];
+					var factorysPicker = new AjaxPicker({
+						title: "无害化处理厂", //选择器标题
+						tipText: ['请选择'], // 选择器提示语（可以一个也可以多个，对应每一栏的选择提示语）
+						input: "selectHFactorys", // 点击触发选择器的input的id
+						container: "hFactorysContent", // 选择器的容器的id
+						renderArr: [ // 渲染函数数组，第一个函数对应第一个列表，以此类推，该数组中的函数数量和列表的数量一致
+							function() {
+								document.activeElement.blur(); // 关闭手机软键盘
+								mui.ajax(Constant.getConstant("HARMLESS_FACTORYS"),{
+									data:{
+										"api_method":"c.showHarmless",
+										"a_id":harmless_user_id
+									},
+									dataType:'json',//服务器返回json格式数据
+									type:'post',//HTTP请求类型
+									timeout:10000,//超时时间设置为10秒；
+									success:function(data){
+										if(data.resultStatus == true){
+											var factorysData = data.data;
+											if(factorysData.length == 0){
+												factorysList = [{
+													"id": "",
+													"value": "暂无数据"
+												}];
+											}else{
+												for(i = 0; i < factorysData.length; i++){
+													var item = {};
+													item.id = factorysData[i].ID;
+													item.value = factorysData[i].COMPANYNAME;
+													factorysList.push(item);
+												}
+											}
+											factorysPicker.render(factorysList);
+										}else{
+											mui.toast("加载失败")
+										}
+									},
+									error:function(xhr,type,errorThrown){
+										mui.toast("查询失败");
+									}
+								});
+								
+							}
+						],
+						success: function(arr) {// 用户选择完毕后调用，返回结果数组
+							mui("#selectHFactorys")[0].value = arr[0].value;
+							mui("#harmlessId")[0].value = arr[0].id;
+						}
+					});
+					
+					
+				})
+				// 车辆信息
+				document.getElementById("selectCarInfo").addEventListener('tap', function(){
+					var transportId = document.getElementById("transportId").value;
+					if(transportId == '' || transportId == null || transportId == undefined){
+						mui.toast("请先选择运输人员！");
+						$('#carInfoContent').hide();
+						return;
+					}else{
+						$('#carInfoContent').show();
+					}
+					
+				})
+				
+				
+				// 保存案件受理
+				document.getElementById("acceptSaveBtn").addEventListener('tap', function(){
+					var transportPersonId = document.getElementById("transportPersonId").value;
+					var truckId = document.getElementById("truckId").value;
+					var harmlessId = document.getElementById("harmlessId").value;
+					var reportIds = document.getElementById("reportIds0").value;
+					
+					var selectDriver = document.getElementById("selectDriver").value;
+					var selectCarInfo = document.getElementById("selectCarInfo").value;
+					var selectHFactorys = document.getElementById("selectHFactorys").value;
+					if(selectDriver == '' || selectDriver.length == 0){
+						mui.toast("请选择运输人员！");
+						return;
+					}
+					if(selectCarInfo == '' || selectCarInfo.length == 0){
+						mui.toast("请选择运输车辆！");
+						return;
+					}
+					if(selectHFactorys == '' || selectHFactorys.length == 0){
+						mui.toast("请选择处理厂！");
+						return;
+					}
+					
+					plus.nativeUI.showWaiting("保存中……");
+					mui.ajax(Constant.getConstant("HARMLESS_ACCEPT_CASE"),{
+						data:{
+							"api_method":"c.acceptReports",
+							"a_id":harmless_user_id,
+							"doctorId": harmless_user_id, //官方兽医id
+							"transportPersonId" :transportPersonId, //运输人员id
+							"truckId" :truckId, //车辆id
+							"harmlessId" :harmlessId, //无害化处理厂id
+							"reportIds" :reportIds //案件id
+						},
+						dataType:'json',//服务器返回json格式数据
+						type:'post',//HTTP请求类型
+						timeout:10000,//超时时间设置为10秒；
+						success:function(data){
+							plus.nativeUI.closeWaiting();
+							if(data.resultStatus == true){
+								mui.toast("受理成功！")
+								setTimeout('location.reload()', 300);
+							}else{
+								mui.toast("受理失败，请重试！")
+							}
+						},
+						error:function(xhr,type,errorThrown){
+							plus.nativeUI.closeWaiting();
+							mui.toast("查询失败");	
+						}
+					});
+					
+					
+				})
+				
+				
+			});
+		</script>
+	</body>
+
+</html>

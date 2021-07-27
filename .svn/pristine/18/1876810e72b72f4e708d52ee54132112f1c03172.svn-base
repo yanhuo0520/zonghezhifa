@@ -1,0 +1,15 @@
+.mui-bar { font-size: 14px; line-height: 44px; background-color: #FFFFFF; padding-right: 0px; padding-left: 0px; overflow: hidden; }
+.mui-bar .mui-segmented-control { top: 9.5px; width: 40%; border: 1px solid #2492FC; }
+.mui-segmented-control .mui-control-item { line-height: 25px; font-size: 13px; }
+.mui-segmented-control .mui-control-item.mui-active { color: #fff; background-color: #2492FC; }
+
+.mui-bar .mui-icon { margin-left: 0px !important; margin-right: 0px !important; }
+.header-left { width: 30%; text-align: center; }
+.header-left label { display: inline-block !important; max-width: 72%; vertical-align: middle !important; }
+.header-left .mui-icon { font-size: 17px; padding-right: 2px !important; padding-left: 2px !important; vertical-align: middle !important; }
+
+.header-right { width: 30%; text-align: center; padding-right: 6px; overflow: hidden; }
+.header-right .mui-icon { width: 55px; text-align: center; top: 2px; font-size: 23px;  padding-right: 6px !important; padding-left: 6px !important; }
+
+header a { color: #202934 }
+header .mui-title { font-size: 15px; font-weight: 600;}

@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="../../../../css/mui.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/header.css">
+		<style>
+			.search-outLook { width: 90%; height: 33px; line-height: 33px; background-color: #F5F5F5; margin: 57px auto 0; border-radius: 4px; overflow: hidden; }
+			.search-outLook span { width: 12%; height: 33px; line-height: 33px; text-align: center; }
+			.search-outLook span:first-child { font-size: 19px; }
+			.search-outLook .city-input { width: 76%; height: 33px; line-height: 33px; font-size: 14px; color: #787B7E; margin: 0px !important; padding: 0px !important; border: none; background: none; }
+			.search-outLook .city-input:valid + .clear-input { display: inline !important; }
+			
+			.location-title { margin: 10px 5%; height: 20px; line-height: 20px; color: #787B7E; font-size: 13px; }
+			.location-content { width: 130px; height: 30px; line-height: 30px; margin: 0px 5%; border-radius: 4px; text-align: center; font-size: 14px; }
+		</style>
+	</head>
+
+	<body class="f-column">
+		<header id="header" class="mui-bar mui-bar-nav">
+			<h1 class="mui-title">选择城市</h1>
+			<a class="mui-icon mui-icon-arrowleft mui-pull-left" onclick="closeLocationSelect();"></a>
+		</header>
+		<div class="search-outLook f-row">
+			<span class="mui-icon mui-icon-search" onclick="searchCityFun();"></span>
+			<input id="cityName" type="text" class="city-input" required placeholder="输入城市名或拼音" />
+			<span class="mui-icon mui-icon-closeempty mui-hidden clear-input" onclick="clearInputContent_location('cityName');"></span>
+		</div>
+		<div class="location-title">定位城市</div>
+		<div class="location-content mui-theme-color mui-theme-border-color" id="locationNameInfo">定位中...</div>
+		<script type="text/javascript" src="../../../../js/mui.js"></script>
+		<script type="text/javascript" src="../../../../js/jquery-1.12.4.min.js"></script>
+		<script type="text/javascript" src="../../js/common.js"></script>
+		<script type="text/javascript">
+			mui.init({
+				swipeBack: true, //启用右滑关闭功能
+				subpages: [{
+					url: "locationList-content.html",
+					id: "locationList-content.html",
+					styles:{
+						top:'175px',//mui标题栏默认高度为45px；
+						bottom:'0px'//默认为0px，可不定义；
+					}
+				}]
+			});
+			
+			mui.plusReady(function() {
+				getCurrentPosition();
+				firstSsetIndexLoactionInfo("locationNameInfo");
+				
+				document.getElementById("cityName").addEventListener("keydown", function(e) {
+					if(13 == e.keyCode) { // 监听软键盘开始/确定按钮
+						searchCityFun();
+					}  
+				},false);
+			});
+			
+			function searchCityFun() {
+				fireSearchCityFun($("#cityName").val().trim());
+			}
+			
+			/**
+			 * 清空指定的输入框
+			 * @param targetId {String} 输入框的ID
+			 */
+			function clearInputContent_location(targetId) {
+				$("#" + targetId).val("");
+				fireSearchCityFun("");
+			}
+			
+			/**
+			 * 调用子页面locationList-content.html的searchCityFun方法
+			 * @param cityName {String} 城市名称
+			 */
+			function fireSearchCityFun(cityName) {
+				var locationListContentWebView = plus.webview.getWebviewById("locationList-content.html");
+				mui.fire(locationListContentWebView, "searchCityFun", { // 调用子页面locationList-content.html的searchCityFun方法
+					"cityName" : cityName								// 需要在子页面添加一个接收此调用方法的监听器
+				});
+			}
+		</script>
+	</body>
+
+</html>

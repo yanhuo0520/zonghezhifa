@@ -1,0 +1,225 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>案件列表</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="../../css/mui.min.css" />
+		<link rel="stylesheet" href="../../css/mui.picker.css" />
+		<link rel="stylesheet" href="../../css/mui.dtpicker.css" />
+		<link rel="stylesheet" href="../css/generic.css" />
+		<link rel="stylesheet" href="../css/quarantine-common.css" />
+		<style>			
+			.die-search-btn{
+				width:96%;
+				margin: 20px 2%;
+				color: #FFFFFF;
+				font-size: 0.28rem;
+				padding: 10px 0;
+				background:linear-gradient(90deg,rgba(73,134,242,1),rgba(68,174,247,1));
+				border-radius:5px;
+				border: none;
+			}
+			.mui-input-row select{ position: absolute; left: 18px ; padding: 10px 2px;}
+			.com-add-itp{color: #6A6882; margin: 0 0 0 5px;}
+			.com-add-itp span{ color: #D52B2B; margin-left: 5px;}
+			.insurance{ padding-left: 52px;}
+		</style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">报案</h1>
+		</header>
+		<div class="mui-content company-add">		
+			<div class="mui-input-group">
+				<div class="mui-input-row mui-select">
+					<label class="title-label-short">保险公司：</label>
+					<input type="text" id="select-company" class="mui-navigate-right" readonly="readonly" placeholder="请选择" />
+					<input type="text" id="reportIds" value="" style="display: none;" />
+					<input type="text" id="insuranceFacName" value="" style="display: none;" />
+					<input type="text" id="insuranceFacId" value="" style="display: none;" />
+				</div>
+				<div class="mui-input-row mui-select">
+					<label class="title-label-short">保险类型：</label>
+					<input type="text" id="select-type" class="mui-navigate-right" readonly="readonly" placeholder="请选择" />
+					<input type="text" id="insuranceType" value="" style="display: none;" />
+					<input type="text" id="insuranceTypeName" value="" style="display: none;" />
+				</div>
+				<div class="mui-input-row">
+					<label class="title-label-short">报案数量（头）：</label>
+					<input type="number" id="reports-num" class="mui-navigate-right" placeholder="请输入" />
+				</div>
+			</div>
+			
+			<a href="javascript:;" class="mui-btn die-search-btn" id="saveBtn">提交</a>
+			<p class="com-add-itp"><span>*</span><span>注意：</span>不同种类的畜禽要报两次案</p>
+			<p class="com-add-itp insurance">不同保险公司也需要报两次案件</p>
+			
+			
+		</div>
+		<div id="container_company"></div>
+		<script src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/mui.picker.min.js"></script>
+		<script type="text/javascript" src="../../js/mui.dtpicker.js"></script>
+		<script type="text/javascript" src="../../js/jquery-1.12.4.min.js"></script>
+		<script type="text/javascript" src="../../js/ajax-picker/ajax-picker.min.js"></script>
+		<script type="text/javascript" src="../js/content.js"></script>
+		<script type="text/javascript" src="../js/constant.js"></script>
+		<script type="text/javascript">
+			mui.init({});
+			
+			var currpage = 1;
+			var ebsort=null, rkdate=null;
+			var harmless_user_id = "";
+			
+			mui.plusReady(function() {
+			
+			initSettings(); 		// 初始化设置字体大小
+			harmless_user_id = plus.storage.getItem("harmless_user_id"); //用户的的id编号
+			// console.log(harmless_user_id);
+			var unitPicker = new AjaxPicker({
+				title: "保险选择", //选择器标题
+				tipText: ['保险公司', '保险类型'], // 选择器提示语（可以一个也可以多个，对应每一栏的选择提示语）
+				input: "select-company", // 点击触发选择器的input的id
+				container: "container_company", // 选择器的容器的id
+				renderArr: [ // 渲染函数数组，第一个函数对应第一个列表，以此类推，该数组中的函数数量和列表的数量一致
+					function() {// 保险公司数据列表
+						var companyList = [];
+						mui.ajax(Constant.getConstant("HARMLESS_CONSTRANT_DATA"),{
+							data:{
+								"api_method":"c.findConstantData",
+								"a_id":harmless_user_id,
+								"type":2
+							},
+							dataType:'json',//服务器返回json格式数据
+							type:'post',//HTTP请求类型
+							timeout:10000,//超时时间设置为10秒；
+							success:function(data){
+								if(data.resultStatus == true){
+									var insurance = data.data.insurance;
+									for(var i = 0; i < insurance.length; i++){
+										var item = {};
+										item.id = insurance[i].id;
+										item.value = insurance[i].companyName;
+										companyList.push(item);
+										if (companyList.length <= 0) {
+											companyList = [{
+												"id": "",
+												"value": "暂无数据"
+											}];
+										}
+										unitPicker.render(companyList);
+									}
+								}else{
+									mui.toast("加载失败")
+								}
+							},
+							error:function(xhr,type,errorThrown){
+								mui.toast("查询失败");
+							}
+						});
+					},
+					function(){ // 保险类型
+						var companyType = [];
+						var index = unitPicker.result1.index;
+						mui.ajax(Constant.getConstant("HARMLESS_CONSTRANT_DATA"),{
+							data:{
+								"api_method":"c.findConstantData",
+								"a_id":harmless_user_id,
+								"type":2
+							},
+							dataType:'json',//服务器返回json格式数据
+							type:'post',//HTTP请求类型
+							timeout:10000,//超时时间设置为10秒；
+							success:function(data){
+								if(data.resultStatus == true){
+									var insurance = data.data.insurance;
+									var typeVos = insurance[index].typeVos;
+									for(var i = 0; i < typeVos.length; i++){
+										var item = {};
+										item.id = typeVos[i].id;
+										item.value = typeVos[i].insuranceType;
+										companyType.push(item);
+										if (companyType.length <= 0) {
+											companyType = [{
+												"id": "",
+												"value": "暂无数据"
+											}];
+										}
+										unitPicker.render(companyType);
+									}
+								}else{
+									mui.toast("加载失败")
+								}
+							},
+							error:function(xhr,type,errorThrown){
+								mui.toast("查询失败");
+							}
+						});		
+					}
+				],
+				success: function(arr) {
+					// 用户选择完毕后调用，返回结果数组
+					mui("#select-company")[0].value = arr[0].value;
+					mui("#insuranceFacId")[0].value = arr[0].id;
+					mui("#select-type")[0].value = arr[1].value;
+					mui("#insuranceType")[0].value = arr[1].id;
+				}
+			});
+			 	
+			document.getElementById("saveBtn").addEventListener('tap', function(){
+				var insuranceFacId = document.getElementById("insuranceFacId").value;
+				var reportsnum = document.getElementById("reports-num").value;
+				var insuranceName = document.getElementById("select-company").value;
+				var insuranceTypeId = document.getElementById("insuranceType").value;
+				var insuranceTypeName = document.getElementById("select-type").value;
+				console.log(insuranceName);
+				if(insuranceFacId == '' || insuranceFacId == null || insuranceFacId == undefined){
+					mui.toast("请先选择保险公司！");
+					return;
+				}else{
+					if(reportsnum=='' || reportsnum==0 || reportsnum==null || reportsnum==undefined){
+						mui.toast("请先输入报案数量！");
+						return;
+					}else{
+						plus.nativeUI.showWaiting("执行中……");
+						mui.ajax(Constant.getConstant("HARMLESS_REPORT_CASE"),{
+						  data:{
+							  "a_id": harmless_user_id, //为用户的的id编号
+							  "api_method":'c.saveReportByApp', // 方法 
+							  "num":reportsnum,
+							  "insuranceId":insuranceFacId,
+							  "insuranceName":insuranceName,
+							  "insuranceTypeId":insuranceTypeId,
+							  "insuranceTypeName":insuranceTypeName
+						  },
+						  dataType:'json',//服务器返回json格式数据
+						  type:'post',//HTTP请求类型
+						  timeout:10000,//超时时间设置为10秒；
+						  success:function(data){
+							  plus.nativeUI.closeWaiting();
+							  // console.log(JSON.stringify(data));
+							  if(data.resultStatus == true){
+								  mui.toast("报案成功！");
+								  // 刷新页面
+								  setTimeout('location.reload()', 200);
+							  }else{
+								  mui.toast("报案失败，请重试");
+							  }
+						  },
+						  error:function(xhr,type,errorThrown){
+							  plus.nativeUI.closeWaiting();
+							  mui.toast("报案失败");
+						  }
+						});
+				   }
+				}
+				
+			})	
+				
+		    });
+		</script> 
+	</body>
+
+</html>

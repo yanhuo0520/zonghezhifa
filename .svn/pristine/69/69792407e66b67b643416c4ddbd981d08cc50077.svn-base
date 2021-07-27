@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>地址地选择</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.css" rel="stylesheet" />
+		<link href="ani-css/home.css" rel="stylesheet" />
+	</head>
+	<body class="bg-white">
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<a class="mui-icon mui-pull-right icon-text" id="finish">完成</a>
+			<h1 class="mui-title">地址地选择</h1>
+		</header>
+		<div class="mui-content city-content bg-white">
+			<ul class="row-title">
+				<li>省</li>
+				<li>市</li>
+				<li>县</li>
+			</ul>
+			<ul class="row-content one-cate" id="one-cate">
+				<li class="active">一级分类</li>
+				<li>一级分类</li>
+				<li>一级分类</li>
+				
+			</ul>
+			<ul class="row-content second-cate" id="second-cate">
+				<li>二级分类</li>
+				<li class="active">二级分类</li>
+				<li>二级分类</li>
+			</ul>
+			<ul class="row-content third-cate" id="third-cate">
+				<li>三级分类</li>
+				<li class="active">三级分类</li>
+				<li>三级分类</li>
+			</ul>
+			
+		</div>
+		<script src="../../js/mui.js"></script>
+		<script src="../../js/jquery.min.js"></script>
+		<script src="../js/content.js"></script>
+		<script type="text/javascript">
+			mui.plusReady(function () {
+				document.getElementById("finish").addEventListener('tap', function(){
+					var oneCate = $(".one-cate").find(".active").html();
+					var secondCate = $(".second-cate").find(".active").html();
+					var thirdCate = $(".third-cate").find(".active").html();
+					if(oneCate==''||oneCate==undefined){
+						mui.toast('请选择省')
+						return;
+					}
+					if(secondCate==''||secondCate==undefined){
+						mui.toast('请选择市')
+						return;
+					}
+					if(thirdCate==''||thirdCate==undefined){
+						mui.toast('请选择县')
+						return;
+					}
+					var addActive = oneCate+'-'+secondCate+'-'+thirdCate;
+					var pointView = plus.webview.currentWebview().opener();
+					mui.fire(pointView,'selFinish',{address: addActive});
+					mui.back();
+				})
+			    
+			})
+			var seHeight = document.body.clientHeight - 84 + 'px';
+			$(".row-content").css("height", seHeight);
+			mui(".row-content").on('tap','li',function(){
+				$(this).addClass("active").siblings().removeClass("active");
+			})
+			 
+			
+		</script>
+	</body>
+
+</html>

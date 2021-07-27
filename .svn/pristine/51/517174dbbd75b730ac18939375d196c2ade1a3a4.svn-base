@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>通讯录列表</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.css" rel="stylesheet" />
+		<link href="css/main.css" rel="stylesheet" />
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title" id="title">河南省畜牧局</h1>
+		</header>
+		<div class="mui-content mail-content">
+			<ul class="mui-table-view mail-list">
+				<li class="mui-table-view-cell"><a class="mui-navigate-right">常用电话</a></li>
+				<li class="mui-table-view-cell"><a class="mui-navigate-right">局领导</a></li>
+				<li class="mui-table-view-cell"><a class="mui-navigate-right">总师</a></li>
+				<li class="mui-table-view-cell"><a class="mui-navigate-right">机关党委</a></li>
+				<li class="mui-table-view-cell"><a class="mui-navigate-right">办公室</a></li>
+			</ul>
+			
+		</div>
+		<script src="../js/mui.js"></script>
+		<script src="../js/jquery.min.js"></script>
+		<script src="js/content.js"></script>
+		<script type="text/javascript">
+			mui.plusReady(function(){
+				var uuid = plus.storage.getItem("uuid"); //用户的的id编号
+				if(uuid == "" || uuid == null || uuid == "undefined"){
+					mui.openWindow({
+						id: 'login.html',
+						url: '../login.html'
+					})
+				}
+				
+				var x = plus.storage.getItem("x");
+				var y = plus.storage.getItem("y");
+				var name = plus.storage.getItem("name"); // 用户系统所分配的登录名称
+				var self = plus.webview.currentWebview();
+				var title = self.title; // 企业类型
+				document.getElementById("title").innerHTML = title;
+				
+				mui(".mail-list").on('tap', '.mui-table-view-cell', function(){
+					mui.openWindow({
+						url: 'mail-detail.html',
+						id: 'mail-detail.html',
+						extras: {
+							
+						},
+						waiting: {
+							autoShow: true,
+							title: '正在加载……'
+						}
+					})
+				});
+				
+			});
+		</script>
+	</body>
+
+</html>

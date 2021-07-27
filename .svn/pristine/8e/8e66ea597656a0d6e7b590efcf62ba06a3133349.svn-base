@@ -1,0 +1,448 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>无害化处理</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="../../css/mui.css"/>
+		<link rel="stylesheet" href="../css/generic.css"/>
+		<style>
+			html, body { height: 100% !important; overflow: hidden; }
+			.mui-content { height: 100% !important; }
+			.accept-list { height: 100%; padding-bottom: 60px; }
+			.in-list, .center-content { margin: 0 0 10px; background: #FFFFFF;}
+			.in-list .title { font-size: 0.245rem; padding: 10px 15px 5px; border-bottom: 1px solid #EEEEEE; }
+			.in-list ul { color: #6A6882; line-height: 0.46rem; padding: 0 15px 8px; }
+			.in-list li span { display: inline-block; width: 49.5%; }
+			.in-list li span a { color: #6A6882 !important; }
+			.phone-img { height: 0.35rem; vertical-align: middle; margin-left: 8px; }
+			.status-1 { color: #D52B2B; }
+			.status-2 { color: #02CC9C; }
+			.big-commit-btn-outlook { position: fixed; left: 0px; bottom: 0px; width: 100%; height: 55px; background-color: #FFFFFF; }
+			.big-commit-btn { margin: 8px 8%; width: 84%; height: 38px; padding-top: 9px; }
+			
+			.center-content ul { color: #6A6882; line-height: 0.32rem; padding: 5px; }
+			.center-content .mui-table-view:before { height: 0px !important; }
+			.center-content .mui-table-view-cell:after, .center-content .mui-table-view:after { height: 0px !important; }
+			.center-content .mui-navigate-right { padding: 5px 10px !important; }
+			.center-content .mui-navigate-right:after { color: #007AFF !important; }
+			.center-content .w-26 { width: 26%; display: inline-block; }
+			.center-content .w-36 { width: 36%; display: inline-block; }
+			.center-content .w-45 { width: 45%; }
+			.center-content .w-50 { width: 50%; }
+			.center-content .w-75 { width: 75%; }
+			.center-content .mui-navigate-right span { display: block; margin: 10px 0 0; }
+			.center-content .sign-area { height: 70px !important; padding: 15px;  }
+			.center-content .sign-area #printerName { height: 40px; line-height: 40px; font-size: 0.296rem; color: #D52B2B; }
+			.center-content .sign-area img { height: 50px; position: absolute; right: 20px; }
+			.center-content .sign-area button { height: 35px !important; position: absolute; right: 20px; margin-top: 5px; }
+
+			/* 签字 */
+			.check-time { padding-top: 10px; color: #333333; font-size: 0.24rem; }
+
+			/* 签字面板 */
+			.zIndex { z-index: -1 !important; }
+			.sing-panel{ position: fixed; bottom: 20%; left: 5%; width: 90%; z-index: 999; background: #FFFFFF; }
+			.sing-panel .panel-content, .sing-panel .panel-content canvas { height: 8rem !important; }
+			.sing-panel .btn { width: 33.333333%; float: left; text-align: center; color: #FFFFFF; font-size: 0.3rem; line-height: 0.65rem; }
+			.sing-panel .btn.sure-btn { background: #99CC66; }
+			.sing-panel .btn.clear-btn { background: #FF9999; }
+			.sing-panel .btn.cancel-btn { background: #FFCC99; }
+		</style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">收集详情</h1>
+		</header>
+		<div class="mui-content">
+			<div class="accept-list">
+				<div class="in-list">
+					<p class="title"></p>
+					<ul>
+						<li><span id="farmName"></span><span id="farmTelPhone"></span></li>
+						<li><span id="truckPlate"></span><span id="bkName"></span></li>
+						<li id="collectTime"></li>
+					</ul>
+				</div>
+				<div class="center-content">
+					<ul class="mui-table-view">
+						<li class="mui-table-view-cell mui-media">
+							<a class="mui-navigate-right f-column" target_id="collect-noEarTagNum.html">
+								<p class="mui-ellipsis w-50">无耳标</p>
+								<span class="mui-ellipsis" id="span_noEarTagNum"></span>
+							</a>
+						</li>
+					</ul>
+				</div>
+				<div class="center-content">
+					<ul class="mui-table-view">
+						<li class="mui-table-view-cell mui-media">
+							<a class="mui-navigate-right f-column" target_id="collect-noInsuranceEarTagNum.html">
+								<p class="mui-ellipsis w-50">有耳标（无保险）</p>
+								<span class="mui-ellipsis" id="span_noInsuranceEarTagNum"></span>
+							</a>
+						</li>
+					</ul>
+				</div>
+				<div class="center-content">
+					<ul class="mui-table-view">
+						<li class="mui-table-view-cell mui-media">
+							<a class="mui-navigate-right f-column" target_id="collect-earTagNum.html">
+								<p class="mui-ellipsis w-50">有耳标（有保险）</p>
+								<span class="mui-ellipsis" id="span_earTagNum"></span>
+							</a>
+						</li>
+					</ul>
+				</div>
+				<div class="center-content">
+					<div class="sign-area f-row">
+						<p class="mui-ellipsis w-75">运输人签字：</p>
+						<img class="mui-pull-right Sign" src="../../images/default-img.png" id="tspConfirmImg" />
+					</div>
+				</div>
+				<div class="center-content">
+					<div class="sign-area f-row">
+						<p class="mui-ellipsis w-75">监管人签字：</p>
+						<img class="mui-pull-right Sign" src="../../images/default-img.png" id="regulatorConfirmImg1" />
+					</div>
+				</div>
+				<div class="center-content mui-hide" id="pre-printer-choose">
+					<div class="sign-area f-row">
+						<p class="mui-ellipsis w-26">打印机名称：</p>
+						<p class="mui-ellipsis w-45" id="printerName"><!-- DP-230L-1684 --></p>
+						<button type="button" class="mui-btn mui-btn-primary mui-btn-outlined">选择打印机</button>
+					</div>
+				</div>
+			</div>
+			<div class="big-commit-btn-outlook" id="scene_collect_commit">
+				<div class="mui-btn mui-btn-primary big-commit-btn" onclick="harmlessCollectDetailCommit()" id="harmless_collect_detail_commit">提交信息</div>
+			</div>
+			<div class="big-commit-btn-outlook mui-hide" id="scene_collect_print">
+				<div class="mui-btn mui-btn-primary big-commit-btn" id="harmless_collect_detail_print">打印</div>
+			</div>
+		</div>
+		
+		<div class="mui-backdrop mui-active mui-hide"></div>
+		<div class="sing-panel zIndex">
+			<div class="panel-content">
+				<div id="signature"></div>
+			</div>
+			<div class="panel-btn">
+				<a href="javascript:;" class="btn click-hide sure-btn" id="sign_ok">确定</a>
+				<a href="javascript:;" class="btn clear-btn" id="sign_clear">清除</a>
+				<a href="javascript:;" class="btn click-hide cancel-btn" id="sign_cancel">取消</a>
+			</div>
+		</div>
+		
+		
+		<script type="text/javascript" src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/mui.zoom.js"></script>
+		<script type="text/javascript" src="../../js/mui.previewimage.js"></script>
+		<script type="text/javascript" src="../../js/jquery-1.12.4.min.js"></script>
+		<script type="text/javascript" src="../js/content.js"></script>
+		<script type="text/javascript" src="../js/constant.js"></script>
+		<script type="text/javascript" src="../ani-husbandry/ani-js/jSignature.js"></script>
+		<script type="text/javascript" src="js/harmless-data.js"></script>
+		<script type="text/javascript" src="../../js/date-format.js"></script>
+		<script type="text/javascript">
+			mui.init({});
+			
+			var harmless_user_id = "";
+			var harmlessUseRoleId = "";
+			var reportId = "";
+			var status = "";
+			var bkName = "";
+			var farmer = "";
+			var companyName = "";
+			var collectDateStr = "";
+			var hasDetailInfo = false; // 提交标识
+			var target_sign_img = "";
+			
+			mui.plusReady(function() {
+				initSettings(); 		// 初始化设置字体大小
+				
+				harmlessUseRoleId = plus.storage.getItem('harmless_user_roleId'); // 获取无害化用户角色id
+				harmless_user_id = plus.storage.getItem("harmless_user_id"); //用户的的id编号
+				var self = plus.webview.currentWebview();
+				reportId = self.reportId;
+				status = self.status;
+				bkName = self.bkName;
+				farmer = self.farmer;
+				companyName = self.companyName;
+				collectDateStr = self.collectDate == "" ? (new Date()).Format("yyyy-MM-dd HH:mm:ss") : self.collectDate;
+				
+				mui(".in-list .title")[0].innerHTML = "养殖企业：&nbsp;" + self.companyName;
+				mui(".in-list #farmName")[0].innerHTML = "养殖户名称：" + self.farmer;
+				mui(".in-list #farmTelPhone")[0].innerHTML = '<a href="tel:' + self.telephone + '">电&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;话：' + self.telephone + '<img class="phone-img" src="images/phone.png"></a>';
+				mui(".in-list #bkName")[0].innerHTML = "畜&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别：&nbsp;" + self.bkName;
+				mui(".in-list #truckPlate")[0].innerHTML = "运输车辆：&nbsp;" + self.truckPlate;
+				if(collectDateStr.length > 11) {
+					mui(".in-list #collectTime")[0].innerHTML = "收集时间：&nbsp;" + collectDateStr.substring(0, collectDateStr.length - 3);
+				}
+				
+				if(status === CollectStatus_SIX && harmlessUseRoleId == TOWN_SUPERVISE) {
+					initBtnArea();
+				} else {
+					/** ----------------- 待补充 蓝牙打印机功能 ----------------- */
+				}
+				initCollectDetails();
+				
+				// 监听其他页面调用setIndexLoactionInfo方法
+				window.addEventListener("initCollectDetails", function(event) {
+					initCollectDetails();
+				});
+				
+				mui(".mui-table-view-cell").on("tap", "a", function() {
+					var targetTab = this.getAttribute('target_id');
+					mui.openWindow({
+						url: targetTab,
+						id: targetTab,
+						extras: {
+							"reportId": reportId,
+							"status": status,
+							"bkName": bkName,
+							"farmer": farmer
+						},
+						waiting: {
+							autoShow: true, //自动显示等待框，默认为true
+							title: '正在加载...', //等待对话框上显示的提示内容
+						}
+					});
+				});
+				
+				/** ----------------- 初始化签字版 ----------------- */
+				$("#signature").jSignature()
+				$('.Sign').on('tap', function() {
+					if(status != CollectStatus_SIX && harmlessUseRoleId == TOWN_SUPERVISE) {
+						$("#signature").jSignature("reset");
+						target_sign_img = $(this).attr("id");
+						setTimeout(showCanvas, 100);
+					} else {
+						mui.previewImage();
+					}
+				});
+				
+				// 取消签字版
+				document.getElementById("sign_cancel").addEventListener('tap', function() {
+					$("#signature").jSignature("reset");
+					setTimeout(hideCanvas, 100);
+				});
+				
+				//清空签字版
+				document.getElementById("sign_clear").addEventListener('tap', function() {
+					$("#signature").jSignature("reset");
+				});
+				
+				// 确认签字版
+				document.getElementById("sign_ok").addEventListener('tap', function() {
+					$(".sign-body").removeClass("bOverhidden");
+					var length = $("#signature").jSignature('getData', 'native').length;
+					if(length < 1){
+						mui.toast('请签名');
+					}else{
+						$(".mui-content").css("height", "auto");
+						$(".mui-content").removeClass("bOverhidden");
+						var datapair = $("#signature").jSignature("getData", "image");
+						var src = "data:" + datapair[0] + "," + datapair[1];
+						console.log(src);
+						bitmapSavePic(src); // 保存签名并上传
+				
+						setTimeout(hideCanvas, 100);
+					}
+				});
+				
+			});
+			
+			function initBtnArea() {
+				$("#scene_collect_commit").hide();
+				if(harmlessUseRoleId == OFFICIAL_VETERINARIAN || harmlessUseRoleId == TOWN_SUPERVISE) {
+					/** ----------------- 待补充 蓝牙打印机功能 ----------------- */
+					$("#pre-printer-choose").show();
+				//	$("#scene_collect_print").show();
+				}
+			}
+				
+			function bitmapSavePic(src) {
+				var bitmap = new plus.nativeObj.Bitmap("image"); 	// path: ( String ) 可选 Bitmap对象自动加载图片的地址
+				bitmap.loadBase64Data(src, function(e) { 			// 加载base64为数据到bm实例对象
+					console.log("加载base64数据成功");
+				}, function(error) {
+					console.log("加载base64数据失败" + error.message);
+				} );
+				var random = Math.floor(Math.random() * 100000);
+				fName = reportId + '-' + target_sign_img + '-' + random + '.png';
+				console.log(fName);
+				var path = "_doc/" + fName;
+				var options = {"overwrite":true, "format":"png", "quality":50 };
+				bitmap.save(path, options, function(e) { // console.log("保存成功地址："+e.target);
+					plus.gallery.save(e.target, function(e) {
+						createUpSign(e.file, fName);
+						console.log("签名图片保存到本地相册 成功：" + JSON.stringify(e));
+						$("#" + target_sign_img).attr("src", e.file);
+					},
+					function(err){
+						console.log("保存到相册失败："+ err.message + JSON.stringify(err));
+					});
+					bitmap.recycle(); //保存到相册后，回收Bitmap图片内存(不可放外面，否则不兼容Android手机)
+				},
+				function(error) {
+					console.log("保存失败code：" + error.code + ";msg:" + error.message);
+					bitmap.recycle();
+				});
+			}
+			
+			// 上传图片
+			function createUpSign(imgPath, filename) {
+				var uploadImg_tips = target_sign_img == "tspConfirmImg" ? "正在上传运输人员签名图片" : "正在上传监管人员签名图片";
+				plus.nativeUI.showWaiting(uploadImg_tips);
+				var task = plus.uploader.createUpload(Constant.getConstant("HARMLESS_UPLOAD_IMG"), {method:"POST"}, function(t, status) { //上传完成
+					if(status == 200) {
+						plus.nativeUI.closeWaiting();
+						console.log(t.responseText);
+						var msg = eval('(' + t.responseText + ')');
+						if(msg.resultStatus == true) {
+							console.log("签名图片上传成功！");
+						} else {
+							mui.toast("签名图片上传失败！");
+							console.log("签名图片上传失败！");
+						}
+					} else {
+						mui.toast("签名图片上传失败！" + status);
+						console.log("签名图片上传失败：" + status);
+					}
+				});
+				task.addData("api_method", "c.uploadImg"); //添加其他参数
+				task.addData("a_id", harmless_user_id);
+				task.addData("reportId", reportId);
+				task.addData("tslId", "");
+				task.addData("type", target_sign_img == "tspConfirmImg" ? SIGNIMG_TYPE_TSP : SIGNIMG_TYPE_REGULATOR_1);
+				task.addData("fileFileName", filename);
+				// 页面中要上传的 图片路径
+				task.addFile(imgPath, { key: "file" } );
+				task.start();
+			}
+			
+
+			function initCollectDetails() {
+				var result_noEarTagNum_weight = 0;
+				var result_noEarTagNum_num = 0;
+				var result_noInsuranceEarTagNum_weight = 0;
+				var result_noInsuranceEarTagNum_num = 0;
+				var result_earTagNum_weight = 0;
+				var result_earTagNum_num = 0;
+				
+				plus.nativeUI.showWaiting("正在加载……");
+				mui.ajax(Constant.getConstant("HARMLESS_REPORT_DETAILS"), {
+					data:{
+						"api_method": "c.findReportDetails",
+						"a_id": harmless_user_id,
+						"reportId": reportId
+					},
+					dataType: 'json',	//服务器返回json格式数据
+					type: 'post',		//HTTP请求类型
+					timeout: 10000,		//超时时间设置为10秒；
+					success: function(data) {
+						plus.nativeUI.closeWaiting();
+					//	console.log(JSON.stringify(data));
+						if(data.resultStatus) {
+							mui(".in-list .title")[0].innerHTML = "养殖企业：&nbsp;" + data.data.reportVo.address + " " + data.data.reportVo.reportUnit;
+							mui(".in-list #farmTelPhone")[0].innerHTML = '<a href="tel:' + data.data.reportVo.telephone + '">电&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;话：' + data.data.reportVo.telephone + '<img class="phone-img" src="images/phone.png"></a>';
+							mui(".in-list #bkName")[0].innerHTML = "畜&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别：&nbsp;" + data.data.reportVo.bkName;
+							if(collectDateStr.length < 11) {
+								collectDateStr = data.data.reportVo.collectDate;
+								mui(".in-list #collectTime")[0].innerHTML = "收集时间：&nbsp;" + collectDateStr.substring(0, collectDateStr.length - 3);
+							}
+							
+							var result_array = data.data.detailVos;
+							if(result_array.length > 0) {
+								hasDetailInfo = true; // 判断该收集详情是否有子类, 若有则置提交标识为true并遍历子类求和
+								for(var i = 0; i < result_array.length; i++) {
+									if(result_array[i].earTagNum == "") {
+										result_noEarTagNum_weight = numAdd(result_noEarTagNum_weight, result_array[i].weight);
+										result_noEarTagNum_num = numAdd(result_noEarTagNum_num, result_array[i].num);
+									} else {
+										if(result_array[i].bkid == "11003") {
+											result_noInsuranceEarTagNum_weight = numAdd(result_noInsuranceEarTagNum_weight, result_array[i].weight);
+											result_noInsuranceEarTagNum_num++;
+										} else {
+											result_earTagNum_weight = numAdd(result_earTagNum_weight, result_array[i].weight);
+											result_earTagNum_num++;
+										}
+									}
+								}
+							}
+							mui("#span_noEarTagNum")[0].innerHTML = '<label class="w-36">总重量：' + result_noEarTagNum_weight + ' KG</label><label class="w-36">总头数：' + result_noEarTagNum_num + ' 头</label>';
+							mui("#span_noInsuranceEarTagNum")[0].innerHTML = '<label class="w-36">总重量：' + result_noInsuranceEarTagNum_weight + ' KG</label><label class="w-36">总头数：' + result_noInsuranceEarTagNum_num + ' 头</label>';
+							mui("#span_earTagNum")[0].innerHTML = '<label class="w-36">总重量：' + result_earTagNum_weight + ' KG</label><label class="w-36">总头数：' + result_earTagNum_num + ' 头</label>';
+							if(data.data.reportVo.tspConfirmImg.indexOf(".png") != -1) {
+								$("#tspConfirmImg").attr("src", data.data.reportVo.tspConfirmImg);
+							}
+							if(data.data.reportVo.regulatorConfirmImg1.indexOf(".png") != -1) {
+								$("#regulatorConfirmImg1").attr("src", data.data.reportVo.regulatorConfirmImg1);
+							}
+						} else {
+							mui.toast("收集详情信息获取失败，请重试");
+						}
+					},
+					error: function(xhr,type,errorThrown) {
+						plus.nativeUI.closeWaiting();
+						mui.toast("收集详情信息获取失败");	
+					}
+				});
+			}
+			
+			function harmlessCollectDetailCommit() {
+				if(hasDetailInfo) {
+					plus.nativeUI.showWaiting("正在提交数据……");
+					mui.ajax(Constant.getConstant("HARMLESS_ADD_REPORT"), {
+						data:{
+							"api_method": "c.saveReportDetails",
+							"a_id": harmless_user_id,
+							"reportDetailsStr": '{"reportDetailVos":[],"farmerConfirmImg":"","tspConfirmImg":"","id":"' + reportId + '","regulatorConfirmImg2":"","regulatorConfirmImg1":""}'
+						},
+						dataType: 'json',//服务器返回json格式数据
+						type: 'post',//HTTP请求类型
+						timeout: 10000,//超时时间设置为10秒；
+						success: function(data) {
+							console.log(JSON.stringify(data));
+							plus.nativeUI.closeWaiting();
+							if(data.resultStatus) {
+								if(data.resultStatus == true) {
+									status = CollectStatus_SIX;
+									initBtnArea();
+									
+									var targetSearchWebView = plus.webview.getWebviewById("scene-collect.html");
+									mui.fire(targetSearchWebView, "comList", {});
+									
+									mui.toast("收集详情信息已提交！");
+								} else {
+									mui.toast("收集详情信息提交失败，请重试");
+								}
+							} else {
+								mui.toast("收集详情信息提交失败，请重试");
+							}
+						},
+						error:function(xhr,type,errorThrown){
+							plus.nativeUI.closeWaiting();
+							mui.toast("收集详情信息提交失败");	
+						}
+					});
+				} else {
+					mui.toast("还没有上传动物详情信息");
+				}
+			}
+			
+			function showCanvas(){
+				$(".mui-backdrop").show();
+				$(".btn").show();
+				$('.sing-panel').removeClass('zIndex');
+			}
+			function hideCanvas(){
+				$(".mui-backdrop").hide();
+				$(".btn").hide();
+				$('.sing-panel').addClass('zIndex');
+			}
+		</script>
+	</body>
+</html>

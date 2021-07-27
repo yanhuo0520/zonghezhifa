@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>市-入库列表</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.css" rel="stylesheet" />
+		<link href="../../css/mui.picker.css" rel="stylesheet" />
+		<link href="../../css/mui.dtpicker.css" rel="stylesheet" />
+		<link href="er-css/home.css" rel="stylesheet" />
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">入库列表</h1>
+		</header>
+		<div class="mui-content">
+			<div class="mui-row row-search">
+				<div class="mui-col-sm-5 mui-col-xs-5 search-input">
+					<input id="ear-scale" type="text" class="mui-input-clear" placeholder="请输入耳标种类">
+				</div>
+				<div class="mui-col-sm-5 mui-col-xs-5 search-input">
+					<input id="select-time" type="text" class="mui-input-clear" placeholder="请选择日期" readonly="readonly">
+				</div>
+				<a href="javascript:;" class="mui-btn search-btn mui-col-sm-2 mui-col-xs-2" id="searchBtn">搜索</a>
+			</div>
+			<div class="in-list-content">
+				<div class="in-list">
+					<p class="title">耳标种类：<span>猪耳标</span></p>
+					<ul>
+						<li>入库时间:<span>2018-05-26</span></li>
+						<li>开始号段:<span>1234567890123456</span></li>
+						<li>结束号段:<span>1234567890123656</span></li>
+						<li>数&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;量:<span>200</span></li>
+					</ul>
+				</div>
+				<div class="in-list">
+					<p class="title">耳标种类：<span>猪耳标</span></p>
+					<ul>
+						<li>入库时间:<span>2018-05-26</span></li>
+						<li>开始号段:<span>1234567890123456</span></li>
+						<li>结束号段:<span>1234567890123656</span></li>
+						<li>数&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;量:<span>200</span></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		
+		
+		
+		
+		
+		<script src="../../js/mui.js"></script>
+		<script src="../../js/mui.picker.js"></script>
+		<script src="../../js/mui.dtpicker.js"></script>
+		<script src="../../js/jquery.min.js"></script>
+		<script src="../js/content.js"></script>
+		<script type="text/javascript">
+			
+			
+			
+			
+			
+			// 选择日期	
+			document.getElementById("select-time").addEventListener('tap', function(){
+			    var dtpicker = new mui.DtPicker({
+			        type: "date", //设置日历初始视图模式    //真正的月份比写的多一个月。  type的类型你还是可以选择date datetime month time hour 
+			        labels: ['年', '月', '日'] //设置默认标签区域提示语 
+			    });
+			    dtpicker.show(function(items) {
+					document.getElementById("select-time").value = items.value;
+			        console.log(items.value);
+			    });
+			})
+		</script>
+	</body>
+
+</html>

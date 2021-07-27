@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.css" rel="stylesheet" />
+	</head>
+	<body>
+		<div class="upload-btn" id="upload-btn">
+			<img src="ani-husbandry/ani-image/uploader-img.png" class="max-width">
+		</div>
+		<script src="../js/mui.js"></script>
+		<script src="../js/jquery.min.js"></script>
+	<script>
+		// 调取图片控件
+				document.getElementById('upload-btn').addEventListener('tap', function() {
+					if(mui.os.plus) {
+						var buttonTit = [{title: "拍照"}, {title: "从手机相册选择"}];
+						plus.nativeUI.actionSheet({
+							cancel: "取消",
+							buttons: buttonTit
+						}, function(b) { /*actionSheet 按钮点击事件*/
+							switch(b.index) {
+								case 0:break;
+								case 1:getImage();break; /*拍照*/
+								case 2:galleryImg();break; /*打开相册*/
+								default:break;
+							}
+						})
+					}
+				}, false);
+		// 拍照获取图片  
+		function getImage() {
+			var c = plus.camera.getCamera();
+			c.captureImage(function(e) {
+				plus.io.resolveLocalFileSystemURL(e, function(entry) {
+					var imgPath = entry.toLocalURL(); //图片本地路径
+					var name = entry.name; // 图片名称
+					console.log(imgPath);
+					console.log(name);
+				}, function(e) {
+					console.log("读取拍照文件错误：" + e.message);
+				});
+			})
+		}
+
+		// 从相册中选择图片   
+		function galleryImg() {
+			plus.gallery.pick(function(imgPath) {
+				plus.io.resolveLocalFileSystemURL(imgPath, function(entry){
+					var name = entry.name;
+					console.log(imgPath);
+					console.log(name);
+				},function(e){
+					plus.nativeUI.toast("读取拍照文件错误：" + e.message);
+				})
+			}, function(e) {
+				console.log("取消选择图片");
+			}, {
+				onmaxed: function() {
+					plus.nativeUI.alert('一次只能选择1张图片');
+				}
+			});
+		}
+        var access_token = "24.e71dad8fba3d53e2daa33592687b9188.2592000.1555582034.282335-15796956"; //百度access_token
+        // 监听图片选择事件
+		function createUp(imgPath) {
+			var image = new Image();
+			image.src = imgPath;
+			image.onload = function(){
+			    var base64 = getBase64Image(image);
+				mui.ajax('https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic',{
+					data:{
+						access_token: access_token,
+						detect_direction:true, //是否检测图像朝向
+						unified_valid_period:true,
+						url: base64
+					},
+					dataType:'json',//服务器返回json格式数据
+					header: {
+					    "Content-Type": "application/x-www-form-urlencoded"
+					},
+					type:'post',//HTTP请求类型
+					async: true,
+					timeout:10000,//超时时间设置为10秒；
+					success:function(data){
+						console.log("解析成功");
+						jsonobj = JSON.stringify(data); 
+						console.log(jsonobj);
+					},
+					error:function(xhr,type,errorThrown){
+						console.log("请求解析失败");
+					}
+				});
+			}
+		}
+			function getBase64Image(img) {
+					var canvas = document.createElement("canvas");
+					canvas.width = img.width;
+					canvas.height = img.height;
+					var ctx = canvas.getContext("2d");
+					ctx.drawImage(img, 0, 0, img.width, img.height);
+					var ext = img.src.substring(img.src.lastIndexOf(".")+1).toLowerCase();
+					var dataURL = canvas.toDataURL("image/"+ext);
+					return dataURL;
+			}
+
+    </script>
+	</body>
+
+</html>
+
+

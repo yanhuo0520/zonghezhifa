@@ -1,0 +1,462 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>养殖企业日志-查看</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.css" rel="stylesheet"/>
+		<link href="ani-css/image.viewer.css" rel="stylesheet" />
+		<link href="ani-css/home.css" rel="stylesheet" />
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">监督日志详情</h1>
+		</header>
+		<div class="mui-content ">
+			<div class="log-list">
+				<div class="log-list-ul">
+					<div class="log-list-li"><p class="title">企业名称：</p>
+						<p class="desc" id="qymc">1 </p></div>
+					<div class="log-list-li"><p class="title">企业地址：</p>
+						<p class="desc" id="scdz">2 </p></div>
+				</div>
+				<div class="log-list-ul" id="dwfyhgz">
+					<div class="log-list-li"><p class="title">检查内容：</p><p class="desc">《动物防疫条件合格证》 </p></div>
+					<div class="log-list-li"><p class="title">检查方式：</p><p class="desc">查看原件、条件是否符合  </p></div>
+					<div class="log-list-li">
+						<p class="title">检查结果：</p>
+						<div class="desc">
+							<div class="mui-input-row mui-radio mui-left">
+								<label>有</label><input name="radio1" value="有" checked="checked" type="radio" disabled>
+							</div>
+							<div class="mui-input-row mui-radio mui-left">
+								<label>无</label><input name="radio1" value="无" type="radio" disabled>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="log-list-ul" id="yzdajq">
+					<div class="log-list-li"><p class="title">检查内容：</p><p class="desc">防疫制度健全，养殖档案健全完整(饲料和兽药采购使用记录、免疫记录、消毒记录、病死动物无害化处理记录等) </p></div>
+					<div class="log-list-li"><p class="title">检查方式：</p><p class="desc">查看相关适度、档案 </p></div>
+					<div class="log-list-li">
+						<p class="title">检查结果：</p>
+						<div class="desc">
+							<div class="mui-input-row mui-radio mui-left">
+								<label>是</label><input name="radio2" value="是" checked="checked" type="radio" disabled>
+							</div>
+							<div class="mui-input-row mui-radio mui-left">
+								<label>否</label><input name="radio2" value="否" type="radio" disabled>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="log-list-ul" id="qzmy">
+					<div class="log-list-li"><p class="title">检查内容：</p><p class="desc">按规定实施强制免疫  </p></div>
+					<div class="log-list-li"><p class="title">检查方式：</p><p class="desc">查看免疫档案 </p></div>
+					<div class="log-list-li">
+						<p class="title">检查结果：</p>
+						<div class="desc">
+							<div class="mui-input-row mui-radio mui-left">
+								<label>是</label><input name="radio3" value="是" checked="checked" type="radio" disabled>
+							</div>
+							<div class="mui-input-row mui-radio mui-left">
+								<label>否</label><input name="radio3" value="否" type="radio" disabled>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="log-list-ul" id="dwybjcbg">
+					<div class="log-list-li"><p class="title">检查内容：</p><p class="desc">当年动物疫病预防控制机构出具的监测报告 </p></div>
+					<div class="log-list-li"><p class="title">检查方式：</p><p class="desc">查看报告文件  </p></div>
+					<div class="log-list-li">
+						<p class="title">检查结果：</p>
+						<div class="desc">
+							<div class="mui-input-row mui-radio mui-left">
+								<label>是</label><input name="radio4" value="是" checked="checked" type="radio" disabled>
+							</div>
+							<div class="mui-input-row mui-radio mui-left">
+								<label>否</label><input name="radio4" value="否" type="radio" disabled>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="log-list-ul" id="dwsbjy">
+					<div class="log-list-li"><p class="title">检查内容：</p><p class="desc">出售动物按要求进行申报检疫 </p></div>
+					<div class="log-list-li"><p class="title">检查方式：</p><p class="desc">查看检疫申报存单   </p></div>
+					<div class="log-list-li">
+						<p class="title">检查结果：</p>
+						<div class="desc">
+							<div class="mui-input-row mui-radio mui-left">
+								<label>是</label><input name="radio5" value="是" checked="checked" type="radio" disabled>
+							</div>
+							<div class="mui-input-row mui-radio mui-left">
+								<label>否</label><input name="radio5" value="否" type="radio" disabled>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="log-list-ul" id="zdbwjsbs">
+					<div class="log-list-li"><p class="title">检查内容：</p><p class="desc">应当加施标示的畜禽、在指定部位加施标示 </p></div>
+					<div class="log-list-li"><p class="title">检查方式：</p><p class="desc">现场查看畜禽标示佩戴情况 </p></div>
+					<div class="log-list-li">
+						<p class="title">检查结果：</p>
+						<div class="desc">
+							<div class="mui-input-row mui-radio mui-left">
+								<label>是</label><input name="radio6" value="是" checked="checked" type="radio" disabled>
+							</div>
+							<div class="mui-input-row mui-radio mui-left">
+								<label>否</label><input name="radio6" value="否" type="radio" disabled>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="log-list-ul" id="whhclss">
+					<div class="log-list-li"><p class="title">检查内容：</p><p class="desc">有无害化处理设施并正常运转  </p></div>
+					<div class="log-list-li"><p class="title">检查方式：</p><p class="desc">现场查看相关设施</p></div>
+					<div class="log-list-li">
+						<p class="title">检查结果：</p>
+						<div class="desc">
+							<div class="mui-input-row mui-radio mui-left">
+								<label>是</label><input name="radio7" value="是" checked="checked" type="radio" disabled>
+							</div>
+							<div class="mui-input-row mui-radio mui-left">
+								<label>否</label><input name="radio7" value="否" type="radio" disabled>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="log-list-ul" id="bxdwwhhcl">
+					<div class="log-list-li"><p class="title">检查内容：</p><p class="desc">病死动物进行无害化处理 </p></div>
+					<div class="log-list-li"><p class="title">检查方式：</p><p class="desc">查看处理记录 </p></div>
+					<div class="log-list-li">
+						<p class="title">检查结果：</p>
+						<div class="desc">
+							<div class="mui-input-row mui-radio mui-left">
+								<label>是</label><input name="radio8" value="是" checked="checked" type="radio" disabled>
+							</div>
+							<div class="mui-input-row mui-radio mui-left">
+								<label>否</label><input name="radio8" value="否" type="radio" disabled>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="log-list-ul" id="ksyjdw">
+					<div class="log-list-li"><p class="title">检查内容：</p><p class="desc">引进动物的有《审批表》，到达24小时报检  </p></div>
+					<div class="log-list-li"><p class="title">检查方式：</p><p class="desc">查看相关审批材料  </p></div>
+					<div class="log-list-li">
+						<p class="title">检查结果：</p>
+						<div class="desc">
+							<div class="mui-input-row mui-radio mui-left">
+								<label>是</label><input name="radio9" value="是" checked="checked" type="radio" disabled>
+							</div>
+							<div class="mui-input-row mui-radio mui-left">
+								<label>否</label><input name="radio9" value="否" type="radio" disabled>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="log-list-ul" id="xd">
+					<div class="log-list-li"><p class="title">检查内容：</p><p class="desc">按要求做好消毒  </p></div>
+					<div class="log-list-li"><p class="title">检查方式：</p><p class="desc">查看消毒记录   </p></div>
+					<div class="log-list-li">
+						<p class="title">检查结果：</p>
+						<div class="desc">
+							<div class="mui-input-row mui-radio mui-left">
+								<label>是</label><input name="radio10" value="是" checked="checked" type="radio" disabled>
+							</div>
+							<div class="mui-input-row mui-radio mui-left">
+								<label>否</label><input name="radio10" value="否" type="radio" disabled>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="log-list-ul" id="sljybg">
+					<div class="log-list-li"><p class="title">检查内容：</p><p class="desc">饲料、饲料原料有无证号、标签、质量检验报告   </p></div>
+					<div class="log-list-li"><p class="title">检查方式：</p><p class="desc">查看饲料仓库    </p></div>
+					<div class="log-list-li">
+						<p class="title">检查结果：</p>
+						<div class="desc">
+							<div class="mui-input-row mui-radio mui-left">
+								<label>有</label><input name="radio11" value="有" checked="checked" type="radio" disabled>
+							</div>
+							<div class="mui-input-row mui-radio mui-left">
+								<label>无</label><input name="radio11" value="无" type="radio" disabled>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="log-list-ul" id="cgjlgf">
+					<div class="log-list-li"><p class="title">检查内容：</p><p class="desc">采购记录、自配料生产记录、饲料使用记录等，各项记录应当规范 </p></div>
+					<div class="log-list-li"><p class="title">检查方式：</p><p class="desc">查看相关记录 </p></div>
+					<div class="log-list-li">
+						<p class="title">检查结果：</p>
+						<div class="desc">
+							<div class="mui-input-row mui-radio mui-left">
+								<label>有</label><input name="radio12" value="有" checked="checked" type="radio" disabled>
+							</div>
+							<div class="mui-input-row mui-radio mui-left">
+								<label>无</label><input name="radio12" value="无" type="radio" disabled>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="log-list-ul" id="whysjwz">
+					<div class="log-list-li"><p class="title">检查内容：</p><p class="desc">在饲料或者动物饮水中添加违禁物质的行为 </p></div>
+					<div class="log-list-li"><p class="title">检查方式：</p><p class="desc">查看饲料使用记录等相关记录</p></div>
+					<div class="log-list-li">
+						<p class="title">检查结果：</p>
+						<div class="desc">
+							<div class="mui-input-row mui-radio mui-left">
+								<label>有</label><input name="radio13" value="有" checked="checked" type="radio" disabled>
+							</div>
+							<div class="mui-input-row mui-radio mui-left">
+								<label>无</label><input name="radio13" value="无" type="radio" disabled>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="log-list-ul" id="cszpl">
+					<div class="log-list-li"><p class="title">检查内容：</p><p class="desc">动物饲养人员是否患有人畜共患的传染病  </p></div>
+					<div class="log-list-li"><p class="title">检查方式：</p><p class="desc">现场检查      </p></div>
+					<div class="log-list-li">
+						<p class="title">检查结果：</p>
+						<div class="desc">
+							<div class="mui-input-row mui-radio mui-left">
+								<label>是</label><input name="radio14" value="是" checked="checked" type="radio" disabled>
+							</div>
+							<div class="mui-input-row mui-radio mui-left">
+								<label>否</label><input name="radio14" value="否" type="radio" disabled>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="log-list-ul" id="sypzwh">
+					<div class="log-list-li"><p class="title">检查内容：</p><p class="desc">所使用的兽药有产品批准文号 </p></div>
+					<div class="log-list-li"><p class="title">检查方式：</p><p class="desc">查看兽药批号并在中国兽药信息网上核对 </p></div>
+					<div class="log-list-li">
+						<p class="title">检查结果：</p>
+						<div class="desc">
+							<div class="mui-input-row mui-radio mui-left">
+								<label>有</label><input name="radio15" value="有" checked="checked" type="radio" disabled>
+							</div>
+							<div class="mui-input-row mui-radio mui-left">
+								<label>无</label><input name="radio15" value="无" type="radio" disabled>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="log-list-ul" id="syjlgf">
+					<div class="log-list-li"><p class="title">检查内容：</p><p class="desc">兽药使用记录应当规范  </p></div>
+					<div class="log-list-li"><p class="title">检查方式：</p><p class="desc">查看记录 </p></div>
+					<div class="log-list-li">
+						<p class="title">检查结果：</p>
+						<div class="desc">
+							<div class="mui-input-row mui-radio mui-left">
+								<label>是</label><input name="radio16" value="是" checked="checked" type="radio" disabled>
+							</div>
+							<div class="mui-input-row mui-radio mui-left">
+								<label>否</label><input name="radio16" value="否" type="radio" disabled>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="log-list-ul" id="sywjyw">
+					<div class="log-list-li"><p class="title">检查内容：</p><p class="desc">违法使用违禁药物、原料药物、人用药、滥用抗菌药物  </p></div>
+					<div class="log-list-li"><p class="title">检查方式：</p><p class="desc">查看用药记录及现场查看 </p></div>
+					<div class="log-list-li">
+						<p class="title">检查结果：</p>
+						<div class="desc">
+							<div class="mui-input-row mui-radio mui-left">
+								<label>是</label><input name="radio17" value="是" checked="checked" type="radio" disabled>
+							</div>
+							<div class="mui-input-row mui-radio mui-left">
+								<label>否</label><input name="radio17" value="否" type="radio" disabled>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="log-img">
+					<p class="title">检查不合格项图片上传：</p>
+					<ul id="log-img">
+						
+					</ul>
+				</div>
+				<div class="log-list-ul opinion">
+					<p>现场查看发现的其他问题及对所发现的问题提出整改意见(包括上述17条中的问题) </p>
+					<textarea placeholder="请输入" readonly="readonly" id="zgyj"></textarea>
+				</div>
+				<div class="log-list-ul sign-ul">
+					<div class="Sign">
+						<p class="title">监管对象法定代表人或负责人签字：</p>
+						<div class="Sign-cont">
+							<img src="" class="sign_show" id="jgrSignImg" />
+						</div>
+					</div>
+					<div class="Sign">
+						<p class="title">执法监督人员签字：</p>
+						<div class="Sign-cont">
+							<img src="" class="sign_show" id="qyfzrSignImg" />
+						</div>
+					</div>
+					<div class="check-time">检查时间：<span id="jcsj">2018-02-08</span></div>
+				</div>
+				
+			</div>
+		
+			
+		</div>
+		<script src="../../js/mui.js"></script>
+		<script src="../../js/jquery.min.js"></script>
+		<script src="../js/content.js"></script>
+		<script src="ani-js/mui.zoom.js"></script>
+		<script src="ani-js/mui.previewimage.js"></script>
+		<script src="ani-js/constant.js"></script>
+		<script type="text/javascript">
+			mui.previewImage();
+			mui.plusReady(function(){
+				var uuid = plus.storage.getItem("uuid");
+				// if(uuid == "" || uuid == null || uuid == "undefined"){
+				// 	mui.openWindow({
+				// 		id: 'login.html',
+				// 		url: '../login.html'
+				// 	})
+				// }
+				var self = plus.webview.currentWebview();
+				var qylx = self.qylx; // 企业类型
+				var l_id = self.l_id; // 日志编号
+				var compName = self.compName; // 企业名称
+				var address = self.address; // 企业地址
+				document.getElementById("qymc").innerHTML = compName;
+				document.getElementById("scdz").innerHTML = address;
+				logView(qylx, l_id);
+			});
+			
+			// 详情
+			function logView(qylx, l_id){
+				plus.nativeUI.showWaiting("加载中……");
+				mui.ajax(Constant.getConstant("COMPANY_LOG_DETAIL"),{
+					data:{
+						"qylx": qylx, //为企业类型
+						"l_id": l_id //监督日志的id编号
+					},
+					dataType:'json',//服务器返回json格式数据
+					type:'post',//HTTP请求类型
+					timeout:10000,//超时时间设置为10秒；
+					success:function(data){
+						plus.nativeUI.closeWaiting();
+						if(data.result == "success"){
+							var path = data.path;
+							// console.log("监督日志上传照片的存储路径 " + path);
+							var jsonobj = data.jsonobj;
+							if(jsonobj.dwfyhgz == "有"){
+								$("input:radio[name='radio1'][value='有']").attr("checked",true);
+							}else{$("input:radio[name='radio1'][value='无']").attr("checked",true);}
+							if(jsonobj.yzdajq == "是"){
+								$("input:radio[name='radio2'][value='是']").attr("checked",true);
+							}else{$("input:radio[name='radio2'][value='否']").attr("checked",true);}
+							if(jsonobj.qzmy == "是"){
+								$("input:radio[name='radio3'][value='是']").attr("checked",true);
+							}else{$("input:radio[name='radio3'][value='否']").attr("checked",true);}
+							if(jsonobj.dwybjcbg == "是"){
+								$("input:radio[name='radio4'][value='是']").attr("checked",true);
+							}else{$("input:radio[name='radio4'][value='否']").attr("checked",true);}
+							if(jsonobj.dwsbjy == "是"){
+								$("input:radio[name='radio5'][value='是']").attr("checked",true);
+							}else{$("input:radio[name='radio5'][value='否']").attr("checked",true);}
+							if(jsonobj.zdbwjsbs == "是"){
+								$("input:radio[name='radio6'][value='是']").attr("checked",true);
+							}else{$("input:radio[name='radio6'][value='否']").attr("checked",true);}
+							if(jsonobj.whhclss == "是"){
+								$("input:radio[name='radio7'][value='是']").attr("checked",true);
+							}else{$("input:radio[name='radio7'][value='否']").attr("checked",true);}
+							if(jsonobj.bxdwwhhcl == "是"){
+								$("input:radio[name='radio8'][value='是']").attr("checked",true);
+							}else{$("input:radio[name='radio8'][value='否']").attr("checked",true);}
+							if(jsonobj.ksyjdw == "是"){
+								$("input:radio[name='radio9'][value='是']").attr("checked",true);
+							}else{$("input:radio[name='radio9'][value='否']").attr("checked",true);}
+							if(jsonobj.xd == "是"){
+								$("input:radio[name='radio10'][value='是']").attr("checked",true);
+							}else{$("input:radio[name='radio10'][value='否']").attr("checked",true);}
+							if(jsonobj.sljybg == "有"){
+								$("input:radio[name='radio11'][value='有']").attr("checked",true);
+							}else{$("input:radio[name='radio11'][value='无']").attr("checked",true);}
+							if(jsonobj.cgjlgf == "有"){
+								$("input:radio[name='radio12'][value='有']").attr("checked",true);
+							}else{$("input:radio[name='radio12'][value='无']").attr("checked",true);}
+							if(jsonobj.whysjwz == "有"){
+								$("input:radio[name='radio13'][value='有']").attr("checked",true);
+							}else{$("input:radio[name='radio13'][value='无']").attr("checked",true);}
+							if(jsonobj.cszpl == "是"){
+								$("input:radio[name='radio14'][value='是']").attr("checked",true);
+							}else{$("input:radio[name='radio14'][value='否']").attr("checked",true);}
+							if(jsonobj.sypzwh == "有"){
+								$("input:radio[name='radio15'][value='有']").attr("checked",true);
+							}else{$("input:radio[name='radio15'][value='无']").attr("checked",true);}
+							if(jsonobj.syjlgf == "是"){
+								$("input:radio[name='radio14'][value='是']").attr("checked",true);
+							}else{$("input:radio[name='radio14'][value='否']").attr("checked",true);}
+							if(jsonobj.sywjyw == "是"){
+								$("input:radio[name='radio14'][value='是']").attr("checked",true);
+							}else{$("input:radio[name='radio14'][value='否']").attr("checked",true);}
+							
+							if(jsonobj.zgyj == '' || jsonobj.zgyj == null || jsonobj.zgyj == undefined){
+								document.getElementById("zgyj").value = "无";
+							}else{
+								document.getElementById("zgyj").value = jsonobj.zgyj;
+							}
+							
+							var date = new Date(jsonobj.jgsj); // 检查日期
+							Y = date.getFullYear();
+							M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1);
+							D = date.getDate();
+							document.getElementById("jcsj").innerHTML = Y+'-'+M+'-'+D;
+							
+							var imgname = jsonobj.imgname;//不合格项上传照片的名称
+							
+							if(imgname == null || imgname == undefined || imgname.length == 2){
+								$("#log-img").html("<p>无</p>")
+							}else{
+								imgname = imgname.replace(/\[|]/g,'');
+								imgname = imgname.replace(/\"/g, ""); 
+								var resultImg=imgname.split(",");
+								for(var i=0;i<resultImg.length;i++){
+									imgSrc = MAIN_URL + path + '/' +Y +'-'+ M + '/'+resultImg[i];
+									$("#log-img").append('<li><img src="'+ imgSrc+'" data-preview-src="" data-preview-group="1" class="max-width picture" /></li>')
+									
+								}
+							}
+
+							jgrSignImg = jsonobj.jgrSignImg;// 监管人 手机端进行电子签名存储的电子签名图片的名称
+							qyfzrSignImg = jsonobj.qyfzrSignImg; // 企业负责人 手机端进行电子签名存储的电子签名图片的名称
+							if(jgrSignImg == "" || jgrSignImg == null || jgrSignImg == undefined){
+								document.getElementById("jgrSignImg").src = '';
+							} else{
+								document.getElementById("jgrSignImg").src = MAIN_URL + path + '/' +Y +'-'+ M + '/'+ jgrSignImg; 
+							}			
+							if(qyfzrSignImg == "" || qyfzrSignImg == null || qyfzrSignImg == undefined ){
+								document.getElementById("qyfzrSignImg").src = ''; 
+							}else{
+								document.getElementById("qyfzrSignImg").src = MAIN_URL + path + '/' +Y +'-'+ M + '/'+ jsonobj.qyfzrSignImg; 
+							}
+										
+						}else{
+							mui.toast("查询失败，请重试");
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						plus.nativeUI.closeWaiting();
+						mui.toast("查询失败");
+					}
+				});
+			}
+			
+			
+			
+			
+	
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,35 @@
+.mui-input-group { margin-top: 13px; font-size: 0.2515rem; }
+
+.mui-input-group:first-child { margin-top: 0px; }
+
+.mui-input-group .mui-input-row { height: 43px; }
+
+.mui-input-group .mui-input-row label { padding: 13.5px 15px; }
+
+.mui-input-group .mui-input-row .title-label-short { width: 32% !important; }
+
+.mui-input-group .mui-input-row .title-label-long { width: 38% !important; }
+
+.mui-input-group .mui-input-row .input-long { width: 60% !important; }
+
+.mui-input-group .mui-input-row input[type=text], .mui-input-group .mui-input-row input[type=number] { color: #6A6882; padding-top: 12.5px; }
+
+.mui-input-group .mui-input-row .mui-radio { width: 34% ;color: #6A6882; margin-top: 2.5px; }
+
+.mui-input-group .mui-input-row .mui-radio input[type=radio] { top: 9px; left: 1px; }
+
+.mui-input-group .mui-input-row .mui-radio input[type=radio]:before { font-size: 22px; }
+
+.mui-input-group .mui-input-row .mui-radio input[type=radio]:checked:before { color: #16D0A4; }
+
+.mui-input-group .mui-input-row .mui-radio label { position: absolute; left: 23px ; padding: 13.5px 2px; }
+
+.mui-select:before { top: 10px; }
+
+.big-commit-btn { margin: 20px 8%; width: 84%; height: 38px; padding-top: 9px; }
+
+.big-commit-btn .mui-icon { font-size: 19px; }
+
+.modify-mask { position: fixed; width: 100%; left: 0 !important; top: 44px !important; padding-right: 10px; border-radius: 0px; background-color: #FFFFFF; }
+
+.no-bottom-line:after { height: 0px !important; }

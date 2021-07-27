@@ -1,0 +1,246 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>无害化处理</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="../../css/mui.css"/>
+		<link rel="stylesheet" href="../../css/mui.picker.css" />
+		<link rel="stylesheet" href="../../css/mui.dtpicker.css" />
+		<link rel="stylesheet" href="../css/generic.css"/>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<a class="mui-action-menu mui-icon mui-icon-search mui-pull-right" id="checkPopover"></a>
+			<h1 class="mui-title" id="com-title">抽查<span id="toalNum">（共6条）</span></h1>
+		</header>
+		<div class="mui-content" id="pullrefresh">
+			<div class="record-list-content" id="record-list-content">
+				<!-- 已抽查的点击之后 进入抽查记录页面 -->
+				<div class="record-list" target_id="check-view.html">
+					<ul class="record-info">
+						<li>车&nbsp;&nbsp;牌&nbsp;&nbsp;号： <span>豫U08515</span></li>
+						<li>抽查结果： <span class="status-2">已抽查</span></li>
+						<li>病死猪数量： <span>3 头</span></li> 
+						<li>病死猪重量： <span>600 公斤</span></li>
+						<li>运输人员： <span>李高峰</span></li>
+						<li>日期： <span>2019-08-24 17:22:31</span></li>
+					</ul>
+				</div>
+				<!-- 未抽查的点击之后 进入check.html -->
+				<div class="record-list" target_id="check.html">
+					<ul class="record-info">
+						<li>车&nbsp;&nbsp;牌&nbsp;&nbsp;号： <span>豫U08516</span></li>
+						<li>抽查结果： <span class="status-1">未抽查</span></li>
+						<li>病死猪数量： <span>6（头）</span></li> 
+						<li>病死猪重量： <span>700（KG）</span></li>
+						<li>运输人员： <span>李顺明</span></li>
+						<li>日期： <span>2019-08-22 17:22:31</span></li>
+					</ul>
+				</div>
+			</div>
+			
+		</div>
+		<div id="check_popover" class="mui-popover modify-mask">
+			<div class="mui-input-group no-bottom-line">
+				<div class="mui-input-row">
+					<label class="title-label">日&nbsp;&nbsp;&nbsp;&nbsp;期：</label>
+					<input type="text" id="check_time" class="mui-navigate-right" readonly placeholder="请选择开始日期" />
+				</div>
+				<div class="mui-input-row">
+					<label class="title-label">车牌号：</label>
+					<input type="text" id="carNum" class="mui-navigate-right" placeholder="请输入车牌号" />
+				</div>
+			</div>
+			<div class="mui-btn mui-btn-primary big-commit-btn" id="check_search_btn">搜&nbsp;&nbsp;索</div>
+		</div>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/jquery-1.12.4.min.js"></script>
+		<script src="../../js/mui.picker.js"></script>
+		<script src="../../js/mui.dtpicker.js"></script>
+		<script src="../js/content.js"></script>
+		<script src="../js/constant.js"></script>
+		<script src="js/harmless-data.js"></script>
+		<script type="text/javascript">
+			mui.plusReady(function() {
+				initSettings(); 		// 初始化设置字体大小	
+				var harmless_user_id = plus.storage.getItem("harmless_user_id"); //用户的的id编号
+				harmless_user_id = "6971847";
+				var currpage = 1;
+				var searchTime, searchCarNum;
+				
+				//查询方法
+				document.getElementById("check_search_btn").addEventListener('tap', function(){
+					currpage = 1;
+					searchTime=document.getElementById("check_time").value;
+					searchCarNum=document.getElementById("carNum").value;
+					$('#record-list-content').html("");
+					getList(currpage, searchTime, searchCarNum)
+					event.preventDefault(); // 阻止默认事件---阻止页面刷新
+					setTimeout(function(){
+						mui('#check_popover').popover('toggle');
+					},300)
+				});
+				
+				function getList(currpage, searchTime, searchCarNum){
+					var result;
+					var pageSize = 10;
+					plus.nativeUI.showWaiting("正在加载……");
+					mui.ajax(Constant.getConstant("HARMLESS_BASE1_SUFFIX"),{
+						data:{
+							"api_method":"c.findTransportLogs",
+							"a_id":harmless_user_id,
+							"type": "1",
+							"searchTime": searchTime,
+							"searchCarNum": searchCarNum,
+							"page":currpage,
+							"rows":pageSize
+						},
+						dataType:'json',//服务器返回json格式数据
+						type:'post',//HTTP请求类型
+						timeout:10000,//超时时间设置为10秒；
+						success:function(data){
+							plus.nativeUI.closeWaiting();
+							console.log(JSON.stringify(data));
+							if(data.resultStatus == true){
+								var page = data.data.page;
+								document.getElementById("toalNum").innerHTML = "（共"+page.totalRows+"条）"
+								var result_array = data.data.tsl;
+								if(result_array == undefined){
+									$("#record-list-content").html('<p style="text-align: center;color: #888888;margin-top: 20px;">---- 暂无数据 ----</p>');
+								}else if(result_array.length == 0 || currpage > page.totalPage){
+									mui('#pullrefresh').pullRefresh().disablePullupToRefresh();
+									if(currpage == 1){
+										$("#record-list-content").html('<p style="text-align: center;color: #888888;margin-top: 20px;">---- 暂无数据 ----</p>');
+									}else{
+										mui.toast("已经到底了");
+									}
+								}else{
+									mui('#pullrefresh').pullRefresh().refresh(true);
+									for(var i=0;i<result_array.length;i++){
+										var target_id, targetStatus ,targetText;
+										// 是否消毒,0:未抽查，1:已抽查
+										if(result_array[i].disinfectstatus == 1){
+											target_id = "check-view.html";
+											targetStatus = "status-2";
+											targetText = "已抽查";
+										}else if(result_array[i].disinfectstatus == 0){
+											target_id = "check.html";
+											targetStatus = "status-1";
+											targetText = "未抽查";
+										}
+										result = '<div class="record-list" target_id='+target_id+'>'+
+												'	<ul class="record-info">'+
+												'		<li>车&nbsp;&nbsp;牌&nbsp;&nbsp;号： <span>'+result_array[i].truckPlate+'</span></li>'+
+												'		<li>抽查结果： <span class="'+targetStatus+'">'+targetText+'</span></li>'+
+												'		<li>病死猪数量： <span>'+result_array[i].ID+'</span></li> '+
+												'		<li>病死猪重量： <span>出厂</span></li>'+
+												'		<li>运输人员： <span>'+result_array[i].createTime+'</span></li>'+
+												'		<li>日期： <span>'+result_array[i].transportPersonName+'</span></li>'+
+												'	</ul>'+
+												'</div>'
+										
+										$("#record-list-content").append(result);
+									}
+								}
+								
+							}else{
+								mui.toast("查询失败，请重试")
+							}
+						},
+						error:function(xhr,type,errorThrown){
+							plus.nativeUI.closeWaiting();
+							mui.toast("查询失败");
+						}
+					});
+				}
+					
+			
+				mui.init({
+					pullRefresh : {
+						container: '#pullrefresh', //待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+						up : {
+							height:50,//可选.默认50.触发上拉加载拖动距离
+							auto:false,//可选,默认false.自动上拉加载一次
+							contentrefresh : "正在加载...",//可选，正在加载状态时，上拉加载控件上显示的标题内容
+							contentnomore:'没有数据了',//可选，请求完毕若没有更多数据时显示的提醒内容；
+							callback :pullupRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+						},
+						down: {
+							style: "circle",
+							color: "#33323E",				//可选，默认“#2BD009” 下拉刷新控件颜色
+							height: '30px',					//可选,默认50px.下拉刷新控件的高度,
+							range: '100px',					//可选 默认100px,控件可下拉拖拽的范围
+							offset: '0px',					//可选 默认0px,下拉刷新控件的起始位置
+							auto: true,					//可选,默认false.首次加载自动上拉刷新一次
+							callback: pullDownRefreshFun
+						}
+					}
+				});
+				function pullupRefresh(){
+					setTimeout(function(){
+						currpage++;
+						// getList(currpage);
+						mui('#pullrefresh').pullRefresh().endPullupToRefresh();
+					},1500)
+				}
+				
+				/**
+				 * 下拉刷新功能
+				 */
+				function pullDownRefreshFun() {
+					setTimeout(function() {
+						currpage = 1;
+						// $('#record-list-content').html("");
+						// getList(currpage);
+						mui('#pullrefresh').pullRefresh().endPulldownToRefresh();
+						mui('#pullrefresh').pullRefresh().refresh(true);
+					}, 1500);
+				}
+				
+				// 显示搜索条件
+				document.getElementById("checkPopover").addEventListener('tap', function(){
+					mui('#check_popover').popover('toggle');
+					
+				})	
+				// 选择日期	
+				var dtpicker = new mui.DtPicker({
+					type: "date", //设置日历初始视图模式    //真正的月份比写的多一个月。  type的类型你还是可以选择date datetime month time hour 
+					labels: ['年', '月', '日'], //设置默认标签区域提示语 
+					endDate: new Date()
+				});
+				document.getElementById("check_time").addEventListener('tap', function(){
+					dtpicker.show(function(items) {
+						document.getElementById("check_time").value = items.value;
+					});
+				},false);
+				
+				$("#carNum").focus(function(){
+					var classList = document.body.classList;
+					// 如果日期选择器选择进行关闭
+					if(classList.contains("mui-dtpicker-active-for-page") == true){
+						mui.back();
+					}
+				});
+				
+				
+				mui(".record-list-content").on("tap", ".record-list", function() {
+					var targetTab = this.getAttribute('target_id');
+					mui.openWindow({
+						url: targetTab,
+						id: targetTab,
+						waiting: {
+							autoShow: true, //自动显示等待框，默认为true
+							title: '正在加载...', //等待对话框上显示的提示内容
+						}
+					});
+				})
+					
+					
+			});
+			
+		</script>
+	</body>
+
+</html>

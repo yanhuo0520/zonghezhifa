@@ -1,0 +1,86 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>通讯录列表</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.css" rel="stylesheet" />
+		<link href="css/main.css" rel="stylesheet" />
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title" id="title">济源市农牧局</h1>
+		</header>
+		<div id="pullrefresh" class="mui-content mail-content">
+			<ul class="mui-table-view mail-list" id="mail-list">
+				<!-- <li class="mui-table-view-cell"><a class="mui-navigate-right">常用电话</a></li> -->
+			</ul>
+			
+		</div>
+		<script src="../js/mui.js"></script>
+		<script src="../js/jquery.min.js"></script>
+		<script src="js/constant.js"></script>
+		<script src="js/content.js"></script>
+		<script type="text/javascript">
+			mui.plusReady(function(){
+				var uuid = plus.storage.getItem("uuid"); //用户的的id编号
+				var self = plus.webview.currentWebview();
+				var title = self.title; // 企业类型
+				var orgoid = self.oId_id; //所属单位id
+				document.getElementById("title").innerHTML = title;
+				
+				plus.nativeUI.showWaiting("加载中……");
+				// http://172.168.1.130:9056/xmdc/api/SsoBasPersonApi_getPersonList.action
+				mui.ajax(Constant.getConstant("MAIL_BUMEN_PERSON_LIST"), {
+					data:{
+						"orgoid": orgoid
+					},
+					dataType:'json',//服务器返回json格式数据
+					type:'post',//HTTP请求类型
+					timeout:10000,//超时时间设置为10秒；
+					success: function(data){
+						// jsonobj = JSON.stringify(data); 
+						// console.log(jsonobj);
+						plus.nativeUI.closeWaiting();
+						var result_array = data;
+						if(result_array.length == 0){
+							$('#mail-list').append('<p style="text-align: center;color: #888888;margin-top: 20px;">---- 暂无数据 ----</p>')
+						}else{
+							for(var i=0;i<result_array.length;i++){
+								var dutyText = '';
+								if(result_array[i].duty != null){
+									dutyText = "（职"+ result_array[i].duty +"务)";
+								}
+								$('#mail-list').append('<li class="mui-table-view-cell" oId_id="'+result_array[i].oid+'"><a class="mui-navigate-right">'+result_array[i].personname+ dutyText +'</a></li>');
+							}
+						}
+					},error:function(xhr,type,errorThrown){
+						plus.nativeUI.closeWaiting();
+						mui.toast("查询失败");
+					}
+								
+				})
+				
+				
+				mui(".mail-list").on('tap', '.mui-table-view-cell', function(){
+					var oId = $(this).attr("oId_id");
+					mui.openWindow({
+						url: 'mail-detail.html',
+						id: 'mail-detail.html',
+						extras: {
+							'oId': oId,
+							"title": title
+						},
+						waiting: {
+							autoShow: true,
+							title: '正在加载……'
+						}
+					})
+				});
+				
+			});
+		</script>
+	</body>
+
+</html>

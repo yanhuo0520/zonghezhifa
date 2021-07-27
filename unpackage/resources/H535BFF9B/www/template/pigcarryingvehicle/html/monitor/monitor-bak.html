@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>index-monitor</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../../../../css/mui.min.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/header.css" />
+		<style>
+			* { touch-action: none; } 
+		</style>
+	</head>
+
+	<body>
+		<header id="header" class="mui-bar mui-bar-nav f-row">
+			<div class="header-left" onclick="toLocationSelect();">
+				<label id="monitor_loactionInfo_name" class="mui-ellipsis"></label><span class="mui-icon mui-icon-arrowdown"></span>
+			</div>
+			<div class="mui-segmented-control">
+				<a class="mui-control-item mui-active" href="#item1mobile" data-wid="monitor-map.html">地图</a>
+				<a class="mui-control-item" href="#item2mobile" data-wid="monitor-list.html">列表</a>
+			</div>
+			<div class="header-right">
+				<!-- <span onclick="openNewWebView('addMonitorList.html', 'addMonitorList.html')" class="mui-icon mui-icon-plusempty right-icon mui-pull-right"></span> -->
+				<span onclick="searchFun();" class="mui-icon mui-icon-search right-icon mui-pull-right"></span>
+			</div>
+		</header>
+		<script type="text/javascript" src="../../../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../../../js/jquery-1.12.4.min.js"></script>
+		<script type="text/javascript" src="../../js/common.js"></script>
+		<script type="text/javascript" charset="utf-8" src="../../js/webviewGroup.js"></script>
+		<script>
+			mui.init({
+				swipeBack: true
+			});
+			
+			var cunrrentTab = 1; //1:左边webView  2:右边webView
+			var group = null;
+			
+			mui.plusReady(function () {
+					
+				firstSsetIndexLoactionInfo("monitor_loactionInfo_name");
+				
+				// 监听其他页面调用setIndexLoactionInfo方法
+				window.addEventListener("setIndexLoactionInfo", function(event) {
+					setIndexLoactionInfo("monitor_loactionInfo_name");
+				});
+				group = new webviewGroup("monitor", {
+					styles: {
+						top: 5,
+					},
+					items: [{
+						id: "monitor-map.html",
+						url: "monitor-map.html",
+						extras: {},
+						styles: {
+							top: "45px",
+							bottom: "0px",
+							render: "always"
+						}
+					}, {
+						id: "monitor-list.html",
+						url: "monitor-list.html",
+						extras: {},
+						styles: {
+							top: "47px",
+							bottom: "0px",
+							render: "always"
+						}
+					}],
+					onChange: function(obj) {
+						var c = document.querySelector(".mui-control-item.mui-active");
+						if(c) {
+							c.classList.remove("mui-active");
+						}
+						var target = document.querySelector(".mui-segmented-control .mui-control-item:nth-child(" + (parseInt(obj.index) + 1) + ")");
+						target.classList.add("mui-active");
+						if(target.scrollIntoView) {
+							target.scrollIntoView();
+						}
+					}
+				});
+				
+				$(".mui-segmented-control").on("click", ".mui-control-item", function() {
+					var wid = this.getAttribute("data-wid");
+					cunrrentTab = (wid == "monitor-map.html") ? 1 : 2;
+					group.switchTab(wid);
+				});
+			});
+			
+			function searchFun() {
+				if(cunrrentTab == 1) {
+					group.switchTab("monitor-list.html");
+				}				
+				var targetWebView = plus.webview.getWebviewById("monitor-list.html");
+				mui.fire(targetWebView, "searchFunc", {});
+			}
+		</script>
+	</body>
+
+</html>

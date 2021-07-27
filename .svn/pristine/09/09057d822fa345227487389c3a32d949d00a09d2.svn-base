@@ -1,0 +1,192 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>市-入库列表</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.css" rel="stylesheet" />
+		<link href="../../css/mui.picker.css" rel="stylesheet" />
+		<link href="../../css/mui.dtpicker.css" rel="stylesheet" />
+		<link href="er-css/home.css" rel="stylesheet" />
+		<style>
+			.mui-navigate-right:after{
+				content: '\e581';
+			}
+			
+		</style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">入库列表</h1>
+		</header>
+		<div class="mui-content" id="pullrefresh">
+			<div class="mui-row row-search">
+				<div class="mui-col-sm-5 mui-col-xs-5 search-input mui-input-row   my_select mui-navigate-right">
+					<select id="ear-scale" class="mui-input-clear" style="margin:auto;height:32px;border: 1px solid rgba(0, 0, 0, .2) !important;border-radius: 3px;color: #CCC;padding-left: 10px;">
+						<option value="">选择种类</option> 
+					    <option value="猪标">猪标</option>  
+					    <option value="牛标">牛标</option>
+						<option value="羊标">羊标</option>
+					</select>
+				</div>
+				<div class="mui-col-sm-5 mui-col-xs-5 search-input">
+					<input id="select-time" type="text" class="mui-input-clear" placeholder="请选择日期" readonly="readonly">
+				</div>
+				<a href="javascript:;" class="mui-btn search-btn mui-col-sm-2 mui-col-xs-2" id="searchBtn">搜索</a>
+			</div>
+			<div class="in-list-content" id="in-list-content">
+
+			</div>
+		</div>
+		
+		
+		
+		
+		
+		<script src="../../js/mui.js"></script>
+		<script src="../../js/mui.picker.js"></script>
+		<script src="../../js/mui.dtpicker.js"></script>
+		<script src="../../js/jquery.min.js"></script>
+		<script src="../js/content.js"></script>
+		<script src="er-js/constant.js"></script>
+		<script type="text/javascript">
+			
+			mui.plusReady(function () {
+				var uuid = plus.storage.getItem("uuid"); //用户的的id编号
+				if(uuid == "" || uuid == null || uuid == "undefined"){
+					mui.openWindow({
+						id: 'login.html',
+						url: '../login.html'
+					})
+				}
+			    var currpage = 1;
+				var ebsort=null,rkdate=null;
+			    getList(currpage,ebsort,rkdate);
+				
+				function getList(currpage,ebsort,rkdate){
+					var result="";
+					var pageSize = 15;
+					mui.ajax(Constant.getConstant("CITY_EAR_IN_LIST"), {
+						data:{
+							"a_id": uuid,  //为企业类型
+							"sort":ebsort,
+							"qssj":rkdate,
+							"pageno": currpage,
+							"pagesize": pageSize
+						},
+						dataType:'json',//服务器返回json格式数据
+						type:'post',//HTTP请求类型
+						timeout:10000,//超时时间设置为10秒；
+						success: function(data){
+							if(data.result == "success"){
+								var result_array = data.result_array;
+								// console.log(result_array.length);
+								if(result_array.length == 0){
+									mui('#pullrefresh').pullRefresh().disablePullupToRefresh();
+									if(currpage == 1){
+										$('#in-list-content').append('<p style="text-align: center;line-height: 1rem;">-- 暂无数据 --</p>')
+									}else{
+										mui.toast("已经到底了");
+									}
+								}else{
+									mui('#pullrefresh').pullRefresh().refresh(true);
+									for(var i=0;i<result_array.length;i++){
+										var date = new Date(result_array[i].adddate); // 检查日期
+										Y = date.getFullYear();
+										M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1);
+										D = (date.getDate() < 10 ? '0'+(date.getDate()) : date.getDate());;
+										// console.log(Y+'-'+M+'-'+D);
+										result = '<div class="in-list"><p class="title">耳标种类：<span>'+result_array[i].sort+'</span><a href="javascript:;" class="mui-btn issued-btn mui-col-sm-2 mui-col-xs-2" id="issuedBtn" eb_qh='+result_array[i].qh+' eb_zh='+result_array[i].zh+' eb_fs='+result_array[i].fs+' eb_id='+result_array[i].id+' eb_sort='+result_array[i].sort+'>下发</a></p><ul><li>入库时间:<span>'+Y+'-'+M+'-'+D+'</span></li><li>开始号段:<span>'+result_array[i].qh+'</span></li><li>结束号段:<span>'+result_array[i].zh+'</span></li><li>数&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;量:<span>'+result_array[i].ysfs+'</span></li></ul></div>';
+										$('#in-list-content').append(result);
+									}
+								}
+							}else{
+								mui.toast("查询失败，请重试");
+							}
+							
+						},error:function(xhr,type,errorThrown){
+								mui.toast("查询失败");
+							}
+				
+					})
+				
+				
+				}
+				mui.init({
+					pullRefresh : {
+						container: '#pullrefresh', //待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+						up : {
+							height:50,//可选.默认50.触发上拉加载拖动距离
+							auto:false,//可选,默认false.自动上拉加载一次
+							contentrefresh : "正在加载...",//可选，正在加载状态时，上拉加载控件上显示的标题内容
+							contentnomore:'没有数据了',//可选，请求完毕若没有更多数据时显示的提醒内容；
+							callback :pullupRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+						}
+					}
+				});
+				
+				function pullupRefresh(){
+					setTimeout(function(){
+						currpage++;
+						getList(currpage,ebsort,rkdate);
+						mui('#pullrefresh').pullRefresh().endPullupToRefresh();
+					},1500)
+				}
+				
+				// 选择日期	
+				document.getElementById("select-time").addEventListener('tap', function(){
+					var dtpicker = new mui.DtPicker({
+						type: "date", //设置日历初始视图模式    //真正的月份比写的多一个月。  type的类型你还是可以选择date datetime month time hour 
+						labels: ['年', '月', '日'] //设置默认标签区域提示语 
+					});
+					dtpicker.show(function(items) {
+						document.getElementById("select-time").value = items.value;
+						console.log(items.value);
+					});
+				})
+				
+				//查询方法
+				document.getElementById("searchBtn").addEventListener('tap', function(){
+					var currpage = 1;
+					var ebsort=document.getElementById("ear-scale").value;
+					var rkdate=document.getElementById("select-time").value;
+					$('#in-list-content').html("");
+					getList(currpage,ebsort,rkdate);
+				})
+				
+				//耳标下发
+				mui(".in-list-content").on('tap','.issued-btn',function(){
+				  //获取id
+				  var ebid = this.getAttribute("eb_id");
+				  var ebqh = this.getAttribute("eb_qh");
+				  var ebzh = this.getAttribute("eb_zh");
+				  var ebfs = this.getAttribute("eb_fs");
+				  var ebsort = this.getAttribute("eb_sort");
+				  mui.openWindow({
+				  	url: "city-issued.html",
+				  	id: "city-issued.html",
+				  	extras: {
+				  		'a_id':uuid,
+						'ebid':ebid,
+				  		'ebqh':ebqh,
+				  		'ebzh':ebzh,
+				  		'ebfs':ebfs,
+						'ebsort':ebsort
+				  	},
+				  	waiting: {
+				  		autoShow: true,
+				  		title: '正在加载……'
+				  	}
+				  })
+				  
+				})
+				
+				
+			})
+			
+			
+		</script>
+	</body>
+
+</html>

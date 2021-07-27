@@ -1,0 +1,191 @@
+<!doctype html>
+<html class="bg-white">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+		<title>首页</title>
+		<link rel="stylesheet" href="../css/mui.min.css" />
+		<link rel="stylesheet" href="css/main.css" />
+	</head>
+	<body class="bg-white">
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-icon mui-pull-right message-tip" id="message">
+				<img src="images/mes-tip.png" class="tip-img max-width">
+				<p class="tip-text">2</p>
+			</a>
+			<h1 class="mui-title">济源市畜牧兽医综合执法</h1>
+		</header>
+		<div class="mui-content bg-white">
+			<!-- 轮播图 -->
+			<div class="mui-slider">
+				<div class="mui-slider-group">
+					<!--第一个内容区容器-->
+					<div class="mui-slider-item"><img src="ani-husbandry/ani-image/ad.png" /></div>
+				</div>
+			</div>
+			<!-- 模块 -->
+			<div class="mui-row system-list">
+				<a class="system-detail home-icon mui-col-sm-3 mui-col-xs-3" id="" target_id="quarantine/quarantine-home.html">
+					<img src="ani-husbandry/ani-image/qua-declarate.png" class="img-icon" />
+					<p class="home-label">检疫申报</p>
+				</a>
+				<a class="home-icon mui-col-sm-3 mui-col-xs-3" id="" target_id="#">
+					<img src="ani-husbandry/ani-image/ele-certifice.png" class="img-icon" />
+					<p class="home-label">电子出证</p>
+				</a>
+				<a class="system-detail home-icon mui-col-sm-3 mui-col-xs-3" qylx_id="5" target_id="ani-husbandry/company-list.html">
+					<img src="ani-husbandry/ani-image/breed-com.png" class="img-icon" />
+					<p class="home-label">养殖监管</p>
+				</a>
+				<a class="system-detail home-icon mui-col-sm-3 mui-col-xs-3" qylx_id="8" target_id="ani-husbandry/com-list.html">
+					<img src="ani-husbandry/ani-image/tuzai.png" class="img-icon" />
+					<p class="home-label">屠宰监管</p>
+				</a>
+				<a class="system-detail home-icon mui-col-sm-3 mui-col-xs-3" qylx_id="9" target_id="ani-husbandry/com-list.html">
+					<img src="ani-husbandry/ani-image/animal-treat.png" class="img-icon" />
+					<p class="home-label">动物诊疗</p>
+				</a>
+				<a class="system-detail home-icon mui-col-sm-3 mui-col-xs-3" qylx_id="1" target_id="ani-husbandry/com-list.html">
+					<img src="ani-husbandry/ani-image/feed-produce.png" class="img-icon" />
+					<p class="home-label">饲料生产</p>
+				</a>
+				<a class="system-detail home-icon mui-col-sm-3 mui-col-xs-3" qylx_id="2" target_id="ani-husbandry/com-list.html">
+					<img src="ani-husbandry/ani-image/feed-sale.png" class="img-icon" />
+					<p class="home-label">饲料销售</p>
+				</a>
+				<a class="system-detail home-icon mui-col-sm-3 mui-col-xs-3" qylx_id="3" target_id="ani-husbandry/com-list.html">
+					<img src="ani-husbandry/ani-image/ani-drug-produce.png" class="img-icon" />
+					<p class="home-label">兽药生产</p>
+				</a>
+				<a class="system-detail home-icon mui-col-sm-3 mui-col-xs-3" qylx_id="4" target_id="ani-husbandry/com-list.html">
+					<img src="ani-husbandry/ani-image/ani-drug-sale.png" class="img-icon" />
+					<p class="home-label">兽药销售</p>
+				</a>
+				<a class="system-detail home-icon mui-col-sm-3 mui-col-xs-3" qylx_id="11" target_id="ani-husbandry/com-list.html">
+					<img src="ani-husbandry/ani-image/fresh-buy.png" class="img-icon" />
+					<p class="home-label">生鲜乳收购</p>
+				</a>
+				<a class="system-detail home-icon mui-col-sm-3 mui-col-xs-3" qylx_id="12" target_id="ani-husbandry/com-list.html">
+					<img src="ani-husbandry/ani-image/fresh-transport.png" class="img-icon" />
+					<p class="home-label">生鲜乳运输车辆</p>
+				</a>
+				<a class="system-detail home-icon mui-col-sm-3 mui-col-xs-3" qylx_id="13" target_id="pigcarryingvehicle/pigcarryingvehicle.html">
+					<img src="ani-husbandry/ani-image/pig-transport.png" class="img-icon" />
+					<p class="home-label">生猪运载</p>
+				</a>
+				<a class="system-detail home-icon mui-col-sm-3 mui-col-xs-3" id="" target_id="ear-tag/er-home.html">
+					<img src="ani-husbandry/ani-image/ear-icon.png" class="img-icon" />
+					<p class="home-label">耳标管理</p>
+				</a>
+				<a class="system-detail home-icon mui-col-sm-3 mui-col-xs-3" qylx_id="15" target_id="harmless/harmless.html">
+					<img src="ani-husbandry/ani-image/harmless.png" class="img-icon" />
+					<p class="home-label">无害化处理</p>
+				</a>
+			</div>
+		</div>
+		<script type="text/javascript" src="../js/mui.min.js"></script>
+		<script type="text/javascript" src="../js/jquery-1.12.4.min.js"></script>
+		<script type="text/javascript" src="../js/date-format.js"></script>
+		<script type="text/javascript" src="js/content.js"></script>
+		<script type="text/javascript" src="js/constant.js"></script>
+		<script type="text/javascript" type="text/javascript">
+			mui.init();
+			mui.plusReady(function() {
+				initSettings(); 		// 初始化设置字体大小
+				
+				mui(".system-list").on("tap", ".system-detail", function() {
+					if (checkLogin()) {
+						// 1.饲料生产企业	；	2.饲料销售企业；	3.兽医生产企业；	4.兽医销售企业；	5.养殖企业；		6.种畜禽企业；
+						// 7.生鲜乳企业；		8.屠宰企业；		9.动物诊疗机构；	10.草原企业；	11.生鲜乳收购站；	12.生鲜乳运输车辆
+						// 13.生猪运载; 		15.无害化处理
+						var qylx = this.getAttribute('qylx_id'); // 企业类型
+						var targetTab = this.getAttribute('target_id');
+						var comTitle = $(this).children('.home-label').html();
+						
+						var harmlessUseRoleId = plus.storage.getItem('harmless_user_roleId'); // 获取无害化用户角色id
+						if(qylx === "15" && (!harmlessUseRoleId && harmlessUseRoleId == null)) {
+							plus.nativeUI.showWaiting("验证用户……");
+							var a_name = plus.storage.getItem('phone'); 	// 用户手机
+							var a_pwd = plus.storage.getItem('password'); 	// 用户登录密码
+							
+						//	http://172.168.0.111:8080/jyharmless/vac/mobile/core/core_loginApp.action
+						//	mui.ajax(Constant.getConstant("HARMLESS_LOGIN"), {
+							mui.ajax(Constant.getConstant("HARMLESS_LOGIN"), {
+								data: {
+									"a_name": a_name,
+									"a_pwd": a_pwd,
+									"a_loginTime": new Date().Format("yyyy-MM-dd HH:mm:ss"),
+									"api_method": "c.login",
+									"a_phoneModel": plus.device.model,
+									"a_phoneBrand": plus.device.vendor,
+									"a_sysVersion": plus.os.version
+								},
+								dataType: 'json',	// 服务器返回json格式数据
+								type: 'post',		// HTTP请求类型
+								timeout: 10000,		// 超时时间设置为10秒；
+								success: function(data) {
+									plus.nativeUI.closeWaiting();
+									console.log(JSON.stringify(data.a_role.id));
+									if (data.result === "success") {
+										plus.storage.setItem('harmless_user_id', data.a_id); 				// 无害化用户id
+										plus.storage.setItem('harmless_user_name', data.a_name); 			// 无害化用户系统所分配的登录名称
+										plus.storage.setItem('harmless_user_realname', data.a_realname); 	// 无害化用户真实姓名
+										plus.storage.setItem('harmless_user_roleId', data.a_role.id + "");	 	// 无害化用户角色id
+										plus.storage.setItem('harmless_user_roleName', data.a_rolename); 	// 无害化用户角色名称
+										plus.storage.setItem('harmless_user_danwei', data.a_danwei); 		// 无害化用户单位
+										plus.storage.setItem('harmless_user_degree', data.a_degree); 		// 无害化用户等级
+										mui.openWindow({
+											url: targetTab,
+											id: targetTab,
+											extras: {
+												"qylx": qylx,
+												"comTitle": comTitle
+											},
+											waiting: {
+												autoShow: true, //自动显示等待框，默认为true
+												title: '正在加载...', //等待对话框上显示的提示内容
+											}
+										});
+									} else {
+										mui.toast("暂无权限使用无害化系统");
+									}
+								}, 
+								error: function(xhr, type, errorThrown) {
+									plus.nativeUI.closeWaiting();
+									mui.toast("查询权限失败");
+								}
+							});
+						} else {
+							mui.openWindow({
+								url: targetTab,
+								id: targetTab,
+								extras: {
+									"qylx": qylx,
+									"comTitle": comTitle
+								},
+								waiting: {
+									autoShow: true, //自动显示等待框，默认为true
+									title: '正在加载...', //等待对话框上显示的提示内容
+								}
+							});
+						}
+						
+					}
+				});
+
+				document.getElementById("message").addEventListener('tap', function() {
+					var targetTab = 'ani-husbandry/message-list.html';
+					mui.openWindow({
+						url: targetTab,
+						id: targetTab,
+						waiting: {
+							autoShow: true, //自动显示等待框，默认为true
+							title: '正在加载...', //等待对话框上显示的提示内容
+						}
+					})
+				});
+			});
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>通知公告</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.css" rel="stylesheet"/>
+		<link href="ani-css/home.css" rel="stylesheet" />
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">通知公告</h1>
+		</header>
+		<div class="mui-content message-content">
+			<ul class="mui-table-view" id="message-list">
+				<li class="mui-table-view-cell" l_id="1">
+					<a class="mui-navigate-right">2019-02-26  关于为济源市增配动于为济源市增配于为济源市增配物检疫标志号段的公告</a></li>
+				<li class="mui-table-view-cell" l_id="1">
+					<a class="mui-navigate-right">2019-02-26  关于为济源市增配动物检疫标志号段的公告</a></li>
+						
+			
+			</ul>
+			
+		</div>
+		<script src="../../js/mui.js"></script>
+		<script src="../../js/jquery.min.js"></script>
+		<script src="../js/content.js"></script>
+		<script src="ani-js/constant.js"></script>
+		<script type="text/javascript">
+			mui.plusReady(function(){
+				var uuid = plus.storage.getItem("uuid"); //用户的的id编号
+				// if(uuid == "" || uuid == null || uuid == "undefined"){
+				// 	mui.openWindow({
+				// 		id: 'login.html',
+				// 		url: '../login.html'
+				// 	})
+				// }
+				
+				var x = plus.storage.getItem("x");
+				var y = plus.storage.getItem("y");
+				var name = plus.storage.getItem("name"); // 用户系统所分配的登录名称
+				var self = plus.webview.currentWebview();
+				var qylx = self.qylx; // 企业类型
+				// console.log(qylx);
+				
+			});
+			
+
+			
+
+	
+		
+		</script>
+	</body>
+
+</html>

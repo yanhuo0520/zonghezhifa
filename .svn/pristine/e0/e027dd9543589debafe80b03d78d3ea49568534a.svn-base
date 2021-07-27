@@ -1,0 +1,184 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>日志列表</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.css" rel="stylesheet"/>
+		<link href="ani-css/home.css" rel="stylesheet" />
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<a class="mui-icon mui-icon-plusempty mui-pull-right add-icon" id="addLog"></a>
+			<h1 class="mui-title" id="log-title">日志查看</h1>
+		</header>
+		<!--下拉刷新容器-->
+		<div id="pullrefresh" class="mui-content log-list mui-scroll-wrapper">
+			<div class="mui-scroll">
+				<ul class="mui-table-view" id="log-list">
+					<!-- <li class="mui-table-view-cell" l_id="1" addr_id="">
+						<a class="mui-navigate-right">2019-02-26  关于为济源市增配动于为济源市增配于为济源市增配物检疫标志号段的公告</a></li>
+						 -->
+				</ul>
+			</div>
+		</div>
+
+		<script src="../../js/mui.js"></script>
+		<script src="../../js/jquery.min.js"></script>
+		<script src="../js/content.js"></script>
+		<script src="ani-js/constant.js"></script>
+		<script type="text/javascript">
+			mui.plusReady(function(){
+				var uuid = plus.storage.getItem("uuid");
+				// if(uuid == "" || uuid == null || uuid == "undefined") {
+				// 	mui.openWindow({
+				// 		id: 'login.html',
+				// 		url: '../login.html'
+				// 	})
+				// }
+				var self = plus.webview.currentWebview();
+				var qylx = self.qylx; // 企业类型
+				var comId = self.comId; // 企业id
+				var comName = self.comName; // 企业名称
+				var comFname = self.fName;//法人名称
+				var comAddress = self.comAddress; // 企业地址
+				document.getElementById("log-title").innerHTML = comName;
+				
+				var currpage = 1;
+				getList(currpage);
+
+				function getList(currpage){
+					var result="";
+					var pageSize = 15;
+					mui.ajax(Constant.getConstant("COMPANY_LOG_LIST"), {
+						data:{
+							"qylx": qylx,  //为企业类型
+							"compId": comId, //为企业的id编号
+							"pageno": currpage,
+							"pagesize": pageSize
+						},
+						dataType:'json',//服务器返回json格式数据
+						type:'post',//HTTP请求类型
+						timeout:10000,//超时时间设置为10秒；
+						success: function(data){
+							if(data.result == "success"){
+								var result_array = data.result_array;
+								// console.log(result_array.length);
+								if(result_array.length == 0){
+									mui('#pullrefresh').pullRefresh().disablePullupToRefresh();
+									if(currpage == 1){
+										$('#log-list').append('<p style="text-align: center;line-height: 1rem;">-- 暂无数据 --</p>')
+									}else{
+										mui.toast("已经到底了");
+									}
+								}else{
+									mui('#pullrefresh').pullRefresh().refresh(true);
+									for(var i=0;i<result_array.length;i++){
+										result = '<li class="mui-table-view-cell" l_id="'+result_array[i].id+'" ><a class="mui-navigate-right">'+result_array[i].adddate+' --日志详情</a></li>';
+										$('#log-list').append(result);
+									}
+								}
+							}else{
+								mui.toast("查询失败，请重试");
+							}
+							
+						},error:function(xhr,type,errorThrown){
+								mui.toast("查询失败");
+							}
+
+					})
+
+
+				}
+				mui.init({
+					pullRefresh : {
+						container: '#pullrefresh', //待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+						up : {
+							height:50,//可选.默认50.触发上拉加载拖动距离
+							auto:false,//可选,默认false.自动上拉加载一次
+							contentrefresh : "正在加载...",//可选，正在加载状态时，上拉加载控件上显示的标题内容
+							contentnomore:'没有数据了',//可选，请求完毕若没有更多数据时显示的提醒内容；
+							callback :pullupRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+						}
+					}
+				});
+				
+				function pullupRefresh(){
+					setTimeout(function(){
+						currpage++;
+						getList(currpage);
+						mui('#pullrefresh').pullRefresh().endPullupToRefresh();
+					},1500)
+				}
+				
+	
+
+				document.getElementById("addLog").addEventListener('tap', function(){
+					var targetTab = '';
+					if(qylx == 5){targetTab = 'log-breed-add.html'
+					}else if(qylx == 8){targetTab = 'log-slaughter-add.html'
+					}else if(qylx == 9){targetTab = 'log-animal-add.html'
+					}else if(qylx == 1){targetTab = 'log-feed-pro-add.html'
+					}else if(qylx == 2){targetTab = 'log-feed-sale-add.html'
+					}else if(qylx == 3){targetTab = 'log-vet-drug-pro-add.html'
+					}else if(qylx == 4){targetTab = 'log-vet-drug-sale-add.html'
+					}else if(qylx == 11){targetTab = 'log-raw-milk-buy-add .html'
+					}else if(qylx == 12){targetTab = 'log-raw-milk-transt-add.html'}
+					mui.openWindow({
+						url: targetTab,
+						id: targetTab,
+						extras: {
+							'qylx':qylx,
+							'a_id':uuid,
+							'compId':comId,
+							'compName':comName,
+							'address':comAddress,
+							'frname':comFname
+						},
+						waiting: {
+							autoShow: true,
+							title: '正在加载……'
+						}
+					})
+				});
+				
+				// 日志查看
+				mui(".mui-table-view").on('tap', '.mui-table-view-cell', function(){
+					var l_id = $(this).attr("l_id"); //监督日志的id编号
+					var targetTab = '';
+					if(qylx == 5){targetTab = 'log-breed-view.html'
+					}else if(qylx == 8){targetTab = 'log-slaughter-view.html'
+					}else if(qylx == 9){targetTab = 'log-animal-view.html'
+					}else if(qylx == 1){targetTab = 'log-feed-pro-view.html'
+					}else if(qylx == 2){targetTab = 'log-feed-sale-view.html'
+					}else if(qylx == 3){targetTab = 'log-vet-drug-pro-view.html'
+					}else if(qylx == 4){targetTab = 'log-vet-drug-sale-view.html'
+					}else if(qylx == 11){targetTab = 'log-raw-milk-buy-view .html'
+					}else if(qylx == 12){targetTab = 'log-raw-milk-transt-view.html'}	
+					mui.openWindow({
+						url: targetTab,
+						id: targetTab,
+						extras: {
+							"qylx": qylx,
+							'l_id':l_id,
+							'compName':comName,
+							'address':comAddress
+						},
+						waiting: {
+							autoShow: true,
+							title: '正在加载……'
+						}
+					})
+				})
+				
+				
+				
+			});
+			
+			
+			
+		</script>
+	</body>
+
+</html>

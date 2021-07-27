@@ -1,0 +1,109 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>耳标管理</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.css" rel="stylesheet" />
+		<link href="er-css/home.css" rel="stylesheet" />
+	</head>
+	<body class="bg-white">
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-icon mui-pull-right message-tip" id="ocr_scan">
+				<img src="../../images/icon_qr_orc.png" class="tip-img max-width">
+			</a>
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">耳标管理</h1>
+		</header>
+		<div class="mui-content bg-white">
+			<!-- 轮播图 -->
+			<div class="mui-slider">
+				<div class="mui-slider-group">
+					<!--第一个内容区容器-->
+					<div class="mui-slider-item"><img src="er-img/ad.png" class="max-width" /></div>
+				</div>
+			</div>
+			<div class="mui-row er-home">
+				<a class="home-icon home-in-icon mui-col-sm-4 mui-col-xs-4" style="display: none;" target_id="city-in.html">
+					<img src="er-img/check-in.png" class="img-icon" />
+					<p class="home-label">入库登记</p>
+				</a>
+				<a class="home-icon mui-col-sm-4 mui-col-xs-4" target_id="in-list.html">
+					<img src="er-img/in-list.png" class="img-icon" />
+					<p class="home-label">入库列表</p>
+				</a>
+				<a class="home-icon mui-col-sm-4 mui-col-xs-4" target_id="er-stock-list.html">
+					<img src="er-img/ear-stock.png" class="img-icon" />
+					<p class="home-label">耳标库存</p>
+				</a>
+				<a class="home-erFa-icon mui-col-sm-4 mui-col-xs-4" target_id="city-issued.html">
+					<img src="er-img/ear-grant.png" class="img-icon" />
+					<p class="home-label">耳标发放</p>
+				</a>
+				<a class="home-icon mui-col-sm-4 mui-col-xs-4" target_id="issued-list.html">
+					<img src="er-img/grant-list.png" class="img-icon" />
+					<p class="home-label">发放列表</p>
+				</a>
+
+			</div>
+
+		</div>
+
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/jquery-1.12.4.min.js"></script>
+		<script src="../js/content.js"></script>
+		<script type="text/javascript">
+			mui.plusReady(function() {
+				var uuid = plus.storage.getItem("uuid"); // 用户的的id编号
+				var degree = plus.storage.getItem("degree"); // 管理等级
+				if (degree == 3 || degree == 5) { // 只有 市级 乡镇 显示入库登记
+					$(".home-in-icon").show();
+				}
+
+				mui(".er-home").on("tap", ".home-icon", function() {
+					var targetTab = this.getAttribute('target_id');
+					mui.openWindow({
+						url: targetTab,
+						id: targetTab,
+						waiting: {
+							autoShow: true, // 自动显示等待框，默认为true
+							title: '正在加载...', // 等待对话框上显示的提示内容
+						}
+					})
+				});
+				mui(".er-home").on("tap", ".home-erFa-icon", function() {
+					var targetTab = this.getAttribute('target_id');
+					if (degree == 3) { //  市级 耳标管理员：等级为3
+						targetTab = "city-issued.html"
+					} else if (degree == 5) { //乡镇耳标管理员  ：等级为5
+						targetTab = "xiang-issued.html"
+					} else if (degree == 6) { // 检/防疫员：fyy     等级为6
+						targetTab = "jianFang-issued.html"
+					}
+					mui.openWindow({
+						url: targetTab,
+						id: targetTab,
+						waiting: {
+							autoShow: true, //自动显示等待框，默认为true
+							title: '正在加载...', //等待对话框上显示的提示内容
+						}
+					})
+				});
+			});
+
+			document.getElementById("ocr_scan").addEventListener('tap', function() {
+				mui.toast("程序猿正在攻城。。。");
+				// var targetTab = 'er_ocr_scan/ocr_scan.html';
+				// mui.openWindow({
+				// 	url: targetTab,
+				// 	id: targetTab,
+				// 	waiting: {
+				// 		autoShow: true, //自动显示等待框，默认为true
+				// 		title: '正在加载...', //等待对话框上显示的提示内容
+				// 	}
+				// })
+			});
+		</script>
+	</body>
+
+</html>

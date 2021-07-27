@@ -1,0 +1,305 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>adddisinfectionRecord</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="../../../../css/mui.min.css" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/header.css">
+		<link rel="stylesheet" href="../../css/ajax-picker/ajax-picker-self.css">
+		<style>
+			.mui-content { background-color: #FFFFFF; font-size: 14px ; }
+			
+			.mui-input-row .label-2 {
+				width: 50% !important;
+				padding-right: 5px !important;
+			}
+			
+			.mui-input-row .label-2~input {
+				width: 50%;
+			}
+			
+			.mui-input-row .label-3 {
+				width: 46% !important;
+				padding-right: 5px !important;
+			}
+			
+			.mui-input-row .label-3~input {
+				width: 25%;
+				padding-right: 0px !important;
+				text-align: center;
+			}
+			
+			.mui-input-row .label-3~span {
+				width: 4%;
+				text-align: center;
+				display: inline-block;
+				height: 40px;
+				line-height: 40px;
+			}
+			
+			.mui-input-group:before { background-color: #FFFFFF !important;}
+			.mui-input-group:after { background-color: #FFFFFF !important;}
+			.mui-input-group .address-line:after { background-color: #FFFFFF !important; }
+			.mui-input-row input, .mui-input-row textarea { font-size: 14px; }
+			.mui-button-row button { width: 65%; height: 45px; background-color: #2492FC; border: 1px solid #2492FC; margin-top: 100px;}
+		</style>
+	</head>
+		
+	<body>
+		<div id="wrap">
+			<header id="header" class="mui-bar mui-bar-nav">
+				<h1 class="mui-title">添加消毒记录</h1>
+				<a class="mui-action-back mui-icon mui-icon-arrowleft mui-pull-left" onclick=""></a>
+			</header>
+			<div class="mui-content">
+				<div class="mui-content-padded" style="margin: 5px;">
+					<form class="mui-input-group">
+						<div class="mui-input-row">
+							<label>消毒地点：</label>
+							<a class="mui-navigate-right">
+								<span class="mui-badge1">
+									<input type="text" placeholder="请选择" readonly="readonly" id="disinfectionRecord_plantName">
+								</span>
+							</a>
+						</div>
+						<div class="mui-input-row">
+							<label>承运人：</label>
+							<input type="text" placeholder="请输入" id="disinfectionRecord_carrier">
+						</div>
+						<div class="mui-input-row">
+							<label>联系电话：</label>
+							<input type="number" placeholder="请输入" id="disinfectionRecord_tel">
+						</div>
+						<div class="mui-input-row">
+							<label>车牌号：</label>
+							<input type="text" placeholder="请输入" id="disinfectionRecord_vehicleNum">
+						</div>
+						<div class="mui-input-row">
+							<label>消毒对象：</label>
+							<input type="text" placeholder="请输入" id="disinfectionRecord_disinfectionObject">
+						</div>
+						<div class="mui-input-row">
+							<label>消毒药名称：</label>
+							<input type="text" placeholder="请输入" id="disinfectionRecord_disinfectionName">
+						</div>
+						<div class="mui-input-row">
+							<label class="label-2">消毒药浓度（mg/L）：</label>
+							<input type="number" placeholder="请输入" id="disinfectionRecord_disinfectionConcentration">
+						</div>
+						<div class="mui-input-row">
+							<label>消毒方式：</label>
+							<a class="mui-navigate-right">
+								<span class="mui-badge1">
+									<input type="text" placeholder="请选择" readonly="readonly" id="disinfectionRecord_disinfectionMetod">
+								</span>
+							</a>
+						</div>
+						<div class="mui-input-row">
+							<label>实施单位：</label>
+							<input type="text" placeholder="请输入" id="disinfectionRecord_exploitingEntity">
+						</div>
+						<div class="mui-input-row">
+							<label>实施人：</label>
+							<input type="text" placeholder="请输入" id="disinfectionRecord_implementingPerson">
+						</div>
+						<div class="mui-input-row address-line">
+							<label>备注：</label>
+							<input type="text" placeholder="请输入" id="disinfectionRecord_remark">
+						</div>
+						<div class="mui-button-row">
+							<button type="button" class="mui-btn mui-btn-primary" onclick="alamlogInfo()">确&nbsp;&nbsp;定</button>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div id="container_plantName"></div>
+			<div id="container_disinfection"></div>
+		</div>
+		<script type="text/javascript" src="../../../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/common.js"></script>
+		<script type="text/javascript" src="../../js/ajax-picker/ajax-picker.min.js"></script>
+		<script type="text/javascript">
+			mui.init({});
+			
+			var currentWebview = null;
+			var disinfectionRecord_id = "";
+			
+			mui.plusReady(function() {
+				
+				currentWebview = plus.webview.currentWebview();
+				mui.get(BASEURL + "disinfectionRecord/edit/" + currentWebview.disinfectionRecord_id, {}, function(ret) {
+				//	console.log(JSON.stringify(ret));
+					disinfectionRecord_id = ret.disinfectionRecord.id;
+					mui("#disinfectionRecord_plantName")[0].value = ret.disinfectionRecord.plantName;
+					mui("#disinfectionRecord_carrier")[0].value = ret.disinfectionRecord.carrier;
+					mui("#disinfectionRecord_tel")[0].value = ret.disinfectionRecord.tel;
+					mui("#disinfectionRecord_vehicleNum")[0].value = ret.disinfectionRecord.vehicleNum;
+					mui("#disinfectionRecord_disinfectionObject")[0].value = ret.disinfectionRecord.disinfectionObject;
+					mui("#disinfectionRecord_disinfectionName")[0].value = ret.disinfectionRecord.disinfectionName;
+					mui("#disinfectionRecord_disinfectionConcentration")[0].value = ret.disinfectionRecord.disinfectionConcentration;
+					mui("#disinfectionRecord_disinfectionMetod")[0].value = ret.disinfectionRecord.disinfectionMetod;
+					mui("#disinfectionRecord_exploitingEntity")[0].value = ret.disinfectionRecord.exploitingEntity;
+					mui("#disinfectionRecord_implementingPerson")[0].value = ret.disinfectionRecord.implementingPerson;
+					mui("#disinfectionRecord_remark")[0].value = ret.disinfectionRecord.remark;
+				});
+				
+				var plantNamePicker = new AjaxPicker({
+					title: "消毒地点选择", //选择器标题
+					tipText: ["请选择", "请选择"], //选择器提示语（可以一个也可以多个，对应每一栏的选择提示语）
+					input: "disinfectionRecord_plantName", //点击触发选择器的input的id
+					container: "container_plantName", //选择器的容器的id
+					renderArr: [ //渲染函数数组，第一个函数对应第一个列表，以此类推，该数组中的函数数量和列表的数量一致
+						function() {
+							// 消毒方式JSON数据
+							var json_plantName_title = [
+								{
+									value: '养殖场',
+									id: '养殖场'
+								}, {
+									value: '屠宰场',
+									id: '屠宰场'
+								}, {
+									value: '洗消站',
+									id: '洗消站'
+								}, {
+									value: '其他',
+									id: '其他'
+								}
+							];
+							plantNamePicker.render(json_plantName_title);
+						},
+						function() {
+							// 消毒方式JSON数据
+							var json_plantName = [
+								{
+									value: '河南中弘康馨农业有限公司',
+									id: '河南中弘康馨农业有限公司'
+								}, {
+									value: '兰考绿水青山养殖场',
+									id: '兰考绿水青山养殖场'
+								}
+							];
+							plantNamePicker.render(json_plantName);
+						}
+					],
+					success: function(arr) { 
+						mui("#disinfectionRecord_plantName")[0].value = arr[1].value;
+					}
+				});
+				
+				var disinfectionMetodPicker = new AjaxPicker({
+					title: "消毒方式选择", //选择器标题
+					tipText: ["请选择"], //选择器提示语（可以一个也可以多个，对应每一栏的选择提示语）
+					input: "disinfectionRecord_disinfectionMetod", //点击触发选择器的input的id
+					container: "container_disinfection", //选择器的容器的id
+					renderArr: [ //渲染函数数组，第一个函数对应第一个列表，以此类推，该数组中的函数数量和列表的数量一致
+						function() {
+							disinfectionMetodPicker.render(json_disinfectionMetod);
+						}
+					],
+					success: function(arr) { 
+						mui("#disinfectionRecord_disinfectionMetod")[0].value = arr[0].value;
+					}
+				});
+			});
+			
+			function alamlogInfo() {
+				var plantName = mui("#disinfectionRecord_plantName")[0].value;
+				var carrier = mui("#disinfectionRecord_carrier")[0].value;
+				var tel = mui("#disinfectionRecord_tel")[0].value;
+				var vehicleNum = mui("#disinfectionRecord_vehicleNum")[0].value;
+				var disinfectionObject = mui("#disinfectionRecord_disinfectionObject")[0].value;
+				var disinfectionName = mui("#disinfectionRecord_disinfectionName")[0].value;
+				var disinfectionConcentration = mui("#disinfectionRecord_disinfectionConcentration")[0].value;
+				var disinfectionMetod = mui("#disinfectionRecord_disinfectionMetod")[0].value;
+				var exploitingEntity = mui("#disinfectionRecord_exploitingEntity")[0].value;
+				var implementingPerson = mui("#disinfectionRecord_implementingPerson")[0].value;
+				var remark = mui("#disinfectionRecord_remark")[0].value;
+				
+				var valid_msg = "";
+				if(!plantName || plantName == null || plantName == undefined) {
+					if(valid_msg == "") {
+						valid_msg = "消毒地点不能为空"
+					}
+				}
+				if(!carrier || carrier == null || carrier == undefined) {
+					if(valid_msg == "") {
+						valid_msg = "承运人不能为空"
+					}
+				}
+				if(!tel || tel == null || tel == undefined) {
+					if(valid_msg == "") {
+						valid_msg = "联系方式不能为空"
+					}
+				}
+				if(!vehicleNum || vehicleNum == null || vehicleNum == undefined) {
+					if(valid_msg == "") {
+						valid_msg = "车牌号不能为空"
+					}
+				}
+				if(!disinfectionObject || disinfectionObject == null || disinfectionObject == undefined) {
+					if(valid_msg == "") {
+						valid_msg = "消毒对象不能为空"
+					}
+				}
+				if(!disinfectionName || disinfectionName == null || disinfectionName == undefined) {
+					if(valid_msg == "") {
+						valid_msg = "消毒药名称不能为空"
+					}
+				}
+				if(!disinfectionConcentration || disinfectionConcentration == null || disinfectionConcentration == undefined) {
+					if(valid_msg == "") {
+						valid_msg = "消毒药浓度不能为空"
+					}
+				}
+				if(!disinfectionMetod || disinfectionMetod == null || disinfectionMetod == undefined) {
+					if(valid_msg == "") {
+						valid_msg = "消毒方式不能为空"
+					}
+				}
+				if(!exploitingEntity || exploitingEntity == null || exploitingEntity == undefined) {
+					if(valid_msg == "") {
+						valid_msg = "实施单位不能为空"
+					}
+				}
+				if(!implementingPerson || implementingPerson == null || implementingPerson == undefined) {
+					if(valid_msg == "") {
+						valid_msg = "实施人不能为空"
+					}
+				}
+				if (valid_msg != "") {
+					mui.toast(valid_msg);
+				} else {
+					var addDisinfectionRecordParam = {
+						id: disinfectionRecord_id,
+						plantName: plantName,
+						carrier: carrier,
+						tel: tel,
+						vehicleNum: vehicleNum,
+						disinfectionObject: disinfectionObject,
+						disinfectionName: disinfectionName,
+						disinfectionConcentration: disinfectionConcentration,
+						disinfectionMetod: disinfectionMetod,
+						exploitingEntity: exploitingEntity,
+						implementingPerson: implementingPerson,
+						remark: remark
+					};
+					mui.post(BASEURL + "disinfectionRecord/edit", addDisinfectionRecordParam, function(ret) {
+						if(ret.code == 0) {
+							mui.toast("消毒记录修改成功");
+							closeWebView("editDisinfectionRecordList.html");
+							var targetWebView = plus.webview.getWebviewById("disinfectionRecordList.html");
+							mui.fire(targetWebView, "reloadWebView", {});
+						} else {
+							mui.toast(ret.msg);
+						}
+					});
+				}
+			}
+		</script>
+	</body>
+
+</html>

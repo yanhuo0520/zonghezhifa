@@ -1,0 +1,131 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>市-入库登记</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.css" rel="stylesheet" />
+		<link href="../../css/mui.picker.css" rel="stylesheet" />
+		<link href="../../css/mui.dtpicker.css" rel="stylesheet" />
+		<link href="er-css/home.css" rel="stylesheet" />
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">入库登记</h1>
+		</header>
+		<div class="mui-content check-in-add">
+			<div class="mui-input-group">
+				<div class="mui-input-row">
+					<label>单&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;位：</label>
+					<input id="company" type="text" class="mui-input-clear" placeholder="济源市城区分站">
+				</div>
+				<div class="mui-input-row">
+					<label>操&nbsp;&nbsp;作&nbsp;人：</label>
+					<input id="operator" type="text" class="mui-input-clear" placeholder="操作人">
+				</div>
+				<div class="mui-input-row row-date">
+					<label>入库时间：</label>
+					<input id="select-time" type="text" class="mui-input-clear" placeholder="2019-06-28" readonly="readonly">
+					<img src="er-img/rili.png" class="max-width date-icon" />
+				</div>
+				<div class="mui-input-row">
+					<label>包&nbsp;&nbsp;装&nbsp;号：</label>
+					<input id="pack-num" type="text" class="mui-input-clear" placeholder="请填写包装号">
+				</div>
+				<div class="mui-input-row" style="height: auto;">
+					<label>耳标种类：</label>
+					<select id="ear-scale">
+						<option value="">选择种类</option> 
+					    <option value="pig">猪</option>  
+					    <option value="cattle">牛</option>  
+					</select>
+				</div>
+				<div class="mui-input-row">
+					<label>开始号段：</label>
+					<input id="before-num" type="text" class="mui-input-clear" placeholder="后8位有效数字">
+				</div>
+				<div class="mui-input-row">
+					<label>数&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;量：</label>
+					<input id="number" type="number" class="mui-input-clear" placeholder="请填写数量">
+				</div>
+				<div class="mui-input-row">
+					<label>结束号段：</label>
+					<input id="finish-num" type="text" class="mui-input-clear" placeholder="后8位有效数字">
+				</div>
+			</div>
+			
+			<div class="check-btn">
+				<a href="javascript:;" class="mui-btn check-reset-btn mui-pull-left" id="resetBtn">重置</a>
+				<a href="javascript:;" class="mui-btn check-add-btn mui-pull-right" id="saveBtn">添加</a>
+			</div>
+			
+			
+			
+		</div>
+		
+		
+		
+		
+		
+		<script src="../../js/mui.js"></script>
+		<script src="../../js/mui.picker.js"></script>
+		<script src="../../js/mui.dtpicker.js"></script>
+		<script src="../../js/jquery.min.js"></script>
+		<script src="../js/content.js"></script>
+		<script type="text/javascript">
+			mui.plusReady(function () {
+				document.getElementById("saveBtn").addEventListener('tap', function(){
+					var company = document.getElementById("company").value;
+					var operator = document.getElementById("operator").value;
+					var selectTime = document.getElementById("select-time").value;
+					var packNum = document.getElementById("pack-num").value;
+					var earScale = document.getElementById("ear-scale").value;
+					var beforeNum = document.getElementById("before-num").value;
+					var number = document.getElementById("number").value;
+					var finishNnum = document.getElementById("finish-num").value;
+					
+					
+					
+				})
+				
+				// 重置
+				document.getElementById("resetBtn").addEventListener('tap', function(){
+					document.getElementById("company").value = '';
+					document.getElementById("operator").value = '';
+					document.getElementById("select-time").value = '';
+					document.getElementById("pack-num").value = '';
+				    document.getElementById("ear-scale").value = '';
+					document.getElementById("before-num").value = '';
+					document.getElementById("number").value = '';
+					document.getElementById("finish-num").value = '';
+				
+				})
+			    
+			})
+			
+			// 设置默认当前日期
+			var myDate = new Date();
+			if(myDate.getMonth() < 9){
+				var nowDate = myDate.getFullYear()+'-0'+(myDate.getMonth()+1)+'-'+myDate.getDate();
+				document.getElementById("select-time").value = nowDate
+			}else{
+				var nowDate = myDate.getFullYear()+'-'+(myDate.getMonth()+1)+'-'+myDate.getDate();	
+				document.getElementById("select-time").value = nowDate
+			}
+			
+			// 选择日期	
+			document.getElementById("select-time").addEventListener('tap', function(){
+                var dtpicker = new mui.DtPicker({
+                    type: "date", //设置日历初始视图模式    //真正的月份比写的多一个月。  type的类型你还是可以选择date datetime month time hour 
+                    labels: ['年', '月', '日'] //设置默认标签区域提示语 
+                });
+                dtpicker.show(function(items) {
+					document.getElementById("select-time").value = items.value;
+                    console.log(items.value);
+                });
+			})
+		</script>
+	</body>
+
+</html>

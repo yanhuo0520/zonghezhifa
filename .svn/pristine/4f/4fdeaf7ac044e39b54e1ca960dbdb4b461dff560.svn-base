@@ -1,0 +1,226 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>检疫管理</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.css" rel="stylesheet" />
+		<link href="../css/generic.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/mui.picker.css" />
+		<link rel="stylesheet" href="../../css/mui.dtpicker.css" />
+		<link rel="stylesheet" href="../../css/ajax-picker/ajax-picker.css">
+		<link rel="stylesheet" href="../../css/ajax-picker/ajax-picker-self.css">
+		<link rel="stylesheet" href="../css/quarantine-common.css" />
+		
+		<link href="../../css/font-awesome.min.css" rel="stylesheet" />
+		<style>
+			.mail-content .mui-table-view-cell{ font-size: 0.24rem; margin-bottom: 10px; border-bottom: 1px solid #D2D1DB; }
+			.mail-content .mui-table-view-cell:after { height: 0; }
+			.mail-list:last-child { margin-top: 15px; }
+			#bottom1{background: #FFFFFF;}
+			#bottom2{background: #FFFFFF;}
+		</style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">检疫申报单详情</h1>
+		</header>
+		<div class="mui-content">
+			<div class="mui-input-group">
+				<div class="mui-input-row">
+					<label class="title-label-long">检疫申报单位/人：</label>
+					<input class="input-long" type="text" readonly="readonly" id="qurarantine_CONSIGNEE" />
+				</div>
+				<div class="mui-input-row">
+					<label class="title-label-short">联系电话：</label>
+					<input type="number" readonly="readonly" id="qurarantine_TELEPHONE" />
+				</div>
+				<div class="mui-input-row">
+					<label class="title-label-short">身份证号：</label>
+					<input type="text" readonly="readonly" id="qurarantine_IDNUM" />
+				</div>
+			</div>
+			
+			<div class="mui-input-group">
+				<div class="mui-input-row">
+					<label class="title-label-short">动物种类： </label>
+					<input type="text" id="qurarantine_SORT" readonly="readonly"/>
+				</div>
+				<div class="mui-input-row">
+					<label class="title-label-short">动物来源：</label>
+					<input type="text" id="qurarantine_ANIMALSOURCE" class="mui-navigate-right" readonly="readonly" />
+				</div>
+				<div class="mui-input-row">
+					<label class="title-label-short">报检数量：</label>
+					<input type="number" readonly="readonly" id="qurarantine_NUM" />
+				</div>
+				<div class="mui-input-row">
+					<label>单&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;位：</label>
+					<input type="text" id="qurarantine_UNIT"  readonly="readonly"  />
+				</div>
+			</div>
+			
+			<div class="mui-input-group">
+				<div class="mui-input-row">
+					<label class="title-label-short">启运地点：</label>
+					<input type="text" id="qurarantine_SOURCE" readonly="readonly"/>
+				</div>
+				<div class="mui-input-row">
+					<label class="title-label-short">启运时间：</label>
+					<input type="text" id="qurarantine_LEAVELTIME" class="mui-navigate-right" readonly="readonly"/>
+				</div>
+				<div class="mui-input-row mui-select">
+					<label class="title-label-short">到达地点：</label>
+					<input type="text" id="qurarantine_ARRIVALLOCAL" readonly="readonly"/>
+				</div>
+				<div class="mui-input-row">
+					<label class="title-label-short">报检时间：</label>
+					<input type="text" id="qurarantine_STATUS" class="mui-navigate-right" readonly="readonly"/>
+				</div>
+			    <div class="in-list-content" id="in-list-content">
+					<div class="mui-input-row">
+						<label class="title-label-short">派员检疫时间：</label>
+						<input type="text" id="qurarantine_QUARDATE" class="mui-navigate-right" readonly="readonly"/>
+					</div>
+					<div class="mui-input-row">
+						<label class="title-label-short">派员检疫地址：</label>
+						<input type="text" id="qurarantine_TQUARLOCAL" class="mui-navigate-right" readonly="readonly"/>
+					</div>
+				</div>
+				<div class="mui-input-row">
+					<label class="title-label-short">状态：</label>
+					<input type="text" id="qurarantine_STATE" readonly="readonly"/>
+				</div>
+			</div>
+		</div>
+		
+		<nav id="bottom1" class="mui-bar mui-bar-tab nav1 mui-hide">
+			<a class="mui-tab-item mui-active" target_id="quarantine-accept.html">
+				<i class="fa fa-print" aria-hidden="true"></i>
+				<span class="mui-tab-label">申报受理</span>
+			</a>
+		</nav>
+		<nav id="bottom2" class="mui-bar mui-bar-tab nav2 mui-hide">
+			<a class="mui-tab-item" target_id="">
+				<i class="fa fa-print" aria-hidden="true"></i>
+				<span class="mui-tab-label">打印</span>
+			</a>
+			<a class="mui-tab-item" target_id="">
+				<i class="fa fa-print" aria-hidden="true"></i>
+				<span class="mui-tab-label">记录单</span>
+			</a>
+		</nav>
+
+		<script src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/jquery-1.12.4.min.js"></script>
+		<script type="text/javascript" src="../js/content.js"></script>
+		<script type="text/javascript" src="../js/constant.js"></script>
+		<script type="text/javascript" src="js/quarantine-data.js"></script>
+		<script type="text/javascript">
+			mui.init({});
+			
+			var quarantineId = "";
+			var source = "";
+			mui.plusReady(function() {
+				initSettings(); 		// 初始化设置字体大小
+				
+				var self = plus.webview.currentWebview();
+				quarantineId = self.targetId;
+				
+				mui(".mui-bar").on("tap", ".mui-tab-item", function() {
+					var targetTab = this.getAttribute('target_id');
+					mui.openWindow({
+						url: targetTab,
+						id: targetTab,
+						extras: {
+							"quarantineId": quarantineId,
+							"source": source
+						},
+						waiting: {
+							autoShow: true, // 自动显示等待框，默认为true
+							title: '正在加载...', // 等待对话框上显示的提示内容
+						}
+					})
+				});
+				
+				initQuarantineData();
+			});
+			
+			function initQuarantineData() {
+				var result = "";
+				plus.nativeUI.showWaiting("正在加载数据……");
+				var json_syncTransferData = [{
+					"QUARID": quarantineId,
+					"SYNC_ACT": "AIS-2001000100000003",
+					"SYNC_USR": "admin",
+					"SYNC_VER": "APP.1.01",
+					"USERNAME": "admin",
+					"_GATEWAY_NAME": "HA_NETWORK",
+				}];
+				mui.ajax(QUARANTINE_MAIN_URL, {
+					data:{
+						syncTransferData: JSON.stringify(json_syncTransferData)
+					},
+					dataType: 'json',//服务器返回json格式数据
+					type: 'post',//HTTP请求类型
+					timeout: 10000,//超时时间设置为10秒；
+					success: function(data) {
+						// console.log(JSON.stringify(data));
+						
+						plus.nativeUI.closeWaiting();
+						
+						var result = "";
+						
+						if(data.AIS_STATUS === "AIS-000000" && data.QUARDECL_DATA) {
+							var record = data.QUARDECL_DATA;
+							mui("#qurarantine_CONSIGNEE")[0].value = record.consignee;
+							mui("#qurarantine_TELEPHONE")[0].value = record.telephone;
+							mui("#qurarantine_IDNUM")[0].value = record.idNum;
+							mui("#qurarantine_SORT")[0].value = record.sort;
+							mui("#qurarantine_ANIMALSOURCE")[0].value = record.animalSource;
+							mui("#qurarantine_NUM")[0].value = record.num;
+							mui("#qurarantine_UNIT")[0].value = record.unit;
+							mui("#qurarantine_SOURCE")[0].value = record.source;
+							source = record.source;
+							mui("#qurarantine_LEAVELTIME")[0].value = record.leavelTime;
+							mui("#qurarantine_STATUS")[0].value = record.inspDateTime;
+							mui("#qurarantine_QUARDATE")[0].value = record.quarDate;
+							mui("#qurarantine_TQUARLOCAL")[0].value = record.tquarLocal;
+							
+							var str = record.areaType;
+							var two = str.substring(1,str.length);
+							// console.log(json_areaType_arrive[two].value);
+							
+							
+							if(record.status === 2 || record.status === 5) {
+								$(".in-list-content").show();
+							}
+							// 
+							if(record.status === 1) {
+								mui("#qurarantine_STATE")[0].value = "未受理";
+								$(".nav1").show();
+							} else if(record.status === 2) {
+								mui("#qurarantine_STATE")[0].value = "已受理";
+								$(".nav2").show();
+							} else if(record.status === 3) {
+								mui("#qurarantine_STATE")[0].value = "不受理";
+								
+							} else if(record.status === 5) {
+								mui("#qurarantine_STATE")[0].value = "已出证";
+								$(".nav2").show();
+							}
+						} else {
+							mui.toast("申报单详情信息查询失败，请重试");
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						plus.nativeUI.closeWaiting();
+						mui.toast("申报单详情信息查询失败");	
+					}
+				});
+			}
+		</script>
+	</body>
+
+</html>
